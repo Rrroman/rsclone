@@ -1,4 +1,5 @@
 import '../css/style.css';
+import create from './utils/create.ts';
 
 require.context('./../assets/img', true, /\.(png|svg|jpg|gif)$/);
 
@@ -11,3 +12,5 @@ const div = document.createElement('div');
 div.classList.add('greet');
 div.textContent = add('It ', ' working!!!');
 body?.appendChild(div);
+
+create('div', { className: 'test', child: 'NEW SUPER TEXT', parent: body });
