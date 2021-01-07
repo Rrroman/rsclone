@@ -1,5 +1,5 @@
 import '../css/style.css';
-import create from './utils/create.ts';
+import create from './utils/create';
 
 require.context('./../assets/img', true, /\.(png|svg|jpg|gif)$/);
 
