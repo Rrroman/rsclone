@@ -5,7 +5,6 @@
  * @param {HTMLElement} parent
  * @param  {...array} dataAttr
  */
-// dataAttr = [['id', 'name'], ['data-key', 'key']]
 export default function create(
   el: string,
   {
@@ -17,7 +16,7 @@ export default function create(
     className?: string;
     child?: HTMLElement | string | null;
     parent?: HTMLElement | null;
-    dataAttr?: string[];
+    dataAttr?: string[][];
   }
 ) {
   let element: HTMLElement | null = null;
