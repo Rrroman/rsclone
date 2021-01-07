@@ -13,7 +13,7 @@ export default class EventEmitter {
   }
 
   emit(event: string, ...arg: any[]) {
-    (this.events[event] || []).forEach((listener: (...arg: any) => any) =>
+    (this.events[event] || []).forEach((listener: (...args: any) => any) =>
       listener(...arg)
     );
   }

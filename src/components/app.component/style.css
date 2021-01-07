@@ -2,7 +2,8 @@
 
 @font-face {
   font-family: 'Roboto';
-  src: url('./../assets/fonts/Roboto-Regular.ttf') format('truetype');
+  src: url('../../assets/fonts/Roboto-Regular.ttf') format('truetype');
+  /* src: url('./../assets/fonts/Roboto-Regular.ttf') format('truetype'); */
 }
 
 html {
@@ -29,7 +30,7 @@ ol {
 
 .greet {
   color: burlywood;
-  background-image: url(../assets/img/rs_school_js.svg);
+  background-image: url(../../assets/img/rs_school_js.svg);
   background-repeat: no-repeat;
   background-position: left center;
   font-size: 72px;

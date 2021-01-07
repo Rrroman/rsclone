@@ -6,7 +6,7 @@ module.exports = {
   context: path.resolve(__dirname, 'src'),
   mode: 'development',
   entry: {
-    main: './js/script.ts',
+    main: './script.ts',
   },
   output: {
     filename: '[name].[contenthash].js',

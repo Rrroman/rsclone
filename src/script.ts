@@ -1,7 +1,8 @@
-import '../css/style.css';
+// import '../css/style.css';
+import './components/app.component/style.css';
 import create from './utils/create';
 
-require.context('./../assets/img', true, /\.(png|svg|jpg|gif)$/);
+require.context('./assets/img', true, /\.(png|svg|jpg|gif)$/);
 
 function add(a: string, b: string) {
   return a + b;
