@@ -1,4 +1,3 @@
-// import '../css/style.css';
 import './components/app.component/style.css';
 import create from './utils/create';
 
