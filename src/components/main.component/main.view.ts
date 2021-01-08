@@ -2,6 +2,7 @@ import './main.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
+import CardListView from '../card.list.component/card.list.view';
 
 export default class MainView extends EventEmitter {
   main!: HTMLElement;
@@ -26,6 +27,13 @@ export default class MainView extends EventEmitter {
       parent: this.main,
     });
 
+    MainView.renderCardList(this.main);
+
     this.elements.prepend(this.main);
+  }
+
+  static renderCardList(parent: HTMLElement) {
+    const cardList = new CardListView(null, parent);
+    cardList.show();
   }
 }
