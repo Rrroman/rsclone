@@ -1,15 +1,12 @@
-import EventEmitter from '../../utils/eventEmitter';
-
-export default class AddListCardBtnController extends EventEmitter {
-  formWrapper: EventEmitter;
+export default class AddListCardBtnController {
+  formWrapper: any;
 
   form: HTMLElement | null;
 
   constructor(public model: unknown, public viewer1: any) {
-    super();
     this.formWrapper = viewer1;
     this.form = null;
-    // this.formWrapper.on('addListPlusClick', () => this.addListPlusHandler());
+    this.formWrapper.on('addListPlusClick', () => this.addListPlusHandler());
   }
 
   addListPlusHandler() {
