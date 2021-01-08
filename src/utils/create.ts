@@ -5,22 +5,34 @@
  * @param {HTMLElement} parent
  * @param  {...array} dataAttr
  */
-// dataAttr = [['id', 'name'], ['data-key', 'key']]
-export default function create(el, { className, child, parent, dataAttr }) {
-  let element = null;
+export default function create(
+  el: string,
+  {
+    className,
+    child,
+    parent,
+    dataAttr,
+  }: {
+    className?: string;
+    child?: HTMLElement | string | null | HTMLElement[];
+    parent?: HTMLElement | null;
+    dataAttr?: string[][];
+  }
+) {
+  let element: HTMLElement | null = null;
   try {
     element = document.createElement(el);
   } catch (error) {
     throw new Error('unable to create  HTMLElement! Give a proper tag name');
   }
 
-  if (className) element.classList.add(...className.split(' ')); //
+  if (className) element.classList.add(...className.split(' '));
 
   if (child && Array.isArray(child)) {
     child.forEach((childElement) => {
-      if (childElement && typeof childElement === 'string') {
+      if (childElement && typeof childElement === 'string' && element) {
         element.innerHTML = childElement;
-      } else if (childElement) {
+      } else if (childElement && element) {
         element.appendChild(childElement);
       }
     });
@@ -36,15 +48,19 @@ export default function create(el, { className, child, parent, dataAttr }) {
 
   if (dataAttr && dataAttr.length) {
     dataAttr.forEach(([attrName, attrValue]) => {
-      if (attrValue === '') {
+      if (attrValue === '' && element) {
         element.setAttribute(attrValue, '');
       } else if (
-        attrName.match(
-          /value|id|placeholder|cols|rows|autocorrect|spellcheck|for|type|style|src|alt|href|target|size|key/
-        )
+        (attrName.match(
+          /value|id|placeholder|cols|rows|autocorrect|spellcheck|for|type/
+        ) ||
+          attrName.match(
+            /style|src|alt|href|target|size|key|autocomplete|maxlength/
+          )) &&
+        element
       ) {
         element.setAttribute(attrName, attrValue);
-      } else {
+      } else if (element) {
         element.dataset[attrName] = attrValue;
       }
     });
