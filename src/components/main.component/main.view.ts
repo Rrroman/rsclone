@@ -31,15 +31,17 @@ export default class MainView extends EventEmitter {
 
     const addBtn = new AddListCardBtnView(this.model, this.main);
     const addBtnElement = addBtn.show();
-    
+
     // eslint-disable-next-line no-new
     new AddListCardBtnController(null, addBtn);
     this.main.append(addBtnElement);
     this.elements.prepend(this.main);
+
+    this.renderCardList('Header block');
   }
 
-  static renderCardList(parent: HTMLElement) {
-    const cardList = new CardListView(null, parent);
+  renderCardList(headerElement: HTMLElement | string) {
+    const cardList = new CardListView(null, this.main, headerElement);
     cardList.show();
   }
 }

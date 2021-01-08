@@ -1,0 +1,28 @@
+.card-list {
+  width: 272px;
+  margin: 0 4px;
+  height: 100%;
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.card-list__header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  padding: 10px;
+}
+
+.card-list__body {
+  flex: 1 1 auto;
+  margin-bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0 4px;
+  padding: 0 4px;
+  z-index: 1;
+  min-height: 0;
+}
