@@ -16,7 +16,6 @@ export default class AddListCardBtnView extends EventEmitter {
   show() {
     const formWrapper = this.renderPlusBtn();
     this.renderAddCardInputForm();
-    // eslint-disable-next-line no-new
 
     return formWrapper;
   }
@@ -49,7 +48,6 @@ export default class AddListCardBtnView extends EventEmitter {
     });
 
     link.addEventListener('click', () => this.emit('addListPlusClick'));
-    // link.onclick = () => this.emit('addListPlusClick');
 
     return this.wrapper;
   }
