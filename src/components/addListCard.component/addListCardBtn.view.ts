@@ -7,21 +7,31 @@ export default class AddListCardBtnView extends EventEmitter {
 
   form: HTMLElement | null;
 
+  link: HTMLElement | null;
+
+  input: HTMLElement | null;
+
+  addBtnContainer: HTMLElement | null;
+
   constructor(public model: unknown, public elements: any) {
     super();
     this.wrapper = null;
     this.form = null;
+    this.link = null;
+    this.input = null;
+    this.addBtnContainer = null;
   }
 
   show() {
     const formWrapper = this.renderPlusBtn();
     this.renderAddCardInputForm();
-    // eslint-disable-next-line no-new
-
     return formWrapper;
   }
 
   renderPlusBtn() {
+    if (this.addBtnContainer) {
+      this.addBtnContainer.classList.add('hidden');
+    }
     this.wrapper = create('div', {
       className: 'card-list_wrapper add-list-btn_wrapper',
       child: null,
@@ -33,7 +43,7 @@ export default class AddListCardBtnView extends EventEmitter {
       parent: this.wrapper,
     });
 
-    const link = create('a', {
+    this.link = create('a', {
       className: 'open-add-list',
       child: null,
       parent: this.form,
@@ -45,18 +55,17 @@ export default class AddListCardBtnView extends EventEmitter {
         create('span', { className: 'plus', child: '+' }),
         create('span', { className: 'span-text', child: 'Add another list' }),
       ],
-      parent: link,
+      parent: this.link,
     });
 
-    link.addEventListener('click', () => this.emit('addListPlusClick'));
-    // link.onclick = () => this.emit('addListPlusClick');
+    this.link.addEventListener('click', () => this.emit('addListPlusClick'));
 
     return this.wrapper;
   }
 
   renderAddCardInputForm() {
-    create('input', {
-      className: 'input-new-card',
+    this.input = create('input', {
+      className: 'input-new-card hidden',
       child: null,
       parent: this.form,
       dataAttr: [
@@ -68,8 +77,8 @@ export default class AddListCardBtnView extends EventEmitter {
       ],
     });
 
-    const addBtnContainer = create('div', {
-      className: 'addBtn-container',
+    this.addBtnContainer = create('div', {
+      className: 'hidden',
       child: null,
       parent: this.form,
     });
@@ -77,19 +86,39 @@ export default class AddListCardBtnView extends EventEmitter {
     create('input', {
       className: 'add-button',
       child: null,
-      parent: addBtnContainer,
+      parent: this.addBtnContainer,
       dataAttr: [
         ['type', 'submit'],
         ['value', 'Add List'],
       ],
     });
 
-    create('div', {
+    const closeBtn = create('div', {
       className: 'close-input',
       child: '&times;',
-      parent: addBtnContainer,
+      parent: this.addBtnContainer,
     });
 
+    closeBtn.addEventListener('click', () => this.emit('closeBtnClick'));
+
     return this.wrapper;
+  }
+
+  showInputForm() {
+    if (this.link && this.addBtnContainer && this.input) {
+      this.link.classList.add('hidden');
+      this.addBtnContainer.classList.remove('hidden');
+      this.addBtnContainer.classList.add('addBtn-container');
+      this.input.classList.remove('hidden');
+    }
+  }
+
+  closeInputForm() {
+    if (this.link && this.addBtnContainer && this.input) {
+      this.link.classList.remove('hidden');
+      this.addBtnContainer.classList.add('hidden');
+      this.addBtnContainer.classList.remove('addBtn-container');
+      this.input.classList.add('hidden');
+    }
   }
 }
