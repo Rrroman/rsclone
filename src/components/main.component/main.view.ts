@@ -2,7 +2,8 @@ import './main.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
-import AddListCardBtn from '../addListCard.component/addListCardBtn.view';
+import AddListCardBtnView from '../addListCard.component/addListCardBtn.view';
+import AddListCardBtnController from '../addListCard.component/addListCardBtn.controller';
 
 export default class MainView extends EventEmitter {
   main!: HTMLElement;
@@ -27,8 +28,11 @@ export default class MainView extends EventEmitter {
       parent: this.main,
     });
     // eslint-disable-next-line no-new
-    const addBtn = new AddListCardBtn(this.model, this.main).show();
-    this.main.append(addBtn);
+    const addBtn = new AddListCardBtnView(this.model, this.main);
+    const addBtnElement = addBtn.show();
+    // eslint-disable-next-line no-new
+    new AddListCardBtnController(null, addBtn);
+    this.main.append(addBtnElement);
     this.elements.prepend(this.main);
   }
 }
