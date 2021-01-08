@@ -1,15 +1,24 @@
 export default class AddListCardBtnController {
-  formWrapper: any;
+  addListCardBtn: any;
 
   constructor(public model: unknown, public viewer: any) {
-    this.formWrapper = viewer;
-    this.formWrapper.on({
-      event: 'addListPlusClick',
-      listener: () => this.addListPlusHandler(),
-    });
+    this.addListCardBtn = viewer;
+    this.addListCardBtn
+      .on({
+        event: 'addListPlusClick',
+        listener: () => this.addListPlusHandler(),
+      })
+      .on({
+        event: 'closeBtnClick',
+        listener: () => this.closeBtnHandle(),
+      });
   }
 
   addListPlusHandler() {
-    return this;
+    this.addListCardBtn.showInputForm();
+  }
+
+  closeBtnHandle() {
+    this.addListCardBtn.closeInputForm();
   }
 }
