@@ -7,7 +7,7 @@ export default class EventEmitter {
     this.events = {};
   }
 
-  on(event: string, listener: () => {}) {
+  on({ event, listener }: { event: string; listener: () => {} }) {
     (this.events[event] || (this.events[event] = [])).push(listener);
     return this;
   }

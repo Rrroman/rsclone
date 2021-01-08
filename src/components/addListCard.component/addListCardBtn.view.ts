@@ -1,9 +1,8 @@
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import './addListCardBtn.css';
-import AddListCardBtnController from './addListCardBtn.controller';
 
-export default class AddListCardBtn extends EventEmitter {
+export default class AddListCardBtnView extends EventEmitter {
   wrapper: HTMLElement | null;
 
   form: HTMLElement | null;
@@ -17,8 +16,7 @@ export default class AddListCardBtn extends EventEmitter {
   show() {
     const formWrapper = this.renderPlusBtn();
     this.renderAddCardInputForm();
-    // eslint-disable-next-line no-new
-    new AddListCardBtnController(null, formWrapper);
+
     return formWrapper;
   }
 
@@ -49,7 +47,7 @@ export default class AddListCardBtn extends EventEmitter {
       parent: link,
     });
 
-    link.onclick = () => this.emit('addListPlusClick');
+    link.addEventListener('click', () => this.emit('addListPlusClick'));
 
     return this.wrapper;
   }
