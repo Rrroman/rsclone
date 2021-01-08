@@ -19,8 +19,6 @@ export default class CardListView extends EventEmitter {
       child: null,
     });
 
-    // new addCardBtn();
-
     this.elements.prepend(cardList);
   }
 }
