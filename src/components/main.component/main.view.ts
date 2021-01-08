@@ -4,6 +4,7 @@ import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import AddListCardBtnView from '../addListCard.component/addListCardBtn.view';
 import AddListCardBtnController from '../addListCard.component/addListCardBtn.controller';
+import CardListView from '../card.list.component/card.list.view';
 
 export default class MainView extends EventEmitter {
   main!: HTMLElement;
@@ -27,12 +28,20 @@ export default class MainView extends EventEmitter {
       child: 'Main Container',
       parent: this.main,
     });
-    // eslint-disable-next-line no-new
+
     const addBtn = new AddListCardBtnView(this.model, this.main);
     const addBtnElement = addBtn.show();
+
     // eslint-disable-next-line no-new
     new AddListCardBtnController(null, addBtn);
     this.main.append(addBtnElement);
     this.elements.prepend(this.main);
+
+    this.renderCardList('Header block');
+  }
+
+  renderCardList(headerElement: HTMLElement | string) {
+    const cardList = new CardListView(null, this.main, headerElement);
+    cardList.show();
   }
 }

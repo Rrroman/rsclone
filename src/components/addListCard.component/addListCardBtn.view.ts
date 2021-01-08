@@ -25,6 +25,7 @@ export default class AddListCardBtnView extends EventEmitter {
   show() {
     const formWrapper = this.renderPlusBtn();
     this.renderAddCardInputForm();
+
     return formWrapper;
   }
 
