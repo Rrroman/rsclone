@@ -1,0 +1,7 @@
+.board-header {
+  background-color: rgba(0, 0, 0, 0.24);
+  height: 50px;
+  padding: 8px 4px 4px 8px;
+  position: relative;
+  transition: padding 0.1s ease-in;
+}

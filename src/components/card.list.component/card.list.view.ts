@@ -7,7 +7,7 @@ export default class CardListView extends EventEmitter {
   constructor(
     public model: unknown,
     public elements: any,
-    public listHeader: string | HTMLElement
+    public listHeader: string
   ) {
     super();
   }
@@ -17,41 +17,41 @@ export default class CardListView extends EventEmitter {
   }
 
   createCardList() {
-    const cardListInner = create('ul', {
-      className: 'card-list__inner',
-      child: null,
+    const cardListHeader = this.createHeader();
+    const cardContent = create('div', {
+      className: 'card-content',
+      child: cardListHeader,
     });
 
     const cardList = create('div', {
       className: 'card-list',
-      child: cardListInner,
-    });
-
-    CardListView.createListHeader(cardListInner, this.listHeader);
-
-    create('div', {
-      className: 'card-list__body',
-      parent: cardListInner,
+      child: cardContent,
     });
 
     this.elements.prepend(cardList);
   }
 
-  static createListHeader(
-    parentNode: HTMLElement,
-    listHeader: HTMLElement | string
-  ) {
-    const cardListHeader = create('div', {
-      className: 'card-list__header',
-      child: listHeader,
-      parent: parentNode,
+  createHeader() {
+    const headerText = create('textarea', {
+      className: 'card-name',
+      child: this.listHeader,
+      parent: null,
+      dataAttr: [
+        ['maxlength', '512'],
+        ['spellcheck', 'false'],
+      ],
     });
 
-    const menuBtn = CardListView.renderCardListMenuBtn();
-    cardListHeader.append(menuBtn);
-  }
+    const menuBtn = create('a', {
+      className: 'card-list__menu-btn',
+      child: '...',
+    });
 
-  static renderCardListMenuBtn() {
-    return create('div', { className: 'card-list__menu-btn', child: '...' });
+    const cardListHeader = create('div', {
+      className: 'card-header',
+      child: [headerText, menuBtn],
+    });
+
+    return cardListHeader;
   }
 }

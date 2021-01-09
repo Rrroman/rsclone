@@ -55,7 +55,10 @@ export default function create(
           /value|id|placeholder|cols|rows|autocorrect|spellcheck|for|type/
         ) ||
           attrName.match(
-            /style|src|alt|href|target|size|key|autocomplete|maxlength/
+            /style|src|alt|href|target|size|key|autocomplete|maxlength|name/
+          ) ||
+          attrName.match(
+            /accept|align|checked|defaultChecked|defaultValue|dirName|disabled|files/
           )) &&
         element
       ) {
