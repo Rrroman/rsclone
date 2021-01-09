@@ -12,9 +12,7 @@ html {
   background-color: rgb(43, 45, 46);
   color: #ffffff;
 }
-body {
-  height: 98vh;
-}
+
 *,
 *::before,
 *::after {

@@ -9,7 +9,7 @@ export default class CardListView extends EventEmitter {
   constructor(
     public model: unknown,
     public elements: any,
-    public listHeader: string | HTMLElement
+    public listHeader: string
   ) {
     super();
     this.cardListBottom = null;
@@ -20,47 +20,45 @@ export default class CardListView extends EventEmitter {
   }
 
   createCardList() {
-    const cardListInner = create('div', {
-      className: 'card-list__inner',
-      child: null,
+    const cardListHeader = this.createHeader();
+    const cardListBody = create('div', {
+      className: 'card-list__body',
+    });
+
+    const cardListBottom = this.createAddBottomBtn();
+
+    const cardContent = create('div', {
+      className: 'card-content',
+      child: [cardListHeader, cardListBody, cardListBottom],
     });
 
     const cardList = create('div', {
       className: 'card-list',
-      child: cardListInner,
-    });
-
-    CardListView.createListHeader(cardListInner, this.listHeader);
-
-    create('div', {
-      className: 'card-list__body',
-      parent: cardListInner,
-    });
-
-    const bottomBtn = this.createAddBottomBtn();
-    const bottomSettingsBtn = this.createSettingsBottomBtn();
-
-    this.cardListBottom = create('div', {
-      className: 'card-list__bottom',
-      child: [bottomBtn, bottomSettingsBtn],
-      parent: cardListInner,
+      child: cardContent,
     });
 
     this.elements.prepend(cardList);
   }
 
-  static createListHeader(
-    parentNode: HTMLElement,
-    listHeader: HTMLElement | string
-  ) {
-    const cardListHeader = create('div', {
-      className: 'card-list__header',
-      child: listHeader,
-      parent: parentNode,
+  createHeader() {
+    const headerText = create('textarea', {
+      className: 'card-name',
+      child: this.listHeader,
+      parent: null,
+      dataAttr: [
+        ['maxlength', '512'],
+        ['spellcheck', 'false'],
+      ],
     });
 
     const menuBtn = CardListView.renderCardListMenuBtn();
+    const cardListHeader = create('div', {
+      className: 'card-header',
+      child: [headerText, menuBtn],
+    });
+
     cardListHeader.append(menuBtn);
+    return cardListHeader;
   }
 
   static renderCardListMenuBtn() {
@@ -86,7 +84,14 @@ export default class CardListView extends EventEmitter {
       parent: this.cardListBottom,
     });
 
-    return addBtn;
+    const bottomSettingsBtn = this.createSettingsBottomBtn();
+
+    const cardListBottom = create('div', {
+      className: 'card-list__bottom',
+      child: [addBtn, bottomSettingsBtn],
+    });
+
+    return cardListBottom;
   }
 
   createSettingsBottomBtn() {

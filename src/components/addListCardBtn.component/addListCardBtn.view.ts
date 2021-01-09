@@ -1,6 +1,7 @@
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import './addListCardBtn.css';
+import CardListView from '../card.list.component/card.list.view';
 
 export default class AddListCardBtnView extends EventEmitter {
   wrapper: HTMLElement | null;
@@ -13,13 +14,16 @@ export default class AddListCardBtnView extends EventEmitter {
 
   addBtnContainer: HTMLElement | null;
 
-  constructor(public model: unknown, public elements: any) {
+  board: HTMLElement;
+
+  constructor(public model: any, public elements: any) {
     super();
     this.wrapper = null;
     this.form = null;
     this.link = null;
     this.input = null;
     this.addBtnContainer = null;
+    this.board = elements;
   }
 
   show() {
@@ -84,7 +88,7 @@ export default class AddListCardBtnView extends EventEmitter {
       parent: this.form,
     });
 
-    create('input', {
+    const addListBtn = create('input', {
       className: 'add-button',
       child: null,
       parent: this.addBtnContainer,
@@ -99,9 +103,11 @@ export default class AddListCardBtnView extends EventEmitter {
       child: '&times;',
       parent: this.addBtnContainer,
     });
-
+    this.input.addEventListener('input', (e) => this.emit('inputListName', e));
     closeBtn.addEventListener('click', () => this.emit('closeBtnClick'));
-
+    addListBtn.addEventListener('click', (e) =>
+      this.emit('addListBtnCLick', e)
+    );
     return this.wrapper;
   }
 
@@ -120,6 +126,19 @@ export default class AddListCardBtnView extends EventEmitter {
       this.addBtnContainer.classList.add('hidden');
       this.addBtnContainer.classList.remove('addBtn-container');
       this.input.classList.add('hidden');
+    }
+  }
+
+  renderNewList() {
+    const newList = new CardListView(
+      this.model,
+      this.board,
+      this.model.inputNeListName
+    );
+    newList.show();
+    this.model.changeNewListName('');
+    if (this.input) {
+      (this.input as HTMLInputElement).value = '';
     }
   }
 }

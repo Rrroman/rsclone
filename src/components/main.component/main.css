@@ -1,3 +1,32 @@
 .main {
-  height: calc(100% - 200px);
+  position: relative;
+  overflow-y: auto;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: calc(100vh - 200px);
+}
+
+.main-inner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.board-main-content {
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  margin-right: 0;
+  position: relative;
+  transition: margin 0.1s ease-in;
+}
+
+.board-wrapper {
+  position: relative;
+  flex-grow: 1;
 }

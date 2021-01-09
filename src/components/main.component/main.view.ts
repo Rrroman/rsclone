@@ -2,9 +2,8 @@ import './main.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
-import AddListCardBtnView from '../addListCard.component/addListCardBtn.view';
-import AddListCardBtnController from '../addListCard.component/addListCardBtn.controller';
-import CardListView from '../card.list.component/card.list.view';
+import BoardHeaderView from '../boardHeader.component/boardHeader.view';
+import Board from '../board.component/board.viewer';
 
 export default class MainView extends EventEmitter {
   main!: HTMLElement;
@@ -23,25 +22,29 @@ export default class MainView extends EventEmitter {
       child: null,
     });
 
-    create('h1', {
-      className: 'main_title',
-      child: 'Main Container',
+    const mainInner = create('div', {
+      className: 'main-inner',
+      child: null,
       parent: this.main,
     });
 
-    const addBtn = new AddListCardBtnView(this.model, this.main);
-    const addBtnElement = addBtn.show();
+    const boardContainer = create('div', {
+      className: 'board-main-content',
+      child: null,
+      parent: mainInner,
+    });
 
     // eslint-disable-next-line no-new
-    new AddListCardBtnController(null, addBtn);
-    this.main.append(addBtnElement);
+    new BoardHeaderView(this.model, boardContainer).show();
+
+    const boardWrapper = create('div', {
+      className: 'board-wrapper',
+      child: null,
+      parent: boardContainer,
+    });
+
+    new Board(this.model, boardWrapper).show();
+
     this.elements.prepend(this.main);
-
-    this.renderCardList('Header block');
-  }
-
-  renderCardList(headerElement: HTMLElement | string) {
-    const cardList = new CardListView(null, this.main, headerElement);
-    cardList.show();
   }
 }
