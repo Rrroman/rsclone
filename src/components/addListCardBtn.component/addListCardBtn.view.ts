@@ -1,6 +1,6 @@
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
-import './addListCardBtn.css';
+import styles from './addListCardBtn.module.css';
 import CardListView from '../card.list.component/card.list.view';
 
 export default class AddListCardBtnView extends EventEmitter {
@@ -38,27 +38,30 @@ export default class AddListCardBtnView extends EventEmitter {
       this.addBtnContainer.classList.add('hidden');
     }
     this.wrapper = create('div', {
-      className: 'card-list_wrapper add-list-btn_wrapper',
+      className: `${styles['card-list_wrapper']} ${styles['add-list-btn_wrapper']}`,
       child: null,
     });
 
     this.form = create('form', {
-      className: 'form',
+      className: styles.form,
       child: null,
       parent: this.wrapper,
     });
 
     this.link = create('a', {
-      className: 'open-add-list',
+      className: styles['open-add-list'],
       child: null,
       parent: this.form,
     });
 
     create('span', {
-      className: 'span-placeholder',
+      className: styles['span-placeholder'],
       child: [
-        create('span', { className: 'plus', child: '+' }),
-        create('span', { className: 'span-text', child: 'Add another list' }),
+        create('span', { className: styles.plus, child: '+' }),
+        create('span', {
+          className: styles['span-text'],
+          child: 'Add another list',
+        }),
       ],
       parent: this.link,
     });
@@ -70,7 +73,7 @@ export default class AddListCardBtnView extends EventEmitter {
 
   renderAddCardInputForm() {
     this.input = create('input', {
-      className: 'input-new-card hidden',
+      className: `${styles['input-new-card']} ${styles.hidden}`,
       child: null,
       parent: this.form,
       dataAttr: [
@@ -83,13 +86,13 @@ export default class AddListCardBtnView extends EventEmitter {
     });
 
     this.addBtnContainer = create('div', {
-      className: 'hidden',
+      className: styles.hidden,
       child: null,
       parent: this.form,
     });
 
     const addListBtn = create('input', {
-      className: 'add-button',
+      className: styles['add-button'],
       child: null,
       parent: this.addBtnContainer,
       dataAttr: [
@@ -99,7 +102,7 @@ export default class AddListCardBtnView extends EventEmitter {
     });
 
     const closeBtn = create('div', {
-      className: 'close-input',
+      className: styles['close-input'],
       child: '&times;',
       parent: this.addBtnContainer,
     });

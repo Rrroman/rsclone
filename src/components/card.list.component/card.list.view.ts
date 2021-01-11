@@ -1,4 +1,4 @@
-import './card.list.css';
+import styles from './card.list.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
@@ -22,18 +22,18 @@ export default class CardListView extends EventEmitter {
   createCardList() {
     const cardListHeader = this.createHeader();
     const cardListBody = create('div', {
-      className: 'card-list__body',
+      className: styles['card-list__body'],
     });
 
     const cardListBottom = this.createAddBottomBtn();
 
     const cardContent = create('div', {
-      className: 'card-content',
+      className: styles['card-content'],
       child: [cardListHeader, cardListBody, cardListBottom],
     });
 
     const cardList = create('div', {
-      className: 'card-list',
+      className: styles['card-list'],
       child: cardContent,
     });
 
@@ -42,7 +42,7 @@ export default class CardListView extends EventEmitter {
 
   createHeader() {
     const headerText = create('textarea', {
-      className: 'card-name',
+      className: styles['card-name'],
       child: this.listHeader,
       parent: null,
       dataAttr: [
@@ -53,7 +53,7 @@ export default class CardListView extends EventEmitter {
 
     const menuBtn = CardListView.renderCardListMenuBtn();
     const cardListHeader = create('div', {
-      className: 'card-header',
+      className: styles['card-header'],
       child: [headerText, menuBtn],
     });
 
@@ -63,23 +63,21 @@ export default class CardListView extends EventEmitter {
 
   static renderCardListMenuBtn() {
     return create('div', {
-      className: 'card-list__menu-btn',
+      className: styles['card-list__menu-btn'],
       child: '...',
     });
   }
 
   createAddBottomBtn() {
     const addBtnIcon = create('span', {
-      className: 'add-btn__icon',
       child: ' + ',
     });
     const addBtnTextField = create('span', {
-      className: 'add-btn__text-field',
       child: 'add one more card',
     });
 
     const addBtn = create('a', {
-      className: 'card-list__add-btn',
+      className: styles['card-list__add-btn'],
       child: [addBtnIcon, addBtnTextField],
       parent: this.cardListBottom,
     });
@@ -87,7 +85,7 @@ export default class CardListView extends EventEmitter {
     const bottomSettingsBtn = this.createSettingsBottomBtn();
 
     const cardListBottom = create('div', {
-      className: 'card-list__bottom',
+      className: styles['card-list__bottom'],
       child: [addBtn, bottomSettingsBtn],
     });
 
@@ -96,7 +94,6 @@ export default class CardListView extends EventEmitter {
 
   createSettingsBottomBtn() {
     const settingsBtn = create('div', {
-      className: 'card-list__settings-btn',
       child: ' ■ ',
       parent: this.cardListBottom,
     });

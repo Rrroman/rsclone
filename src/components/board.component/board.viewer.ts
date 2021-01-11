@@ -1,6 +1,6 @@
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
-import './board.css';
+import styles from './board.module.css';
 import AddListCardBtnView from '../addListCardBtn.component/addListCardBtn.view';
 import AddListCardBtnController from '../addListCardBtn.component/addListCardBtn.controller';
 import AddListCardBtnModel from '../addListCardBtn.component/addListCardBtn.model';
@@ -22,7 +22,7 @@ export default class Board extends EventEmitter {
 
   renderBoard() {
     this.board = create('div', {
-      className: 'board',
+      className: styles.board,
       child: null,
       parent: this.boardWrapper,
     });

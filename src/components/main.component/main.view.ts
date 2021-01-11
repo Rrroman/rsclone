@@ -1,4 +1,4 @@
-import './main.css';
+import styles from './main.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
@@ -18,18 +18,18 @@ export default class MainView extends EventEmitter {
 
   createMain() {
     this.main = create('main', {
-      className: 'main',
+      className: styles.main,
       child: null,
     });
 
     const mainInner = create('div', {
-      className: 'main-inner',
+      className: styles['main-inner'],
       child: null,
       parent: this.main,
     });
 
     const boardContainer = create('div', {
-      className: 'board-main-content',
+      className: styles['board-main-content'],
       child: null,
       parent: mainInner,
     });
@@ -38,7 +38,7 @@ export default class MainView extends EventEmitter {
     new BoardHeaderView(this.model, boardContainer).show();
 
     const boardWrapper = create('div', {
-      className: 'board-wrapper',
+      className: styles['board-wrapper'],
       child: null,
       parent: boardContainer,
     });

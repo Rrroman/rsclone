@@ -1,6 +1,6 @@
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
-import './boardHeader.css';
+import styles from './boardHeader.module.css';
 
 export default class BoardHeaderView extends EventEmitter {
   boardContainer: HTMLElement;
@@ -16,7 +16,7 @@ export default class BoardHeaderView extends EventEmitter {
 
   renderBoardHeader() {
     create('div', {
-      className: 'board-header',
+      className: styles['board-header'],
       child: null,
       parent: this.boardContainer,
     });

@@ -22,7 +22,15 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader'],
+      },
+      {
+        test: /\.module\.css$/,
+        use: ['css-modules-typescript-loader'],
+      },
+      {
+        test: /\.css$/,
+        use: ['css-loader'],
       },
       {
         test: /\.(png|jpg|jpeg|svg|gif)$/,
