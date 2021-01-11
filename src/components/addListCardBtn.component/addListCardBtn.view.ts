@@ -2,6 +2,7 @@ import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import './addListCardBtn.css';
 import CardListView from '../card.list.component/card.list.view';
+import CardListController from '../card.list.component/card.list.controller';
 
 export default class AddListCardBtnView extends EventEmitter {
   wrapper: HTMLElement | null;
@@ -103,10 +104,15 @@ export default class AddListCardBtnView extends EventEmitter {
       child: '&times;',
       parent: this.addBtnContainer,
     });
-    this.input.addEventListener('input', (e) => this.emit('inputListName', e));
+
+    this.input.addEventListener('input', (event) =>
+      this.emit('inputListName', event)
+    );
+
     closeBtn.addEventListener('click', () => this.emit('closeBtnClick'));
-    addListBtn.addEventListener('click', (e) =>
-      this.emit('addListBtnCLick', e)
+
+    addListBtn.addEventListener('click', (event) =>
+      this.emit('addListBtnCLick', event)
     );
     return this.wrapper;
   }
@@ -135,10 +141,14 @@ export default class AddListCardBtnView extends EventEmitter {
       this.board,
       this.model.inputNeListName
     );
+
     newList.show();
     this.model.changeNewListName('');
     if (this.input) {
       (this.input as HTMLInputElement).value = '';
     }
+
+    // eslint-disable-next-line no-new
+    new CardListController(this.model, newList);
   }
 }
