@@ -1,0 +1,121 @@
+.header__wrapper {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  min-height: 40px;
+  max-height: 40px;
+  overflow: hidden;
+  background-color: #026aa7;
+  padding: 4px;
+}
+
+.header__left_column {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.header__right_column {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button__burger,
+.button__home,
+.button__boards,
+.button__search {
+  border-radius: 3px;
+  border: 0;
+  text-decoration: none;
+  align-items: center;
+  background-color: hsla(0, 0%, 100%, 0.3);
+  box-shadow: none;
+  color: #fff;
+  display: flex;
+  font-weight: 700;
+  height: 32px;
+  line-height: 32px;
+  margin: 0 4px 0 0;
+  padding: 0;
+  white-space: nowrap;
+
+  height: 32px;
+  width: 32px;
+}
+
+.header__title {
+  display: block;
+  position: relative;
+  flex-shrink: 0;
+  height: 30px;
+  margin-top: 1px;
+}
+
+.header__loading_logo {
+  /* background-image: url(/src/assets/img/header-loading-logo.d73159084f5122775d4d.gif); */
+  background-size: 18px 18px;
+  display: inline-block;
+  opacity: 0;
+  height: 18px;
+  right: 59px;
+  position: absolute;
+  top: 6px;
+  width: 18px;
+}
+
+.header__img {
+  /* background-image: url(/src/assets/img/header-logo-2x.01ef898811a879595cea.png); */
+  background-position: 100% 0;
+  background-repeat: no-repeat;
+  background-size: 80px 30px;
+  cursor: pointer;
+  display: inline-block;
+  height: 30px;
+  width: 80px;
+}
+
+.button__create,
+.button__notifications {
+  border-radius: 3px;
+  border: 0;
+  text-decoration: none;
+  align-items: center;
+  background-color: hsla(0, 0%, 100%, 0.3);
+  box-shadow: none;
+  color: #fff;
+  display: flex;
+  font-weight: 700;
+  height: 32px;
+  line-height: 32px;
+  margin: 0 4px 0 0;
+  padding: 0;
+  white-space: nowrap;
+
+  height: 32px;
+  width: 32px;
+}
+
+.button__profile {
+  align-items: center;
+  background-color: #0354ca;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: 0;
+  border-radius: 100%;
+  box-sizing: border-box;
+  color: #ffffff;
+  display: inline-flex;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans,
+    Ubuntu, Droid Sans, Helvetica Neue, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 28px;
+  margin: 0 4px 0 0;
+  padding: 0;
+  opacity: 1;
+  height: 28px;
+  width: 28px;
+  overflow: hidden;
+  white-space: nowrap;
+}
