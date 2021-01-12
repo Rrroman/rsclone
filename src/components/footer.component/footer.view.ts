@@ -39,7 +39,7 @@ export default class FooterView extends EventEmitter {
       child: null,
       parent: rsLogo,
       dataAttr: [
-        ['src', './assets/img/rs_school_js.svg'],
+        ['src', '../../assets/img/logo-rs.svg'],
         ['alt', 'RS School logo'],
       ],
     });

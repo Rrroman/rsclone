@@ -38,15 +38,36 @@ export default class HeaderView extends EventEmitter {
       child: null,
       parent: headerLeftColumn,
     });
-    create('button', {
+    const buttonHome = create('button', {
       className: 'button__home',
       child: null,
       parent: headerLeftColumn,
     });
-    create('button', {
+
+    create('img', {
+      className: 'button__home_icon',
+      child: null,
+      parent: buttonHome,
+      dataAttr: [['src', '../../assets/img/homeicon2.svg']],
+    });
+
+    const buttonBoard = create('button', {
       className: 'button__boards',
       child: null,
       parent: headerLeftColumn,
+    });
+
+    create('img', {
+      className: 'button__boards_icon',
+      child: null,
+      parent: buttonBoard,
+      dataAttr: [['src', '../../assets/img/trello.svg']],
+    });
+
+    create('span', {
+      className: 'button__boards_text',
+      child: 'Boards',
+      parent: buttonBoard,
     });
     create('button', {
       className: 'button__search',
@@ -60,11 +81,6 @@ export default class HeaderView extends EventEmitter {
       parent: headerWrapper,
     });
 
-    create('h1', {
-      className: 'header__title',
-      child: 'Trello',
-      parent: headerLogo,
-    });
     create('span', {
       className: 'header__loading_logo',
       child: null,
@@ -72,7 +88,7 @@ export default class HeaderView extends EventEmitter {
     });
     create('span', {
       className: 'header__img',
-      child: 'Trello',
+      child: null,
       parent: headerLogo,
     });
 
