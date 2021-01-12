@@ -14,7 +14,7 @@ export default function create(
     dataAttr,
   }: {
     className?: string;
-    child?: HTMLElement | string | null;
+    child?: HTMLElement | string | null | HTMLElement[];
     parent?: HTMLElement | null;
     dataAttr?: string[][];
   }
@@ -51,9 +51,15 @@ export default function create(
       if (attrValue === '' && element) {
         element.setAttribute(attrValue, '');
       } else if (
-        attrName.match(
-          /value|id|placeholder|cols|rows|autocorrect|spellcheck|for|type|style|src|alt|href|target|size|key/
-        ) &&
+        (attrName.match(
+          /value|id|placeholder|cols|rows|autocorrect|spellcheck|for|type/
+        ) ||
+          attrName.match(
+            /style|src|alt|href|target|size|key|autocomplete|maxlength|name/
+          ) ||
+          attrName.match(
+            /accept|align|checked|defaultChecked|defaultValue|dirName|disabled|files/
+          )) &&
         element
       ) {
         element.setAttribute(attrName, attrValue);

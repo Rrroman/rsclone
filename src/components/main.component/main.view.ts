@@ -1,7 +1,9 @@
-import './main.css';
+import styles from './main.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
+import BoardHeaderView from '../boardHeader.component/boardHeader.view';
+import Board from '../board.component/board.viewer';
 
 export default class MainView extends EventEmitter {
   main!: HTMLElement;
@@ -16,15 +18,32 @@ export default class MainView extends EventEmitter {
 
   createMain() {
     this.main = create('main', {
-      className: 'main',
+      className: styles.main,
       child: null,
     });
 
-    create('h1', {
-      className: 'main_title',
-      child: 'Main Container',
+    const mainInner = create('div', {
+      className: styles['main-inner'],
+      child: null,
       parent: this.main,
     });
+
+    const boardContainer = create('div', {
+      className: styles['board-main-content'],
+      child: null,
+      parent: mainInner,
+    });
+
+    // eslint-disable-next-line no-new
+    new BoardHeaderView(this.model, boardContainer).show();
+
+    const boardWrapper = create('div', {
+      className: styles['board-wrapper'],
+      child: null,
+      parent: boardContainer,
+    });
+
+    new Board(this.model, boardWrapper).show();
 
     this.elements.prepend(this.main);
   }
