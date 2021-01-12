@@ -1,4 +1,4 @@
-import './components/app.component/style.css';
+import './global.css';
 import App from './components/app.component/app.view';
 
 require.context('./assets/img', true, /\.(png|svg|jpg|gif)$/);

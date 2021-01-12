@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: 'Roboto';
-  src: url('../../assets/fonts/Roboto-Regular.ttf') format('truetype');
+  src: url('./assets/fonts/Roboto-Regular.ttf') format('truetype');
   /* src: url('./../assets/fonts/Roboto-Regular.ttf') format('truetype'); */
 }
 
@@ -12,9 +12,7 @@ html {
   background-color: rgb(43, 45, 46);
   color: #ffffff;
 }
-body {
-  height: 98vh;
-}
+
 *,
 *::before,
 *::after {
@@ -26,13 +24,4 @@ ol {
   padding: 0;
   list-style: none;
   margin: 0;
-}
-
-.greet {
-  color: burlywood;
-  background-image: url(../../assets/img/rs_school_js.svg);
-  background-repeat: no-repeat;
-  background-position: left center;
-  font-size: 72px;
-  text-align: center;
 }
