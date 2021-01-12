@@ -1,0 +1,8 @@
+.greet {
+  color: burlywood;
+  background-image: url(../../assets/img/rs_school_js.svg);
+  background-repeat: no-repeat;
+  background-position: left center;
+  font-size: 72px;
+  text-align: center;
+}
