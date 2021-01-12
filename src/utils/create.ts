@@ -52,13 +52,10 @@ export default function create(
         element.setAttribute(attrValue, '');
       } else if (
         (attrName.match(
-          /value|id|placeholder|cols|rows|autocorrect|spellcheck|for|type/
+          /value|id|placeholder|cols|rows|autocorrect|spellcheck|for|type|draggable/
         ) ||
           attrName.match(
             /style|src|alt|href|target|size|key|autocomplete|maxlength|name/
-          ) ||
-          attrName.match(
-            /accept|align|checked|defaultChecked|defaultValue|dirName|disabled|files/
           )) &&
         element
       ) {

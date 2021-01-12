@@ -6,17 +6,13 @@ import create from '../../utils/create';
 export default class CardListView extends EventEmitter {
   cardListBottom: HTMLElement | null;
 
-  constructor(
-    public model: unknown,
-    public elements: any,
-    public listHeader: string
-  ) {
+  constructor(public boardModel: any, public board: any) {
     super();
     this.cardListBottom = null;
   }
 
   show() {
-    this.createCardList();
+    return this.createCardList();
   }
 
   createCardList() {
@@ -30,6 +26,8 @@ export default class CardListView extends EventEmitter {
     const cardContent = create('div', {
       className: 'card-content',
       child: [cardListHeader, cardListBody, cardListBottom],
+      parent: null,
+      dataAttr: [['draggable', 'true']],
     });
 
     const cardList = create('div', {
@@ -37,17 +35,19 @@ export default class CardListView extends EventEmitter {
       child: cardContent,
     });
 
-    this.elements.prepend(cardList);
+    this.board.prepend(cardList);
+    return cardContent;
   }
 
   createHeader() {
     const headerText = create('textarea', {
       className: 'card-name',
-      child: this.listHeader,
+      child: this.boardModel.getNewListName(),
       parent: null,
       dataAttr: [
         ['maxlength', '512'],
         ['spellcheck', 'false'],
+        ['draggable', 'false'],
       ],
     });
 
@@ -101,5 +101,17 @@ export default class CardListView extends EventEmitter {
       parent: this.cardListBottom,
     });
     return settingsBtn;
+  }
+
+  dragStartElementChange() {
+    if (this.boardModel.draggableList) {
+      this.boardModel.draggableList.firstChild.classList.add('black-back');
+    }
+  }
+
+  dragEndElementChange() {
+    if (this.boardModel.draggableList) {
+      this.boardModel.draggableList.firstChild.classList.remove('black-back');
+    }
   }
 }
