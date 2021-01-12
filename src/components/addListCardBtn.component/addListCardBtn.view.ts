@@ -2,6 +2,7 @@ import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import styles from './addListCardBtn.module.css';
 import CardListView from '../card.list.component/card.list.view';
+import CardListController from '../card.list.component/card.list.controller';
 
 export default class AddListCardBtnView extends EventEmitter {
   wrapper: HTMLElement | null;
@@ -14,16 +15,16 @@ export default class AddListCardBtnView extends EventEmitter {
 
   addBtnContainer: HTMLElement | null;
 
-  board: HTMLElement;
+  newList: HTMLElement | null;
 
-  constructor(public model: any, public elements: any) {
+  constructor(public boardModel: any, public board: HTMLElement) {
     super();
     this.wrapper = null;
     this.form = null;
     this.link = null;
     this.input = null;
     this.addBtnContainer = null;
-    this.board = elements;
+    this.newList = null;
   }
 
   show() {
@@ -106,42 +107,61 @@ export default class AddListCardBtnView extends EventEmitter {
       child: '&times;',
       parent: this.addBtnContainer,
     });
-    this.input.addEventListener('input', (e) => this.emit('inputListName', e));
+
+    this.input.addEventListener('input', (event) =>
+      this.emit('inputListName', event)
+    );
+
     closeBtn.addEventListener('click', () => this.emit('closeBtnClick'));
-    addListBtn.addEventListener('click', (e) =>
-      this.emit('addListBtnCLick', e)
+
+    addListBtn.addEventListener('click', (event) =>
+      this.emit('addListBtnCLick', event)
     );
     return this.wrapper;
   }
 
   showInputForm() {
     if (this.link && this.addBtnContainer && this.input) {
-      this.link.classList.add('hidden');
-      this.addBtnContainer.classList.remove('hidden');
-      this.addBtnContainer.classList.add('addBtn-container');
-      this.input.classList.remove('hidden');
+      this.link.classList.add(styles.hidden);
+      this.addBtnContainer.classList.remove(styles.hidden);
+      this.addBtnContainer.classList.add(styles['addBtn-container']);
+      this.input.classList.remove(styles.hidden);
+      this.input.focus();
     }
   }
 
   closeInputForm() {
     if (this.link && this.addBtnContainer && this.input) {
-      this.link.classList.remove('hidden');
-      this.addBtnContainer.classList.add('hidden');
-      this.addBtnContainer.classList.remove('addBtn-container');
-      this.input.classList.add('hidden');
+      this.link.classList.remove(styles.hidden);
+      this.addBtnContainer.classList.add(styles.hidden);
+      this.addBtnContainer.classList.remove(styles['addBtn-container']);
+      this.input.classList.add(styles.hidden);
     }
   }
 
   renderNewList() {
-    const newList = new CardListView(
-      this.model,
-      this.board,
-      this.model.inputNeListName
-    );
-    newList.show();
-    this.model.changeNewListName('');
+    if (!this.boardModel.inputNeListName) {
+      return;
+    }
+    const list = new CardListView(this.boardModel, this.board);
+    this.newList = list.show();
+
+    this.boardModel.listArr.push(this.newList);
+    this.boardModel.changeNewListName('');
     if (this.input) {
       (this.input as HTMLInputElement).value = '';
     }
+
+    // eslint-disable-next-line no-new
+    new CardListController(this.boardModel, list);
+    this.newList.addEventListener('dragstart', (event: Event) => {
+      list.emit('dragstart', event.target);
+    });
+    this.newList.addEventListener('dragend', () => {
+      list.emit('dragend');
+    });
+    this.board.addEventListener('dragover', () => {
+      list.emit('dragover');
+    });
   }
 }

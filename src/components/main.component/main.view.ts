@@ -4,11 +4,12 @@ import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import BoardHeaderView from '../boardHeader.component/boardHeader.view';
 import Board from '../board.component/board.viewer';
+import BoardController from '../board.component/board.controller';
 
 export default class MainView extends EventEmitter {
   main!: HTMLElement;
 
-  constructor(public model: unknown, public elements: any) {
+  constructor(public model: any, public elements: any) {
     super();
   }
 
@@ -34,7 +35,6 @@ export default class MainView extends EventEmitter {
       parent: mainInner,
     });
 
-    // eslint-disable-next-line no-new
     new BoardHeaderView(this.model, boardContainer).show();
 
     const boardWrapper = create('div', {
@@ -43,7 +43,11 @@ export default class MainView extends EventEmitter {
       parent: boardContainer,
     });
 
-    new Board(this.model, boardWrapper).show();
+    const boardView = new Board(this.model, boardWrapper);
+    boardView.show();
+
+    // eslint-disable-next-line no-new
+    new BoardController(this.model, boardView);
 
     this.elements.prepend(this.main);
   }

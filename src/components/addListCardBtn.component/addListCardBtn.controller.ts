@@ -1,7 +1,7 @@
 export default class AddListCardBtnController {
   addListCardBtn: any;
 
-  constructor(public model: { [key: string]: any }, public viewer: any) {
+  constructor(public boardModel: { [key: string]: any }, public viewer: any) {
     this.addListCardBtn = viewer;
     this.addListCardBtn
       .on({
@@ -14,15 +14,17 @@ export default class AddListCardBtnController {
       })
       .on({
         event: 'addListBtnCLick',
-        listener: (e: Event) => this.addNewCard(e),
+        listener: (event: Event) => this.addNewCard(event),
       })
       .on({
         event: 'inputListName',
-        listener: (e: { [key: string]: string }) => this.inputNewListName(e),
+        listener: (event: { [key: string]: string }) =>
+          this.inputNewListName(event),
       });
   }
 
   addListPlusHandler() {
+    console.log('click');
     this.addListCardBtn.showInputForm();
   }
 
@@ -30,12 +32,13 @@ export default class AddListCardBtnController {
     this.addListCardBtn.closeInputForm();
   }
 
-  addNewCard(e: Event) {
-    e.preventDefault();
+  addNewCard(event: Event) {
+    event.preventDefault();
     this.addListCardBtn.renderNewList();
+    this.addListCardBtn.closeInputForm();
   }
 
-  inputNewListName(e: { [key: string]: any }) {
-    this.model.changeNewListName(e.target.value);
+  inputNewListName(event: { [key: string]: any }) {
+    this.boardModel.changeNewListName(event.target.value);
   }
 }
