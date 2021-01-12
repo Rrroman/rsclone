@@ -1,9 +1,17 @@
 export default class CardListController {
-  cardListView: any;
+  cardList: any;
 
-  constructor(public model: { [key: string]: any } | null, public viewer: any) {
-    this.cardListView = viewer;
-    this.cardListView
+  constructor(public boardModel: { [key: string]: any }, public viewer: any) {
+    this.cardList = viewer;
+    this.cardList
+      .on({
+        event: 'dragstart',
+        listener: (card: HTMLElement) => this.dragStartFunc(card),
+      })
+      .on({
+        event: 'dragend',
+        listener: () => this.dragEndFunc(),
+      })
       .on({
         event: 'addOneMoreCard',
         listener: () => this.addCardHandler(),
@@ -23,21 +31,31 @@ export default class CardListController {
       });
   }
 
+  dragStartFunc(card: HTMLElement) {
+    this.boardModel.setDraggableList(card.parentNode);
+    this.cardList.dragStartElementChange();
+  }
+
+  dragEndFunc() {
+    this.cardList.dragEndElementChange();
+  }
+  
+
   addCardHandler() {
-    this.cardListView.showAddCardBlock();
+    this.cardList.showAddCardBlock();
   }
 
   closeAddCardHandler() {
-    this.cardListView.closeAddCardBlock();
+    this.cardList.closeAddCardBlock();
   }
 
   typingInTextareaHandler(event: { [key: string]: any }) {
-    if (this.model) {
-      this.model.getCardName(event.target.value);
+    if (this.boardModel) {
+      this.boardModel.getCardName(event.target.value);
     }
   }
 
   renderCardHandler() {
-    this.cardListView.renderCard();
+    this.cardList.renderCard();
   }
 }

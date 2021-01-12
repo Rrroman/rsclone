@@ -15,16 +15,16 @@ export default class AddListCardBtnView extends EventEmitter {
 
   addBtnContainer: HTMLElement | null;
 
-  board: HTMLElement;
+  newList: HTMLElement | null;
 
-  constructor(public model: any, public elements: any) {
+  constructor(public boardModel: any, public board: HTMLElement) {
     super();
     this.wrapper = null;
     this.form = null;
     this.link = null;
     this.input = null;
     this.addBtnContainer = null;
-    this.board = elements;
+    this.newList = null;
   }
 
   show() {
@@ -49,7 +49,7 @@ export default class AddListCardBtnView extends EventEmitter {
       parent: this.wrapper,
     });
 
-    this.link = create('a', {
+    this.link = create('div', {
       className: 'open-add-list',
       child: null,
       parent: this.form,
@@ -123,6 +123,7 @@ export default class AddListCardBtnView extends EventEmitter {
       this.addBtnContainer.classList.remove('hidden');
       this.addBtnContainer.classList.add('addBtn-container');
       this.input.classList.remove('hidden');
+      this.input.focus();
     }
   }
 
@@ -136,19 +137,28 @@ export default class AddListCardBtnView extends EventEmitter {
   }
 
   renderNewList() {
-    const newList = new CardListView(
-      this.model,
-      this.board,
-      this.model.inputNeListName
-    );
+    if (!this.boardModel.inputNeListName) {
+      return;
+    }
+    const list = new CardListView(this.boardModel, this.board);
+    this.newList = list.show();
 
-    newList.show();
-    this.model.changeNewListName('');
+    this.boardModel.listArr.push(this.newList);
+    this.boardModel.changeNewListName('');
     if (this.input) {
       (this.input as HTMLInputElement).value = '';
     }
 
     // eslint-disable-next-line no-new
-    new CardListController(this.model, newList);
+    new CardListController(this.boardModel, list);
+    this.newList.addEventListener('dragstart', (event: Event) => {
+      list.emit('dragstart', event.target);
+    });
+    this.newList.addEventListener('dragend', () => {
+      list.emit('dragend');
+    });
+    this.board.addEventListener('dragover', () => {
+      list.emit('dragover');
+    });
   }
 }

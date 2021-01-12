@@ -105,6 +105,7 @@
   transition-property: background-color, border-color, box-shadow;
   transition-duration: 85ms;
   transition-timing-function: ease;
+  cursor: pointer;
 }
 
 .card-name:focus {
@@ -122,6 +123,23 @@
   max-height: 100%;
   position: relative;
   white-space: normal;
+}
+
+.black-back {
+  opacity: 0.02;
+}
+
+.rotate {
+  animation: rotating 0.5s linear 1 forwards;
+}
+
+@keyframes rotating {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(20deg);
+  }
 }
 
 .card-list__settings-btn {

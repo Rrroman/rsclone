@@ -16,8 +16,8 @@ export default class CardListView extends EventEmitter {
   cardListBody: HTMLElement | null;
 
   constructor(
-    public model: any,
-    public elements: any,
+    public boardModel: any,
+    public board: any,
     public listHeader?: string
   ) {
     super();
@@ -29,7 +29,7 @@ export default class CardListView extends EventEmitter {
   }
 
   show() {
-    this.createCardList();
+    return this.createCardList();
   }
 
   createCardList() {
@@ -43,6 +43,8 @@ export default class CardListView extends EventEmitter {
     const cardContent = create('div', {
       className: 'card-content',
       child: [cardListHeader, this.cardListBody, cardListBottom],
+      parent: null,
+      dataAttr: [['draggable', 'true']],
     });
 
     const cardList = create('div', {
@@ -50,17 +52,19 @@ export default class CardListView extends EventEmitter {
       child: cardContent,
     });
 
-    this.elements.prepend(cardList);
+    this.board.prepend(cardList);
+    return cardContent;
   }
 
   createListHeader() {
     const headerText = create('textarea', {
       className: 'card-name',
-      child: this.listHeader,
+      child: this.boardModel.getNewListName(),
       parent: null,
       dataAttr: [
         ['maxlength', '512'],
         ['spellcheck', 'false'],
+        ['draggable', 'false'],
       ],
     });
 
@@ -179,6 +183,18 @@ export default class CardListView extends EventEmitter {
     return settingsBtn;
   }
 
+  dragStartElementChange() {
+    if (this.boardModel.draggableList) {
+      this.boardModel.draggableList.firstChild.classList.add('black-back');
+    }
+  }
+
+  dragEndElementChange() {
+    if (this.boardModel.draggableList) {
+      this.boardModel.draggableList.firstChild.classList.remove('black-back');
+    }
+  }
+
   showAddCardBlock() {
     if (this.addCardBlock && this.addBtn && this.bottomSettingsBtn) {
       this.addCardBlock.classList.remove('hidden');
@@ -196,7 +212,7 @@ export default class CardListView extends EventEmitter {
   }
 
   renderCard() {
-    const card = new CardView(this.model, this.cardListBody);
+    const card = new CardView(this.boardModel, this.cardListBody);
 
     card.show();
   }
