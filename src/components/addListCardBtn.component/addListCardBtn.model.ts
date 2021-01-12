@@ -17,8 +17,4 @@ export default class AddListCardBtnModel extends EventEmitter {
   changeNewListName(newName: string) {
     this.inputNeListName = newName;
   }
-
-  getCardName(cardNameText: string) {
-    this.cardName = cardNameText;
-  }
 }

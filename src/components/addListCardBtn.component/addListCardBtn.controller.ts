@@ -18,7 +18,8 @@ export default class AddListCardBtnController {
       })
       .on({
         event: 'inputListName',
-        listener: (event: { [key: string]: string }) => this.inputNewListName(event),
+        listener: (event: { [key: string]: string }) =>
+          this.inputNewListName(event),
       });
   }
 
@@ -35,7 +36,6 @@ export default class AddListCardBtnController {
     this.addListCardBtn.renderNewList();
     this.addListCardBtn.closeInputForm();
   }
-
 
   inputNewListName(event: { [key: string]: any }) {
     this.boardModel.changeNewListName(event.target.value);

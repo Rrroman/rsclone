@@ -38,6 +38,10 @@ export default class CardListView extends EventEmitter {
       className: 'card-list__body',
     });
 
+    this.cardListBody.addEventListener('click', () =>
+      this.emit('openCardPopup')
+    );
+
     const cardListBottom = this.createAddBottomBtn();
 
     const cardContent = create('div', {
