@@ -30,7 +30,12 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['css-loader'],
+        loader: 'css-loader',
+        options: {
+          modules: {
+            localIdentName: '[local]--[hash:base64:5]',
+          },
+        },
       },
       {
         test: /\.(png|jpg|jpeg|svg|gif)$/,

@@ -58,7 +58,7 @@ export default class CardListView extends EventEmitter {
 
   createListHeader() {
     const headerText = create('textarea', {
-      className: styles['add-card-block__textarea'],
+      className: styles['card-name'],
       child: this.boardModel.getNewListName(),
       parent: null,
       dataAttr: [
