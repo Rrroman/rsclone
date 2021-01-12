@@ -58,7 +58,7 @@ export default function create(
             /style|src|alt|href|target|size|key|autocomplete|maxlength|name/
           ) ||
           attrName.match(
-            /accept|align|checked|defaultChecked|defaultValue|dirName|disabled|files/
+            /accept|align|checked|defaultChecked|defaultValue|dir|dirName|disabled|files/
           )) &&
         element
       ) {
