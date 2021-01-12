@@ -49,8 +49,13 @@ export default class AddListCardBtnView extends EventEmitter {
       parent: this.wrapper,
     });
 
+<<<<<<< HEAD
     this.link = create('a', {
       className: styles['open-add-list'],
+=======
+    this.link = create('div', {
+      className: 'open-add-list',
+>>>>>>> 1f9e81a6505de088951d59ab02c9876b6317f38b
       child: null,
       parent: this.form,
     });
@@ -122,10 +127,17 @@ export default class AddListCardBtnView extends EventEmitter {
 
   showInputForm() {
     if (this.link && this.addBtnContainer && this.input) {
+<<<<<<< HEAD
       this.link.classList.add(styles.hidden);
       this.addBtnContainer.classList.remove(styles.hidden);
       this.addBtnContainer.classList.add(styles['addBtn-container']);
       this.input.classList.remove(styles.hidden);
+=======
+      this.link.classList.add('hidden');
+      this.addBtnContainer.classList.remove('hidden');
+      this.addBtnContainer.classList.add('addBtn-container');
+      this.input.classList.remove('hidden');
+>>>>>>> 1f9e81a6505de088951d59ab02c9876b6317f38b
       this.input.focus();
     }
   }

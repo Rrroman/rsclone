@@ -90,7 +90,6 @@ export default class CardListView extends EventEmitter {
       child: ' + ',
     });
     const addBtnTextField = create('span', {
-      // className: styles['add-card-block__add-card-btn'],
       child: 'Add one more card',
     });
 
