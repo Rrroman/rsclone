@@ -56,6 +56,9 @@ export default function create(
         ) ||
           attrName.match(
             /style|src|alt|href|target|size|key|autocomplete|maxlength|name/
+          ) ||
+          attrName.match(
+            /accept|align|checked|defaultChecked|defaultValue|dir|dirName|disabled|files/
           )) &&
         element
       ) {

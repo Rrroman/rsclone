@@ -104,11 +104,15 @@ export default class AddListCardBtnView extends EventEmitter {
       child: '&times;',
       parent: this.addBtnContainer,
     });
-    this.input.addEventListener('input', (e) => this.emit('inputListName', e));
+
+    this.input.addEventListener('input', (event) =>
+      this.emit('inputListName', event)
+    );
 
     closeBtn.addEventListener('click', () => this.emit('closeBtnClick'));
-    addListBtn.addEventListener('click', (e) =>
-      this.emit('addListBtnCLick', e)
+
+    addListBtn.addEventListener('click', (event) =>
+      this.emit('addListBtnCLick', event)
     );
     return this.wrapper;
   }
@@ -147,8 +151,8 @@ export default class AddListCardBtnView extends EventEmitter {
 
     // eslint-disable-next-line no-new
     new CardListController(this.boardModel, list);
-    this.newList.addEventListener('dragstart', (e: Event) => {
-      list.emit('dragstart', e.target);
+    this.newList.addEventListener('dragstart', (event: Event) => {
+      list.emit('dragstart', event.target);
     });
     this.newList.addEventListener('dragend', () => {
       list.emit('dragend');

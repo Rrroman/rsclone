@@ -7,11 +7,14 @@ export default class BoardModel extends EventEmitter {
 
   listArr: HTMLElement[];
 
+  cardName: string | null;
+
   constructor() {
     super();
     this.inputNeListName = null;
     this.draggableList = null;
     this.listArr = [];
+    this.cardName = null;
   }
 
   changeNewListName(newName: string) {
@@ -28,5 +31,9 @@ export default class BoardModel extends EventEmitter {
 
   getDraggableList() {
     return this.draggableList;
+  }
+
+  getCardName(cardNameText: string) {
+    this.cardName = cardNameText;
   }
 }

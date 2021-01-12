@@ -22,11 +22,13 @@
 
 .card-list__bottom {
   display: flex;
+  flex-wrap: wrap;
+  padding: 5px;
   max-height: 100%;
+
   white-space: normal;
   align-items: baseline;
   color: #172b4d;
-  padding: 5px;
 }
 
 .card-list__header {
@@ -53,13 +55,14 @@
 }
 
 .card-list__add-btn {
-  border-radius: 3px;
-  color: #5e6c84;
-  display: block;
   flex: 1 0 auto;
   position: relative;
+  padding: 4px 8px;
+
   text-decoration: none;
   user-select: none;
+  color: #5e6c84;
+  border-radius: 3px;
 }
 
 .card-list__add-btn:hover {
@@ -80,9 +83,7 @@
 }
 
 .card-list__menu-btn {
-  border-radius: 3px;
   color: #6b778c;
-  padding: 6px;
   font-size: 16px;
   line-height: 20px;
   width: 20px;
@@ -139,4 +140,65 @@
   100% {
     transform: rotate(20deg);
   }
+}
+
+.card-list__settings-btn {
+  padding: 5px;
+}
+
+.card-list__bottom {
+  width: 100%;
+}
+
+.card-list__add-card-block {
+  width: 100%;
+}
+
+.add-card-block__textarea {
+  overflow: hidden;
+  overflow-wrap: break-word;
+  resize: none;
+  height: 54px;
+  width: 100%;
+}
+
+.add-card-block__buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  height: 32px;
+  transition: margin 85ms ease-in, height 85ms ease-in;
+  margin: 4px 0 0;
+}
+
+.add-card-block__add-card-btn {
+  padding: 6px 12px;
+
+  background-color: #5aac44;
+  box-shadow: none;
+  border: none;
+  color: #fff;
+}
+
+.add-card-block__add-card-btn:hover {
+  cursor: pointer;
+}
+
+.add-card-block__controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-card-block__menu {
+  color: #6b778c;
+  font-size: 16px;
+  line-height: 20px;
+  width: 20px;
+}
+
+.add-card-block__close-btn {
+  text-decoration: none;
 }

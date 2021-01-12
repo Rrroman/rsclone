@@ -14,11 +14,11 @@ export default class AddListCardBtnController {
       })
       .on({
         event: 'addListBtnCLick',
-        listener: (e: Event) => this.addNewCard(e),
+        listener: (event: Event) => this.addNewCard(event),
       })
       .on({
         event: 'inputListName',
-        listener: (e: { [key: string]: string }) => this.inputNewListName(e),
+        listener: (event: { [key: string]: string }) => this.inputNewListName(event),
       });
   }
 
@@ -30,13 +30,14 @@ export default class AddListCardBtnController {
     this.addListCardBtn.closeInputForm();
   }
 
-  addNewCard(e: Event) {
-    e.preventDefault();
+  addNewCard(event: Event) {
+    event.preventDefault();
     this.addListCardBtn.renderNewList();
     this.addListCardBtn.closeInputForm();
   }
 
-  inputNewListName(e: { [key: string]: any }) {
-    this.boardModel.changeNewListName(e.target.value);
+
+  inputNewListName(event: { [key: string]: any }) {
+    this.boardModel.changeNewListName(event.target.value);
   }
 }

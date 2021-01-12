@@ -11,6 +11,23 @@ export default class CardListController {
       .on({
         event: 'dragend',
         listener: () => this.dragEndFunc(),
+      })
+      .on({
+        event: 'addOneMoreCard',
+        listener: () => this.addCardHandler(),
+      })
+      .on({
+        event: 'closeAddCardBlock',
+        listener: () => this.closeAddCardHandler(),
+      })
+      .on({
+        event: 'typingInTextarea',
+        listener: (event: { [key: string]: any }) =>
+          this.typingInTextareaHandler(event),
+      })
+      .on({
+        event: 'addCard',
+        listener: () => this.renderCardHandler(),
       });
   }
 
@@ -21,5 +38,24 @@ export default class CardListController {
 
   dragEndFunc() {
     this.cardList.dragEndElementChange();
+  }
+  
+
+  addCardHandler() {
+    this.cardList.showAddCardBlock();
+  }
+
+  closeAddCardHandler() {
+    this.cardList.closeAddCardBlock();
+  }
+
+  typingInTextareaHandler(event: { [key: string]: any }) {
+    if (this.boardModel) {
+      this.boardModel.getCardName(event.target.value);
+    }
+  }
+
+  renderCardHandler() {
+    this.cardList.renderCard();
   }
 }
