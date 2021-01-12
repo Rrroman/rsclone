@@ -1,4 +1,4 @@
-import './card.css';
+import styles from './card.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
@@ -18,7 +18,7 @@ export default class CardView extends EventEmitter {
 
   createCard() {
     create('div', {
-      className: 'card',
+      className: styles.card,
       child: this.model.cardName,
       parent: this.elements,
     });
