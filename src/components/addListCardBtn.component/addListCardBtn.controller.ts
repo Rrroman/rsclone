@@ -24,7 +24,6 @@ export default class AddListCardBtnController {
   }
 
   addListPlusHandler() {
-    console.log('click');
     this.addListCardBtn.showInputForm();
   }
 
