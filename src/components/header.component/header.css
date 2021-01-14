@@ -12,19 +12,25 @@
 .header__left_column {
   display: flex;
   justify-content: flex-start;
-  color: #ffffff;
+  width: 33%;
 }
 
-.button__home_icon,
-.button__board_icon {
+.menu__icon,
+.home__icon,
+.trello__icon,
+.search__icon,
+.create__icon,
+.notification__icon {
   display: inline-block;
   fill: currentColor;
   flex-shrink: 0;
   line-height: 1;
 }
+
 .header__right_column {
   display: flex;
   justify-content: flex-end;
+  width: 33%;
 }
 .button__burger,
 .button__home,
@@ -52,6 +58,22 @@
   width: 90px;
   justify-content: space-evenly;
 }
+.button__search {
+  width: 182px;
+  justify-content: flex-end;
+}
+
+.button__burger:hover,
+.button__home:hover,
+.button__boards:hover,
+.button__search:hover,
+.button__create:hover,
+.button__notifications:hover,
+.button__profile:hover {
+  background-color: hsla(0, 0%, 100%, 0.2);
+  cursor: pointer;
+}
+
 .header__title {
   display: block;
   position: relative;
@@ -90,6 +112,7 @@
   box-shadow: none;
   color: #fff;
   display: flex;
+  justify-content: center;
   font-weight: 700;
   height: 32px;
   line-height: 32px;

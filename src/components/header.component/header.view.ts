@@ -2,6 +2,15 @@ import './header.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
+import createIcon from '../../utils/createIcon';
+import {
+  menuIcon,
+  homeIcon,
+  trelloIcon,
+  searchIcon,
+  plusIcon,
+  notificationIcon,
+} from '../../utils/icons';
 
 export default class HeaderView extends EventEmitter {
   header: HTMLElement | null;
@@ -33,35 +42,25 @@ export default class HeaderView extends EventEmitter {
       parent: headerWrapper,
     });
 
+    const iconMenu = createIcon('menu__icon', menuIcon);
     create('button', {
       className: 'button__burger',
-      child: null,
+      child: iconMenu,
       parent: headerLeftColumn,
     });
-    const buttonHome = create('button', {
+
+    const iconHome = createIcon('home__icon', homeIcon);
+    create('button', {
       className: 'button__home',
-      child: null,
+      child: iconHome,
       parent: headerLeftColumn,
     });
 
-    create('img', {
-      className: 'button__home_icon',
-      child: null,
-      parent: buttonHome,
-      dataAttr: [['src', '../../assets/img/homeicon2.svg']],
-    });
-
+    const iconTrello = createIcon('trello__icon', trelloIcon);
     const buttonBoard = create('button', {
       className: 'button__boards',
-      child: null,
+      child: iconTrello,
       parent: headerLeftColumn,
-    });
-
-    create('img', {
-      className: 'button__boards_icon',
-      child: null,
-      parent: buttonBoard,
-      dataAttr: [['src', '../../assets/img/trello.svg']],
     });
 
     create('span', {
@@ -69,9 +68,11 @@ export default class HeaderView extends EventEmitter {
       child: 'Boards',
       parent: buttonBoard,
     });
+
+    const iconSearch = createIcon('search__icon', searchIcon);
     create('button', {
       className: 'button__search',
-      child: null,
+      child: iconSearch,
       parent: headerLeftColumn,
     });
 
@@ -98,15 +99,17 @@ export default class HeaderView extends EventEmitter {
       parent: headerWrapper,
     });
 
+    const iconCreate = createIcon('create__icon', plusIcon);
     create('button', {
       className: 'button__create',
-      child: null,
+      child: iconCreate,
       parent: headerRightColumn,
     });
 
+    const iconNotification = createIcon('notification__icon', notificationIcon);
     create('button', {
       className: 'button__notifications',
-      child: null,
+      child: iconNotification,
       parent: headerRightColumn,
     });
 
