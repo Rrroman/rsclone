@@ -5,12 +5,12 @@ export default class BoardController {
   ) {
     this.boardViewer.on({
       event: 'dragover',
-      listener: (e: Event) => this.dragOverFunc(e),
+      listener: (event: Event) => this.dragOverFunc(event),
     });
   }
 
-  dragOverFunc(e: Event) {
-    e.preventDefault();
-    this.boardViewer.appendDraggableList(e);
+  dragOverFunc(event: Event) {
+    event.preventDefault();
+    this.boardViewer.appendDraggableList(event);
   }
 }
