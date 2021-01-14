@@ -13,6 +13,10 @@ export default class CardListController {
         listener: () => this.dragEndFunc(),
       })
       .on({
+        event: 'cardDragover',
+        listener: (event: Event) => this.dragOverInEmptyList(event),
+      })
+      .on({
         event: 'addOneMoreCard',
         listener: () => this.addCardHandler(),
       })
@@ -38,8 +42,13 @@ export default class CardListController {
 
   dragEndFunc() {
     this.cardList.dragEndElementChange();
+    this.boardModel.setDraggableList(null);
   }
-  
+
+  dragOverInEmptyList(event: Event) {
+    event.preventDefault();
+    this.cardList.appendCardInEmptyList(event);
+  }
 
   addCardHandler() {
     this.cardList.showAddCardBlock();

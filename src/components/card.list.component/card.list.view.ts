@@ -3,6 +3,7 @@ import styles from './card.list.module.css';
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import CardView from '../card.component/card.view';
+import CardController from '../card.component/cardController';
 
 export default class CardListView extends EventEmitter {
   cardListBottom: HTMLElement | null;
@@ -15,6 +16,8 @@ export default class CardListView extends EventEmitter {
 
   cardListBody: HTMLElement | null;
 
+  cardList: HTMLElement | null;
+
   constructor(
     public boardModel: any,
     public board: any,
@@ -26,6 +29,7 @@ export default class CardListView extends EventEmitter {
     this.addBtn = null;
     this.bottomSettingsBtn = null;
     this.cardListBody = null;
+    this.cardList = null;
   }
 
   show() {
@@ -44,15 +48,23 @@ export default class CardListView extends EventEmitter {
       className: styles['card-content'],
       child: [cardListHeader, this.cardListBody, cardListBottom],
       parent: null,
-      dataAttr: [['draggable', 'true']],
+      dataAttr: [
+        ['draggable', 'true'],
+        ['list', 'true'],
+      ],
     });
 
-    const cardList = create('div', {
+    this.cardList = create('div', {
       className: styles['card-list'],
       child: cardContent,
     });
+    this.board.insertBefore(this.cardList, this.board.lastChild);
+    if (this.cardListBody) {
+      this.cardList.addEventListener('dragover', (event: Event) => {
+        this.emit('cardDragover', event);
+      });
+    }
 
-    this.board.prepend(cardList);
     return cardContent;
   }
 
@@ -215,6 +227,73 @@ export default class CardListView extends EventEmitter {
   renderCard() {
     const card = new CardView(this.boardModel, this.cardListBody);
 
-    card.show();
+    const newCard = card.show();
+
+    // eslint-disable-next-line no-new
+    new CardController(this.boardModel, card);
+    newCard.addEventListener('dragstart', (event: Event) => {
+      event.stopPropagation();
+      card.emit('cardDragstart', event.target);
+    });
+    newCard.addEventListener('dragend', (event: Event) => {
+      event.stopPropagation();
+      card.emit('cardDragend');
+    });
+  }
+
+  appendCardInEmptyList(event: MouseEvent) {
+    if (
+      this.cardListBody &&
+      this.boardModel.getDraggableCard() &&
+      this.cardListBody.childNodes.length === 0
+    ) {
+      this.cardListBody.append(this.boardModel.getDraggableCard());
+    } else {
+      this.dragOverAppendCard(event);
+    }
+  }
+
+  dragOverAppendCard(event: MouseEvent) {
+    if (this.cardListBody && this.boardModel.getDraggableCard()) {
+      const closestCard:
+        | {
+            element: null | ChildNode;
+          }
+        | undefined = this.getDragAfterElement(event.clientY);
+      if (closestCard) {
+        this.cardListBody.insertBefore(
+          this.boardModel.getDraggableCard(),
+          closestCard.element
+        );
+      }
+    }
+  }
+
+  getDragAfterElement(coordinateY: number) {
+    if (!this.cardListBody) return;
+    const cardArr = [...this.cardListBody.childNodes];
+
+    const closestCard: {
+      element: null | ChildNode;
+    } = {
+      element: null,
+    };
+    cardArr.reduce(
+      (closest: { [key: string]: number }, child: ChildNode) => {
+        const box = (child as Element).getBoundingClientRect();
+        const offset = coordinateY - (box.top + box.height / 2);
+
+        if (offset < 0 && offset > closest.offset) {
+          closestCard.element = child;
+          return { offset };
+        }
+
+        return closest;
+      },
+      { offset: Number.NEGATIVE_INFINITY }
+    );
+
+    // eslint-disable-next-line consistent-return
+    return closestCard;
   }
 }

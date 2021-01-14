@@ -32,21 +32,24 @@ export default class Board extends EventEmitter {
     this.boardModel = new BoardModel();
     const addNewListBtn = new AddListCardBtnView(this.boardModel, this.board);
     const addBtnElement = addNewListBtn.show();
-    this.board.append(addBtnElement);
+    if (addBtnElement) {
+      this.board.append(addBtnElement);
+    }
+
     // eslint-disable-next-line no-new
     new AddListCardBtnController(this.boardModel, addNewListBtn);
 
-    this.board.addEventListener('dragover', (e: Event) =>
-      this.emit('dragover', e)
+    this.board.addEventListener('dragover', (event: Event) =>
+      this.emit('dragover', event)
     );
   }
 
-  appendDraggableList(e: MouseEvent) {
-    if (this.board) {
+  appendDraggableList(event: MouseEvent) {
+    if (this.board && this.boardModel.getDraggableList()) {
       const closestList:
         | HTMLElement
         | null
-        | undefined = this.getDragAfterElement(e.clientX);
+        | undefined = this.getDragAfterElement(event.clientX);
       if (closestList) {
         this.board.insertBefore(
           this.boardModel.getDraggableList(),
@@ -60,19 +63,20 @@ export default class Board extends EventEmitter {
     if (!this.board) return;
     const listArr = [...this.board.childNodes];
     let closestList: ChildNode | null = null;
-    listArr.reduce(
-      (closest: { [key: string]: number }, child: ChildNode) => {
-        const box = (child as Element).getBoundingClientRect();
-        const offset = coordinateX - (box.left + box.width / 2);
+    listArr.filter((child: ChildNode, index: number) => {
+      const box = (child as Element).getBoundingClientRect();
+      const middle = box.left + box.width / 2;
 
-        if (offset < 0 && offset > closest.offset) {
-          closestList = child;
-          return { offset };
-        }
-        return closest;
-      },
-      { offset: Number.NEGATIVE_INFINITY }
-    );
+      if (coordinateX > box.left && coordinateX < middle) {
+        closestList = listArr[index + 1];
+        return listArr[index + 1];
+      }
+      if (coordinateX > middle && coordinateX < box.right) {
+        closestList = child;
+        return child;
+      }
+      return false;
+    });
 
     // eslint-disable-next-line consistent-return
     return closestList;
