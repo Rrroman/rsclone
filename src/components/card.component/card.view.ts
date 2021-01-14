@@ -25,10 +25,11 @@ export default class CardView extends EventEmitter {
   }
 
   openOverlay(event: Event) {
-    // this.boardModel.overlayElement.style.display = 'block';
     this.boardModel.overlayElement.classList.add(styles.show);
     console.log(event.target);
 
+    this.boardModel.overlayElement.firstChild.classList.add(styles.show);
+    // console.log(this.boardModel.overlayElement.firstChild);
     return this;
   }
 }

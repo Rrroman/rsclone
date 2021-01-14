@@ -20,24 +20,14 @@ export default class OverlayView extends EventEmitter {
   createOverlay() {
     const popupView = new PopupView(null, this.appBody);
 
+    const popup = popupView.createPopup();
+
     this.overlay = create('div', {
       className: styles.overlay,
-      child: popupView.createPopup(),
+      child: popup,
       parent: this.appBody,
     });
 
     return this.overlay;
   }
-
-  // openOverlay() {
-  //   if (this.overlay) {
-  //     this.overlay.classList.add(styles.show);
-  //   }
-  // }
-
-  // closeOverlay() {
-  //   if (this.overlay) {
-  //     this.overlay.classList.add(styles.hidden);
-  //   }
-  // }
 }

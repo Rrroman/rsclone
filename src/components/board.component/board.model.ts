@@ -11,6 +11,7 @@ export default class BoardModel extends EventEmitter {
 
   overlayElement: HTMLElement | null;
 
+
   constructor() {
     super();
     this.inputNeListName = null;
