@@ -3,6 +3,7 @@ import create from '../../utils/create';
 import styles from './addListCardBtn.module.css';
 import CardListView from '../card.list.component/card.list.view';
 import CardListController from '../card.list.component/card.list.controller';
+import { addBtn, closeBtn } from '../user.kit.component/user.kit.components';
 
 export default class AddListCardBtnView extends EventEmitter {
   wrapper: HTMLElement | null;
@@ -83,33 +84,20 @@ export default class AddListCardBtnView extends EventEmitter {
       ],
     });
 
+    const addListBtn = addBtn('Add List');
+    const closeListBtn = closeBtn();
+
     this.addBtnContainer = create('div', {
       className: styles.hidden,
-      child: null,
+      child: [addListBtn, closeListBtn],
       parent: this.form,
-    });
-
-    const addListBtn = create('input', {
-      className: styles['add-button'],
-      child: null,
-      parent: this.addBtnContainer,
-      dataAttr: [
-        ['type', 'submit'],
-        ['value', 'Add List'],
-      ],
-    });
-
-    const closeBtn = create('div', {
-      className: styles['close-input'],
-      child: '&times;',
-      parent: this.addBtnContainer,
     });
 
     this.input.addEventListener('input', (event) =>
       this.emit('inputListName', event)
     );
 
-    closeBtn.addEventListener('click', () => this.emit('closeBtnClick'));
+    closeListBtn.addEventListener('click', () => this.emit('closeBtnClick'));
 
     addListBtn.addEventListener('click', (event) =>
       this.emit('addListBtnCLick', event)
