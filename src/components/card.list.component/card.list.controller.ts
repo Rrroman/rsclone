@@ -28,10 +28,6 @@ export default class CardListController {
       .on({
         event: 'addCard',
         listener: () => this.renderCardHandler(),
-      })
-      .on({
-        event: 'openCardPopup',
-        listener: () => this.openCardPopupHandler(),
       });
   }
 
@@ -60,9 +56,5 @@ export default class CardListController {
 
   renderCardHandler() {
     this.cardList.renderCard();
-  }
-
-  openCardPopupHandler() {
-    console.log(this.cardList, 'popup will pop Up');
   }
 }

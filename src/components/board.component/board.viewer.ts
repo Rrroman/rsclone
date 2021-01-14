@@ -12,7 +12,7 @@ export default class Board extends EventEmitter {
 
   boardModel: any;
 
-  constructor(public model: unknown, public elements: HTMLElement) {
+  constructor(public model: any, public elements: HTMLElement) {
     super();
     this.boardWrapper = elements;
     this.board = null;
@@ -34,7 +34,7 @@ export default class Board extends EventEmitter {
     const addBtnElement = addNewListBtn.show();
     this.board.append(addBtnElement);
     // eslint-disable-next-line no-new
-    new AddListCardBtnController(this.boardModel, addNewListBtn);
+    new AddListCardBtnController(this.boardModel, this.model, addNewListBtn);
 
     this.board.addEventListener('dragover', (e: Event) =>
       this.emit('dragover', e)

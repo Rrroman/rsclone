@@ -15,6 +15,7 @@ export default class MainView extends EventEmitter {
 
   show() {
     this.createMain();
+    return this.main;
   }
 
   createMain() {

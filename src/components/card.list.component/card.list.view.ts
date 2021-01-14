@@ -3,6 +3,7 @@ import styles from './card.list.module.css';
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import CardView from '../card.component/card.view';
+import CardController from '../card.component/card.controller';
 
 export default class CardListView extends EventEmitter {
   cardListBottom: HTMLElement | null;
@@ -37,10 +38,6 @@ export default class CardListView extends EventEmitter {
     this.cardListBody = create('div', {
       className: styles['card-list__body'],
     });
-
-    this.cardListBody.addEventListener('click', () =>
-      this.emit('openCardPopup')
-    );
 
     const cardListBottom = this.createAddBottomBtn();
 
@@ -219,6 +216,13 @@ export default class CardListView extends EventEmitter {
   renderCard() {
     const card = new CardView(this.boardModel, this.cardListBody);
 
-    card.show();
+    const newCard = card.show();
+
+    // eslint-disable-next-line no-new
+    new CardController(this.boardModel, card);
+
+    newCard.addEventListener('click', (event: Event) =>
+      card.emit('cardClick', event)
+    );
   }
 }

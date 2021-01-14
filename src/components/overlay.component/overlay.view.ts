@@ -1,30 +1,43 @@
-import './overlay.css';
+import styles from './overlay.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
+import PopupView from '../popup.component/popup.view';
 
 export default class OverlayView extends EventEmitter {
-  constructor(public model: any, public appBody: HTMLElement) {
+  overlay: HTMLElement | null;
+
+  constructor(public overlayModel: any, public appBody: HTMLElement) {
     super();
+    this.overlay = null;
   }
 
   show() {
     this.createOverlay();
+    return this.overlay;
   }
 
   createOverlay() {
-    const overlay = create('div', {
-      className: 'overlay',
+    const popupView = new PopupView(null, this.appBody);
+
+    this.overlay = create('div', {
+      className: styles.overlay,
+      child: popupView.createPopup(),
       parent: this.appBody,
     });
 
-    const popup = create('div', {
-      className: 'popup',
-      parent: overlay,
-    });
-    create('div', {
-      className: 'popup__inner',
-      parent: popup,
-    });
+    return this.overlay;
   }
+
+  // openOverlay() {
+  //   if (this.overlay) {
+  //     this.overlay.classList.add(styles.show);
+  //   }
+  // }
+
+  // closeOverlay() {
+  //   if (this.overlay) {
+  //     this.overlay.classList.add(styles.hidden);
+  //   }
+  // }
 }

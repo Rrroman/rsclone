@@ -5,22 +5,30 @@ import create from '../../utils/create';
 
 export default class CardView extends EventEmitter {
   constructor(
-    public model: any,
-    public elements: any,
+    public boardModel: any,
+    public cardListBody: any,
     public cardHeader?: string
   ) {
     super();
   }
 
   show() {
-    this.createCard();
+    return this.createCard();
   }
 
   createCard() {
-    create('div', {
+    return create('div', {
       className: styles.card,
-      child: this.model.cardName,
-      parent: this.elements,
+      child: this.boardModel.cardName,
+      parent: this.cardListBody,
     });
+  }
+
+  openOverlay(event: Event) {
+    // this.boardModel.overlayElement.style.display = 'block';
+    this.boardModel.overlayElement.classList.add(styles.show);
+    console.log(event.target);
+
+    return this;
   }
 }

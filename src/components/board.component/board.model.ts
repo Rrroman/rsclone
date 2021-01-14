@@ -9,12 +9,15 @@ export default class BoardModel extends EventEmitter {
 
   cardName: string | null;
 
+  overlayElement: HTMLElement | null;
+
   constructor() {
     super();
     this.inputNeListName = null;
     this.draggableList = null;
     this.listArr = [];
     this.cardName = null;
+    this.overlayElement = null;
   }
 
   changeNewListName(newName: string) {
