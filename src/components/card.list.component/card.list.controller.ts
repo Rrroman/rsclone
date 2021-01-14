@@ -14,7 +14,7 @@ export default class CardListController {
       })
       .on({
         event: 'cardDragover',
-        listener: (event: Event) => this.dragOverFunc(event),
+        listener: (event: Event) => this.dragOverInEmptyList(event),
       })
       .on({
         event: 'addOneMoreCard',
@@ -45,9 +45,9 @@ export default class CardListController {
     this.boardModel.setDraggableList(null);
   }
 
-  dragOverFunc(event: Event) {
+  dragOverInEmptyList(event: Event) {
     event.preventDefault();
-    this.cardList.dragOverAppendCard(event);
+    this.cardList.appendCardInEmptyList(event);
   }
 
   addCardHandler() {

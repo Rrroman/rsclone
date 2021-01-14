@@ -16,6 +16,8 @@ export default class CardListView extends EventEmitter {
 
   cardListBody: HTMLElement | null;
 
+  cardList: HTMLElement | null;
+
   constructor(
     public boardModel: any,
     public board: any,
@@ -27,6 +29,7 @@ export default class CardListView extends EventEmitter {
     this.addBtn = null;
     this.bottomSettingsBtn = null;
     this.cardListBody = null;
+    this.cardList = null;
   }
 
   show() {
@@ -51,11 +54,17 @@ export default class CardListView extends EventEmitter {
       ],
     });
 
-    const cardList = create('div', {
+    this.cardList = create('div', {
       className: styles['card-list'],
       child: cardContent,
     });
-    this.board.insertBefore(cardList, this.board.lastChild);
+    this.board.insertBefore(this.cardList, this.board.lastChild);
+    if (this.cardListBody) {
+      this.cardList.addEventListener('dragover', (event: Event) => {
+        this.emit('cardDragover', event);
+      });
+    }
+
     return cardContent;
   }
 
@@ -230,11 +239,17 @@ export default class CardListView extends EventEmitter {
       event.stopPropagation();
       card.emit('cardDragend');
     });
-    if (this.cardListBody) {
-      this.cardListBody.addEventListener('dragover', (event: Event) => {
-        event.stopPropagation();
-        this.emit('cardDragover', event);
-      });
+  }
+
+  appendCardInEmptyList(event: MouseEvent) {
+    if (
+      this.cardListBody &&
+      this.boardModel.getDraggableCard() &&
+      this.cardListBody.childNodes.length === 0
+    ) {
+      this.cardListBody.append(this.boardModel.getDraggableCard());
+    } else {
+      this.dragOverAppendCard(event);
     }
   }
 
