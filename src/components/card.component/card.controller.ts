@@ -1,9 +1,22 @@
 export default class CardController {
-  card: any;
+  cardViewer: any;
 
   constructor(public boardModel: { [key: string]: any }, public viewer: any) {
-    this.card = viewer;
-    this.card
+    this.cardViewer = viewer;
+    this.cardViewer
+      .on({
+        event: 'cardClick',
+        listener: (event: Event) => this.openOverlay(event),
+      })
+      .on({
+        event: 'addPopupNameToCard',
+        listener: (event: { [key: string]: string }) =>
+          this.addPopupNameToCard(event),
+      })
+      .on({
+        event: 'addCardNameToPopup',
+        listener: (event: Event) => this.addCardNameToPopup(event),
+      })
       .on({
         event: 'cardDragstart',
         listener: (card: HTMLElement) => this.dragStartFunc(card),
@@ -11,16 +24,37 @@ export default class CardController {
       .on({
         event: 'cardDragend',
         listener: () => this.dragEndFunc(),
+      })
+      .on({
+        event: 'editPopupDescription',
+        listener: () => this.editPopupDescription(),
       });
+  }
+
+  editPopupDescription() {
+    console.log('Edit Descriptiong ...', this);
+  }
+
+  addPopupNameToCard(event: { [key: string]: any }) {
+    this.boardModel.setPopupCardName(event.target.value);
+    this.cardViewer.addPopupNameToCard();
+  }
+
+  addCardNameToPopup(event: Event) {
+    this.cardViewer.addCardNameToPopup(event);
+  }
+
+  openOverlay(event: Event) {
+    this.cardViewer.openOverlay(event);
   }
 
   dragStartFunc(card: HTMLElement) {
     this.boardModel.setDraggableCard(card);
-    this.card.dragStartElementChange();
+    this.cardViewer.dragStartElementChange();
   }
 
   dragEndFunc() {
-    this.card.dragEndElementChange();
+    this.cardViewer.dragEndElementChange();
     this.boardModel.setDraggableCard(null);
   }
 }
