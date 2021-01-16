@@ -56,7 +56,6 @@ export default class CardView extends EventEmitter {
 
     const popupBody = this.boardModel.overlayElement.firstChild;
 
-    // this.listName = this.card!.parentElement?.parentElement?.firstChild?.textContent!;
     this.listName = target.closest('[data-list-name]').dataset.listName;
 
     this.popupTitle = create('textarea', {
