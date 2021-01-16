@@ -3,14 +3,39 @@ export default class BoardController {
     public boardModel: { [key: string]: any },
     public boardViewer: any
   ) {
-    this.boardViewer.on({
-      event: 'dragover',
-      listener: (event: Event) => this.dragOverFunc(event),
-    });
+    this.boardViewer
+      .on({
+        event: 'dragover',
+        listener: (event: Event) => this.dragListOver(event),
+      })
+      .on({
+        event: 'boardMousedown',
+        listener: (event: Event) => this.boardDragStart(event),
+      })
+      .on({
+        event: 'boardMouseup',
+        listener: () => this.boardDragStop(),
+      })
+      .on({
+        event: 'boardMousemove',
+        listener: (event: Event) => this.boardDragMove(event),
+      });
   }
 
-  dragOverFunc(event: Event) {
+  dragListOver(event: Event) {
     event.preventDefault();
     this.boardViewer.appendDraggableList(event);
+  }
+
+  boardDragStart(event: Event) {
+    this.boardViewer.boardDragStart(event);
+  }
+
+  boardDragStop() {
+    this.boardViewer.boardDragStop();
+  }
+
+  boardDragMove(event: Event) {
+    this.boardViewer.boardDragMove(event);
   }
 }

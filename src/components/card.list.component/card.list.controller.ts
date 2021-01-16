@@ -32,6 +32,10 @@ export default class CardListController {
       .on({
         event: 'addCard',
         listener: () => this.renderCardHandler(),
+      })
+      .on({
+        event: 'openmenu',
+        listener: (event: Event) => this.openListMenu(event),
       });
   }
 
@@ -66,5 +70,9 @@ export default class CardListController {
 
   renderCardHandler() {
     this.cardList.renderCard();
+  }
+
+  openListMenu(event: Event) {
+    this.cardList.openListMenu(event);
   }
 }

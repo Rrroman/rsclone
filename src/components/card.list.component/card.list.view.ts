@@ -3,7 +3,9 @@ import styles from './card.list.module.css';
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import CardView from '../card.component/card.view';
-import CardController from '../card.component/cardController';
+import CardController from '../card.component/card.controller';
+import ListMenu from '../listMenu.component/listMenu.view';
+import ListMenuController from '../listMenu.component/listMenu.controller';
 
 export default class CardListView extends EventEmitter {
   cardListBottom: HTMLElement | null;
@@ -57,7 +59,10 @@ export default class CardListView extends EventEmitter {
     this.cardList = create('div', {
       className: styles['card-list'],
       child: cardContent,
+      parent: null,
+      dataAttr: [['listWrapper', 'true']],
     });
+
     this.board.insertBefore(this.cardList, this.board.lastChild);
     if (this.cardListBody) {
       this.cardList.addEventListener('dragover', (event: Event) => {
@@ -84,6 +89,12 @@ export default class CardListView extends EventEmitter {
     const cardListHeader = create('div', {
       className: styles['card-header'],
       child: [headerText, menuBtn],
+    });
+
+    menuBtn.addEventListener('click', (event: Event) => {
+      event.stopPropagation();
+
+      this.emit('openmenu', event);
     });
 
     cardListHeader.append(menuBtn);
@@ -239,6 +250,22 @@ export default class CardListView extends EventEmitter {
       event.stopPropagation();
       card.emit('cardDragend');
     });
+  }
+
+  openListMenu(event: MouseEvent) {
+    const currentList = (event.target as HTMLElement).closest(
+      '[data-list-wrapper]'
+    );
+    // eslint-disable-next-line no-new
+    const listMenu = new ListMenu(
+      this.boardModel,
+      this.board,
+      currentList as HTMLElement
+    );
+    listMenu.show();
+
+    // eslint-disable-next-line no-new
+    new ListMenuController(this.boardModel, listMenu);
   }
 
   appendCardInEmptyList(event: MouseEvent) {
