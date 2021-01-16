@@ -3,7 +3,6 @@
 @font-face {
   font-family: 'Roboto';
   src: url('./assets/fonts/Roboto-Regular.ttf') format('truetype');
-  /* src: url('./../assets/fonts/Roboto-Regular.ttf') format('truetype'); */
 }
 
 html {
@@ -24,4 +23,12 @@ ol {
   padding: 0;
   list-style: none;
   margin: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+.show {
+  display: block;
 }

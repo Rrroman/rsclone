@@ -9,12 +9,18 @@ export default class BoardModel extends EventEmitter {
 
   cardName: string | null;
 
+  overlayElement: HTMLElement | null;
+
+  popupCardName: string | null;
+
   constructor() {
     super();
     this.inputNeListName = null;
     this.draggableList = null;
     this.draggableCard = null;
     this.cardName = null;
+    this.overlayElement = null;
+    this.popupCardName = null;
   }
 
   changeNewListName(newName: string) {
@@ -43,5 +49,13 @@ export default class BoardModel extends EventEmitter {
 
   getCardName(cardNameText: string) {
     this.cardName = cardNameText;
+  }
+
+  setPopupCardName(name: string) {
+    this.popupCardName = name;
+  }
+
+  getPopupCardName() {
+    return this.popupCardName;
   }
 }

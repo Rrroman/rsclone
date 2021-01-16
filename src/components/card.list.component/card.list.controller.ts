@@ -25,14 +25,22 @@ export default class CardListController {
         listener: () => this.closeAddCardHandler(),
       })
       .on({
-        event: 'typingInTextarea',
+        event: 'addCardName',
         listener: (event: { [key: string]: any }) =>
-          this.typingInTextareaHandler(event),
+          this.addCardNameHandler(event),
       })
       .on({
         event: 'addCard',
         listener: () => this.renderCardHandler(),
+      })
+      .on({
+        event: 'clearTextarea',
+        listener: () => this.clearTextarea(),
       });
+  }
+
+  clearTextarea() {
+    this.cardList.clearTextarea();
   }
 
   dragStartFunc(card: HTMLElement) {
@@ -58,7 +66,7 @@ export default class CardListController {
     this.cardList.closeAddCardBlock();
   }
 
-  typingInTextareaHandler(event: { [key: string]: any }) {
+  addCardNameHandler(event: { [key: string]: any }) {
     if (this.boardModel) {
       this.boardModel.getCardName(event.target.value);
     }
