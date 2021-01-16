@@ -164,7 +164,6 @@
   resize: none;
   height: 54px;
   width: 100%;
-  -webkit-user-drag: none;
 }
 
 .add-card-block__buttons {

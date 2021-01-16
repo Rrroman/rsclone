@@ -131,6 +131,8 @@ export default class AddListCardBtnView extends EventEmitter {
     const list = new CardListView(this.boardModel, this.board);
     this.newList = list.show();
 
+    this.boardModel.listViewer = list;
+
     this.boardModel.changeNewListName('');
     if (this.input) {
       (this.input as HTMLInputElement).value = '';

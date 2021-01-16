@@ -12,10 +12,22 @@ export default class Board extends EventEmitter {
 
   boardModel: any;
 
+  dragSpeed: number;
+
+  isDraggable: boolean;
+
+  coorX: number;
+
+  left: number;
+
   constructor(public model: any, public elements: HTMLElement) {
     super();
     this.boardWrapper = elements;
     this.board = null;
+    this.dragSpeed = 2;
+    this.isDraggable = false;
+    this.coorX = 0;
+    this.left = 0;
   }
 
   show() {
@@ -42,6 +54,40 @@ export default class Board extends EventEmitter {
     this.board.addEventListener('dragover', (event: Event) =>
       this.emit('dragover', event)
     );
+    this.board.addEventListener('mousedown', (event) =>
+      this.emit('boardMousedown', event)
+    );
+    this.board.addEventListener('mouseup', () => this.emit('boardMouseup'));
+    this.board.addEventListener('mousemove', (event) =>
+      this.emit('boardMousemove', event)
+    );
+  }
+
+  boardDragStart(event: MouseEvent) {
+    if (
+      this.board &&
+      event.target &&
+      (event.target === this.board ||
+        (event.target as HTMLElement).dataset.listWrapper)
+    ) {
+      this.isDraggable = true;
+      this.coorX = event.pageX - this.board.offsetLeft;
+    }
+  }
+
+  boardDragMove(event: MouseEvent) {
+    if (this.isDraggable && this.board) {
+      this.board.scrollLeft =
+        this.left +
+        (event.pageX - this.board.offsetLeft - this.coorX) * this.dragSpeed;
+    }
+  }
+
+  boardDragStop() {
+    if (this.board) {
+      this.isDraggable = false;
+      this.left = this.board.scrollLeft;
+    }
   }
 
   appendDraggableList(event: MouseEvent) {

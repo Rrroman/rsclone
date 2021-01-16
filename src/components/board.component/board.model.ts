@@ -9,6 +9,8 @@ export default class BoardModel extends EventEmitter {
 
   cardName: string | null;
 
+  listViewer: any | null;
+
   overlayElement: HTMLElement | null;
 
   popupCardName: string | null;
@@ -19,6 +21,7 @@ export default class BoardModel extends EventEmitter {
     this.draggableList = null;
     this.draggableCard = null;
     this.cardName = null;
+    this.listViewer = null;
     this.overlayElement = null;
     this.popupCardName = null;
   }

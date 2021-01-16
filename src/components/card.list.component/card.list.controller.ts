@@ -34,9 +34,13 @@ export default class CardListController {
         listener: () => this.renderCardHandler(),
       })
       .on({
+        event: 'openmenu',
+        listener: (event: Event) => this.openListMenu(event),
+      })
+      .on({
         event: 'clearTextarea',
         listener: () => this.clearTextarea(),
-      });
+      })
   }
 
   clearTextarea() {
@@ -74,5 +78,9 @@ export default class CardListController {
 
   renderCardHandler() {
     this.cardList.renderCard();
+  }
+
+  openListMenu(event: Event) {
+    this.cardList.openListMenu(event);
   }
 }
