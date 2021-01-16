@@ -1,5 +1,4 @@
 .overlay {
-  display: none;
   left: 0;
   top: 0;
   align-items: flex-start;
@@ -10,6 +9,7 @@
   padding: 20px;
 
   background-color: rgba(0, 0, 0, 0.64);
+  color: #172b4d;
   overflow-y: auto;
   position: fixed;
   z-index: 20;

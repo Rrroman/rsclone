@@ -1,5 +1,5 @@
 import EventEmitter from '../../utils/eventEmitter';
-// don't use now
+
 export default class AddListCardBtnModel extends EventEmitter {
   model: null | {};
 

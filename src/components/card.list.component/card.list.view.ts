@@ -16,6 +16,10 @@ export default class CardListView extends EventEmitter {
 
   cardListBody: HTMLElement | null;
 
+  cardList: HTMLElement | null;
+
+  textarea: HTMLElement | null;
+
   constructor(
     public boardModel: any,
     public board: any,
@@ -27,6 +31,8 @@ export default class CardListView extends EventEmitter {
     this.addBtn = null;
     this.bottomSettingsBtn = null;
     this.cardListBody = null;
+    this.cardList = null;
+    this.textarea = null;
   }
 
   show() {
@@ -45,15 +51,24 @@ export default class CardListView extends EventEmitter {
       className: styles['card-content'],
       child: [cardListHeader, this.cardListBody, cardListBottom],
       parent: null,
-      dataAttr: [['draggable', 'true']],
+      dataAttr: [
+        ['draggable', 'true'],
+        ['list', 'true'],
+        ['data-list-name', this.boardModel.getNewListName()],
+      ],
     });
 
-    const cardList = create('div', {
+    this.cardList = create('div', {
       className: styles['card-list'],
       child: cardContent,
     });
+    this.board.insertBefore(this.cardList, this.board.lastChild);
+    if (this.cardListBody) {
+      this.cardList.addEventListener('dragover', (event: Event) => {
+        this.emit('cardDragover', event);
+      });
+    }
 
-    this.board.prepend(cardList);
     return cardContent;
   }
 
@@ -82,7 +97,6 @@ export default class CardListView extends EventEmitter {
   static renderCardListMenuBtn() {
     return create('div', {
       className: styles['card-list__menu-btn'],
-      child: '...',
     });
   }
 
@@ -114,7 +128,7 @@ export default class CardListView extends EventEmitter {
   }
 
   addNewCardBlock() {
-    const textarea = create('textarea', {
+    this.textarea = create('textarea', {
       className: styles['add-card-block__textarea'],
       child: null,
       parent: null,
@@ -124,8 +138,8 @@ export default class CardListView extends EventEmitter {
       ],
     });
 
-    textarea.addEventListener('input', (event) =>
-      this.emit('typingInTextarea', event)
+    this.textarea.addEventListener('input', (event: Event) =>
+      this.emit('addCardName', event)
     );
 
     const controlsButtons = create('div', {
@@ -148,6 +162,7 @@ export default class CardListView extends EventEmitter {
     });
 
     addCardBtn.addEventListener('click', () => this.emit('addCard'));
+    addCardBtn.addEventListener('click', () => this.emit('clearTextarea'));
 
     const closeAddCardBlock = create('a', {
       className: `${styles['add-card-block__close-btn']} ${styles['close-input']}`,
@@ -160,6 +175,10 @@ export default class CardListView extends EventEmitter {
       this.emit('closeAddCardBlock')
     );
 
+    closeAddCardBlock.addEventListener('click', () =>
+      this.emit('clearTextarea')
+    );
+
     const controls = create('div', {
       className: styles['add-card-block__controls'],
       child: [controlsButtons, controlsSettings],
@@ -167,15 +186,21 @@ export default class CardListView extends EventEmitter {
 
     const addOneMoreCardBlock = create('div', {
       className: `${styles['card-list__add-card-block']} ${styles.hidden}`,
-      child: [textarea, controls],
+      child: [this.textarea, controls],
       parent: this.cardListBottom,
     });
+
     return addOneMoreCardBlock;
+  }
+
+  clearTextarea() {
+    if (this.textarea) {
+      (this.textarea as HTMLInputElement).value = '';
+    }
   }
 
   createSettingsBottomBtn() {
     const settingsBtn = create('div', {
-      child: ' ■ ',
       parent: this.cardListBottom,
     });
     return settingsBtn;
@@ -224,5 +249,72 @@ export default class CardListView extends EventEmitter {
     newCard.addEventListener('click', (event: Event) =>
       card.emit('cardClick', event)
     );
+    newCard.addEventListener('click', (event: Event) =>
+      card.emit('addCardNameToPopup', event)
+    );
+    newCard.addEventListener('dragstart', (event: Event) => {
+      event.stopPropagation();
+      card.emit('cardDragstart', event.target);
+    });
+    newCard.addEventListener('dragend', (event: Event) => {
+      event.stopPropagation();
+      card.emit('cardDragend');
+    });
+  }
+
+  appendCardInEmptyList(event: MouseEvent) {
+    if (
+      this.cardListBody &&
+      this.boardModel.getDraggableCard() &&
+      this.cardListBody.childNodes.length === 0
+    ) {
+      this.cardListBody.append(this.boardModel.getDraggableCard());
+    } else {
+      this.dragOverAppendCard(event);
+    }
+  }
+
+  dragOverAppendCard(event: MouseEvent) {
+    if (this.cardListBody && this.boardModel.getDraggableCard()) {
+      const closestCard:
+        | {
+            element: null | ChildNode;
+          }
+        | undefined = this.getDragAfterElement(event.clientY);
+      if (closestCard) {
+        this.cardListBody.insertBefore(
+          this.boardModel.getDraggableCard(),
+          closestCard.element
+        );
+      }
+    }
+  }
+
+  getDragAfterElement(coordinateY: number) {
+    if (!this.cardListBody) return;
+    const cardArr = [...this.cardListBody.childNodes];
+
+    const closestCard: {
+      element: null | ChildNode;
+    } = {
+      element: null,
+    };
+    cardArr.reduce(
+      (closest: { [key: string]: number }, child: ChildNode) => {
+        const box = (child as Element).getBoundingClientRect();
+        const offset = coordinateY - (box.top + box.height / 2);
+
+        if (offset < 0 && offset > closest.offset) {
+          closestCard.element = child;
+          return { offset };
+        }
+
+        return closest;
+      },
+      { offset: Number.NEGATIVE_INFINITY }
+    );
+
+    // eslint-disable-next-line consistent-return
+    return closestCard;
   }
 }

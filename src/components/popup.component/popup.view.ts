@@ -18,10 +18,10 @@ export default class PopupView extends EventEmitter {
       parent: this.overlay,
     });
 
-    create('div', {
-      className: styles.popup__inner,
-      parent: popup,
-    });
+    // create('div', {
+    //   className: styles.popup__inner,
+    //   parent: popup,
+    // });
 
     return popup;
   }
