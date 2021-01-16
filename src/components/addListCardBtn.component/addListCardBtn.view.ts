@@ -1,9 +1,9 @@
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import styles from './addListCardBtn.module.css';
-import CardListView from '../card.list.component/card.list.view';
 import CardListController from '../card.list.component/card.list.controller';
 import { addBtn, closeBtn } from '../user.kit.component/user.kit.components';
+import CardListView from '../card.list.component/card.list.view';
 
 export default class AddListCardBtnView extends EventEmitter {
   wrapper: HTMLElement | null;

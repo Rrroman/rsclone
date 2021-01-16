@@ -1,7 +1,12 @@
 export default class AddListCardBtnController {
   addListCardBtn: any;
 
-  constructor(public boardModel: { [key: string]: any }, public viewer: any) {
+  constructor(
+    public boardModel: { [key: string]: any },
+    public appModel: { [key: string]: any },
+    public viewer: any
+  ) {
+    this.appModel = appModel;
     this.addListCardBtn = viewer;
     this.addListCardBtn
       .on({
@@ -35,6 +40,7 @@ export default class AddListCardBtnController {
     event.preventDefault();
     this.addListCardBtn.renderNewList();
     this.addListCardBtn.closeInputForm();
+    this.boardModel.overlayElement = this.appModel.overlayElement;
   }
 
   inputNewListName(event: { [key: string]: any }) {

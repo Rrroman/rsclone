@@ -20,6 +20,8 @@ export default class CardListView extends EventEmitter {
 
   cardList: HTMLElement | null;
 
+  textarea: HTMLElement | null;
+
   constructor(
     public boardModel: any,
     public board: any,
@@ -32,6 +34,7 @@ export default class CardListView extends EventEmitter {
     this.bottomSettingsBtn = null;
     this.cardListBody = null;
     this.cardList = null;
+    this.textarea = null;
   }
 
   show() {
@@ -53,6 +56,7 @@ export default class CardListView extends EventEmitter {
       dataAttr: [
         ['draggable', 'true'],
         ['list', 'true'],
+        ['data-list-name', this.boardModel.getNewListName()],
       ],
     });
 
@@ -104,7 +108,6 @@ export default class CardListView extends EventEmitter {
   static renderCardListMenuBtn() {
     return create('div', {
       className: styles['card-list__menu-btn'],
-      child: '...',
     });
   }
 
@@ -136,7 +139,7 @@ export default class CardListView extends EventEmitter {
   }
 
   addNewCardBlock() {
-    const textarea = create('textarea', {
+    this.textarea = create('textarea', {
       className: styles['add-card-block__textarea'],
       child: null,
       parent: null,
@@ -146,8 +149,8 @@ export default class CardListView extends EventEmitter {
       ],
     });
 
-    textarea.addEventListener('input', (event) =>
-      this.emit('typingInTextarea', event)
+    this.textarea.addEventListener('input', (event: Event) =>
+      this.emit('addCardName', event)
     );
 
     const controlsButtons = create('div', {
@@ -170,6 +173,7 @@ export default class CardListView extends EventEmitter {
     });
 
     addCardBtn.addEventListener('click', () => this.emit('addCard'));
+    addCardBtn.addEventListener('click', () => this.emit('clearTextarea'));
 
     const closeAddCardBlock = create('a', {
       className: `${styles['add-card-block__close-btn']} ${styles['close-input']}`,
@@ -182,6 +186,10 @@ export default class CardListView extends EventEmitter {
       this.emit('closeAddCardBlock')
     );
 
+    closeAddCardBlock.addEventListener('click', () =>
+      this.emit('clearTextarea')
+    );
+
     const controls = create('div', {
       className: styles['add-card-block__controls'],
       child: [controlsButtons, controlsSettings],
@@ -189,15 +197,21 @@ export default class CardListView extends EventEmitter {
 
     const addOneMoreCardBlock = create('div', {
       className: `${styles['card-list__add-card-block']} ${styles.hidden}`,
-      child: [textarea, controls],
+      child: [this.textarea, controls],
       parent: this.cardListBottom,
     });
+
     return addOneMoreCardBlock;
+  }
+
+  clearTextarea() {
+    if (this.textarea) {
+      (this.textarea as HTMLInputElement).value = '';
+    }
   }
 
   createSettingsBottomBtn() {
     const settingsBtn = create('div', {
-      child: ' ■ ',
       parent: this.cardListBottom,
     });
     return settingsBtn;
@@ -242,6 +256,13 @@ export default class CardListView extends EventEmitter {
 
     // eslint-disable-next-line no-new
     new CardController(this.boardModel, card);
+
+    newCard.addEventListener('click', (event: Event) =>
+      card.emit('cardClick', event)
+    );
+    newCard.addEventListener('click', (event: Event) =>
+      card.emit('addCardNameToPopup', event)
+    );
     newCard.addEventListener('dragstart', (event: Event) => {
       event.stopPropagation();
       card.emit('cardDragstart', event.target);
