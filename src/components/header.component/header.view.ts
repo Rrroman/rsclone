@@ -4,7 +4,6 @@ import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import createIcon from '../../utils/createIcon';
 import {
-  menuIcon,
   homeIcon,
   trelloIcon,
   searchIcon,
@@ -40,13 +39,6 @@ export default class HeaderView extends EventEmitter {
       className: styles.header__left_column,
       child: null,
       parent: headerWrapper,
-    });
-
-    const iconMenu = createIcon(styles.menu__icon, menuIcon);
-    create('button', {
-      className: styles.button__burger,
-      child: iconMenu,
-      parent: headerLeftColumn,
     });
 
     const iconHome = createIcon(styles.home__icon, homeIcon);
