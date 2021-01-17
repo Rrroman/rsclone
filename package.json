@@ -27,6 +27,7 @@
     "clean-webpack-plugin": "3.0.0",
     "copy-webpack-plugin": "7.0.0",
     "css-loader": "5.0.1",
+    "css-modules-typescript-loader": "4.0.1",
     "eslint": "7.15.0",
     "eslint-config-airbnb-base": "14.2.1",
     "eslint-config-airbnb-typescript": "12.0.0",

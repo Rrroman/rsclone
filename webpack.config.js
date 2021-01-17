@@ -22,7 +22,20 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader'],
+      },
+      {
+        test: /\.module\.css$/,
+        use: ['css-modules-typescript-loader'],
+      },
+      {
+        test: /\.css$/,
+        loader: 'css-loader',
+        options: {
+          modules: {
+            localIdentName: '[local]--[hash:base64:5]',
+          },
+        },
       },
       {
         test: /\.(png|jpg|jpeg|svg|gif)$/,

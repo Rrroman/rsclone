@@ -1,4 +1,4 @@
-import './header.css';
+import styles from './header.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
@@ -26,95 +26,98 @@ export default class HeaderView extends EventEmitter {
 
   createHeader() {
     const header = create('header', {
-      className: 'header',
+      // className: styles.header,
       child: null,
     });
 
     const headerWrapper = create('div', {
-      className: 'header__wrapper',
+      className: styles.header__wrapper,
       child: null,
       parent: header,
     });
 
     const headerLeftColumn = create('div', {
-      className: 'header__left_column',
+      className: styles.header__left_column,
       child: null,
       parent: headerWrapper,
     });
 
-    const iconMenu = createIcon('menu__icon', menuIcon);
+    const iconMenu = createIcon(styles.menu__icon, menuIcon);
     create('button', {
-      className: 'button__burger',
+      className: styles.button__burger,
       child: iconMenu,
       parent: headerLeftColumn,
     });
 
-    const iconHome = createIcon('home__icon', homeIcon);
+    const iconHome = createIcon(styles.home__icon, homeIcon);
     create('button', {
-      className: 'button__home',
+      className: styles.button__home,
       child: iconHome,
       parent: headerLeftColumn,
     });
 
-    const iconTrello = createIcon('trello__icon', trelloIcon);
+    const iconTrello = createIcon(styles.trello__icon, trelloIcon);
     const buttonBoard = create('button', {
-      className: 'button__boards',
+      className: styles.button__boards,
       child: iconTrello,
       parent: headerLeftColumn,
     });
 
     create('span', {
-      className: 'button__boards_text',
+      // className: styles.button__boards_text,
       child: 'Boards',
       parent: buttonBoard,
     });
 
-    const iconSearch = createIcon('search__icon', searchIcon);
+    const iconSearch = createIcon(styles.search__icon, searchIcon);
     create('button', {
-      className: 'button__search',
+      className: styles.button__search,
       child: iconSearch,
       parent: headerLeftColumn,
     });
 
     const headerLogo = create('div', {
-      className: 'header__logo',
+      // className: styles.header__logo,
       child: null,
       parent: headerWrapper,
     });
 
     create('span', {
-      className: 'header__loading_logo',
+      className: styles.header__loading_logo,
       child: null,
       parent: headerLogo,
     });
     create('span', {
-      className: 'header__img',
+      className: styles.header__img,
       child: null,
       parent: headerLogo,
     });
 
     const headerRightColumn = create('div', {
-      className: 'header__right_column',
+      className: styles.header__right_column,
       child: null,
       parent: headerWrapper,
     });
 
-    const iconCreate = createIcon('create__icon', plusIcon);
+    const iconCreate = createIcon(styles.create__icon, plusIcon);
     create('button', {
-      className: 'button__create',
+      className: styles.button__create,
       child: iconCreate,
       parent: headerRightColumn,
     });
 
-    const iconNotification = createIcon('notification__icon', notificationIcon);
+    const iconNotification = createIcon(
+      styles.notification__icon,
+      notificationIcon
+    );
     create('button', {
-      className: 'button__notifications',
+      className: styles.button__notifications,
       child: iconNotification,
       parent: headerRightColumn,
     });
 
     create('button', {
-      className: 'button__profile',
+      className: styles.button__profile,
       child: 'UN',
       parent: headerRightColumn,
     });

@@ -1,7 +1,9 @@
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
-import './addListCardBtn.css';
+import styles from './addListCardBtn.module.css';
 import CardListView from '../card.list.component/card.list.view';
+import CardListController from '../card.list.component/card.list.controller';
+import { addBtn, closeBtn } from '../user.kit.component/user.kit.components';
 
 export default class AddListCardBtnView extends EventEmitter {
   wrapper: HTMLElement | null;
@@ -14,23 +16,22 @@ export default class AddListCardBtnView extends EventEmitter {
 
   addBtnContainer: HTMLElement | null;
 
-  board: HTMLElement;
+  newList: HTMLElement | null;
 
-  constructor(public model: any, public elements: any) {
+  constructor(public boardModel: any, public board: HTMLElement) {
     super();
     this.wrapper = null;
     this.form = null;
     this.link = null;
     this.input = null;
     this.addBtnContainer = null;
-    this.board = elements;
+    this.newList = null;
   }
 
   show() {
-    const formWrapper = this.renderPlusBtn();
+    this.renderPlusBtn();
     this.renderAddCardInputForm();
-
-    return formWrapper;
+    return this.wrapper;
   }
 
   renderPlusBtn() {
@@ -38,39 +39,40 @@ export default class AddListCardBtnView extends EventEmitter {
       this.addBtnContainer.classList.add('hidden');
     }
     this.wrapper = create('div', {
-      className: 'card-list_wrapper add-list-btn_wrapper',
+      className: `${styles['card-list_wrapper']} ${styles['add-list-btn_wrapper']}`,
       child: null,
     });
 
     this.form = create('form', {
-      className: 'form',
+      className: styles.form,
       child: null,
       parent: this.wrapper,
     });
 
-    this.link = create('a', {
-      className: 'open-add-list',
+    this.link = create('div', {
+      className: styles['open-add-list'],
       child: null,
       parent: this.form,
     });
 
     create('span', {
-      className: 'span-placeholder',
+      className: styles['span-placeholder'],
       child: [
-        create('span', { className: 'plus', child: '+' }),
-        create('span', { className: 'span-text', child: 'Add another list' }),
+        create('span', { className: styles.plus, child: '+' }),
+        create('span', {
+          className: styles['span-text'],
+          child: 'Add another list',
+        }),
       ],
       parent: this.link,
     });
 
     this.link.addEventListener('click', () => this.emit('addListPlusClick'));
-
-    return this.wrapper;
   }
 
   renderAddCardInputForm() {
     this.input = create('input', {
-      className: 'input-new-card hidden',
+      className: `${styles['input-new-card']} ${styles.hidden}`,
       child: null,
       parent: this.form,
       dataAttr: [
@@ -82,63 +84,68 @@ export default class AddListCardBtnView extends EventEmitter {
       ],
     });
 
+    const addListBtn = addBtn('Add List');
+    const closeListBtn = closeBtn();
+
     this.addBtnContainer = create('div', {
-      className: 'hidden',
-      child: null,
+      className: styles.hidden,
+      child: [addListBtn, closeListBtn],
       parent: this.form,
     });
 
-    const addListBtn = create('input', {
-      className: 'add-button',
-      child: null,
-      parent: this.addBtnContainer,
-      dataAttr: [
-        ['type', 'submit'],
-        ['value', 'Add List'],
-      ],
-    });
+    this.input.addEventListener('input', (event) =>
+      this.emit('inputListName', event)
+    );
 
-    const closeBtn = create('div', {
-      className: 'close-input',
-      child: '&times;',
-      parent: this.addBtnContainer,
-    });
-    this.input.addEventListener('input', (e) => this.emit('inputListName', e));
-    closeBtn.addEventListener('click', () => this.emit('closeBtnClick'));
-    addListBtn.addEventListener('click', (e) =>
-      this.emit('addListBtnCLick', e)
+    closeListBtn.addEventListener('click', () => this.emit('closeBtnClick'));
+
+    addListBtn.addEventListener('click', (event) =>
+      this.emit('addListBtnCLick', event)
     );
     return this.wrapper;
   }
 
   showInputForm() {
     if (this.link && this.addBtnContainer && this.input) {
-      this.link.classList.add('hidden');
-      this.addBtnContainer.classList.remove('hidden');
-      this.addBtnContainer.classList.add('addBtn-container');
-      this.input.classList.remove('hidden');
+      this.link.classList.add(styles.hidden);
+      this.addBtnContainer.classList.remove(styles.hidden);
+      this.addBtnContainer.classList.add(styles['addBtn-container']);
+      this.input.classList.remove(styles.hidden);
+      this.input.focus();
     }
   }
 
   closeInputForm() {
     if (this.link && this.addBtnContainer && this.input) {
-      this.link.classList.remove('hidden');
-      this.addBtnContainer.classList.add('hidden');
-      this.addBtnContainer.classList.remove('addBtn-container');
-      this.input.classList.add('hidden');
+      this.link.classList.remove(styles.hidden);
+      this.addBtnContainer.classList.add(styles.hidden);
+      this.addBtnContainer.classList.remove(styles['addBtn-container']);
+      this.input.classList.add(styles.hidden);
     }
   }
 
   renderNewList() {
-    const newList = new CardListView(
-      this.model,
-      this.board,
-      this.model.inputNeListName
-    );
-    newList.show();
-    this.model.changeNewListName('');
+    if (!this.boardModel.inputNeListName) {
+      return;
+    }
+    const list = new CardListView(this.boardModel, this.board);
+    this.newList = list.show();
+
+    this.boardModel.changeNewListName('');
     if (this.input) {
       (this.input as HTMLInputElement).value = '';
     }
+
+    // eslint-disable-next-line no-new
+    new CardListController(this.boardModel, list);
+
+    this.newList.addEventListener('dragstart', (event: DragEvent) => {
+      if (event.target && (event.target as HTMLElement).dataset.list)
+        list.emit('dragstart', event.target);
+    });
+
+    this.newList.addEventListener('dragend', () => {
+      list.emit('dragend');
+    });
   }
 }
