@@ -14,7 +14,7 @@ export default function create(
     dataAttr,
   }: {
     className?: string;
-    child?: HTMLElement | string | null | HTMLElement[];
+    child?: HTMLElement | HTMLSpanElement | string | null | HTMLElement[];
     parent?: HTMLElement | null;
     dataAttr?: string[][];
   }
