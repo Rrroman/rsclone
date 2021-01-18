@@ -1,6 +1,8 @@
+import styles from './addListCardBtn.module.css';
+import globalStyles from '../../globals.module.css';
+
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
-import styles from './addListCardBtn.module.css';
 import CardListController from '../card.list.component/card.list.controller';
 import { addBtn, closeBtn } from '../user.kit.component/user.kit.components';
 import CardListView from '../card.list.component/card.list.view';
@@ -36,7 +38,7 @@ export default class AddListCardBtnView extends EventEmitter {
 
   renderPlusBtn() {
     if (this.addBtnContainer) {
-      this.addBtnContainer.classList.add('hidden');
+      this.addBtnContainer.classList.add(globalStyles.hidden);
     }
     this.wrapper = create('div', {
       className: `${styles['card-list_wrapper']} ${styles['add-list-btn_wrapper']}`,
@@ -72,7 +74,7 @@ export default class AddListCardBtnView extends EventEmitter {
 
   renderAddCardInputForm() {
     this.input = create('input', {
-      className: `${styles['input-new-card']} ${styles.hidden}`,
+      className: `${styles['input-new-card']} ${globalStyles.hidden}`,
       child: null,
       parent: this.form,
       dataAttr: [
@@ -88,7 +90,7 @@ export default class AddListCardBtnView extends EventEmitter {
     const closeListBtn = closeBtn();
 
     this.addBtnContainer = create('div', {
-      className: styles.hidden,
+      className: globalStyles.hidden,
       child: [addListBtn, closeListBtn],
       parent: this.form,
     });
@@ -107,20 +109,20 @@ export default class AddListCardBtnView extends EventEmitter {
 
   showInputForm() {
     if (this.link && this.addBtnContainer && this.input) {
-      this.link.classList.add(styles.hidden);
-      this.addBtnContainer.classList.remove(styles.hidden);
+      this.link.classList.add(globalStyles.hidden);
+      this.addBtnContainer.classList.remove(globalStyles.hidden);
       this.addBtnContainer.classList.add(styles['addBtn-container']);
-      this.input.classList.remove(styles.hidden);
+      this.input.classList.remove(globalStyles.hidden);
       this.input.focus();
     }
   }
 
   closeInputForm() {
     if (this.link && this.addBtnContainer && this.input) {
-      this.link.classList.remove(styles.hidden);
-      this.addBtnContainer.classList.add(styles.hidden);
+      this.link.classList.remove(globalStyles.hidden);
+      this.addBtnContainer.classList.add(globalStyles.hidden);
       this.addBtnContainer.classList.remove(styles['addBtn-container']);
-      this.input.classList.add(styles.hidden);
+      this.input.classList.add(globalStyles.hidden);
     }
   }
 

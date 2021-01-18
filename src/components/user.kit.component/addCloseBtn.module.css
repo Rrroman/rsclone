@@ -19,3 +19,11 @@
   font-size: 2.5rem;
   margin-left: 10px;
 }
+
+.element-textarea {
+  overflow: hidden;
+  overflow-wrap: break-word;
+  resize: none;
+  height: 54px;
+  width: 100%;
+}
