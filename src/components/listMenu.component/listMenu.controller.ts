@@ -13,8 +13,28 @@ export default class ListMenuController {
         listener: () => this.addCardHandler(),
       })
       .on({
-        event: 'copyListEvent',
-        listener: () => this.copyListHandler(),
+        event: 'renderCopyBlock',
+        listener: () => this.renderCopyBlock(),
+      })
+      .on({
+        event: 'closeActiveBlock',
+        listener: (event: Event) => this.closeActiveBlock(event),
+      })
+      .on({
+        event: 'createListCopy',
+        listener: () => this.createListCopy(),
+      })
+      .on({
+        event: 'renderMoveBlock',
+        listener: () => this.renderMoveBlock(),
+      })
+      .on({
+        event: 'moveListTo',
+        listener: () => this.moveListTo(),
+      })
+      .on({
+        event: 'deleteCurrentList',
+        listener: () => this.deleteCurrentList(),
       });
   }
 
@@ -26,7 +46,28 @@ export default class ListMenuController {
     this.menu.addCardHandler();
   }
 
-  copyListHandler() {
-    this.menu.copyListHandler();
+  renderCopyBlock() {
+    this.menu.renderCopyBlock();
+  }
+
+  closeActiveBlock(event: Event) {
+    event.stopPropagation();
+    this.menu.closeActiveBlock();
+  }
+
+  createListCopy() {
+    this.menu.createListCopy(null);
+  }
+
+  renderMoveBlock() {
+    this.menu.renderMoveBlock();
+  }
+
+  moveListTo() {
+    this.menu.moveListTo();
+  }
+
+  deleteCurrentList() {
+    this.menu.deleteCurrentList();
   }
 }

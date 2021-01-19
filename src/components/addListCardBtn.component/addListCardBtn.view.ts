@@ -4,7 +4,12 @@ import globalStyles from '../../globals.module.css';
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import CardListController from '../card.list.component/card.list.controller';
-import { addBtn, closeBtn } from '../user.kit.component/user.kit.components';
+import {
+  addBtn,
+  closeBtn,
+  inputElement,
+} from '../user.kit.component/user.kit.components';
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import CardListView from '../card.list.component/card.list.view';
 
 export default class AddListCardBtnView extends EventEmitter {
@@ -73,19 +78,9 @@ export default class AddListCardBtnView extends EventEmitter {
   }
 
   renderAddCardInputForm() {
-    this.input = create('input', {
-      className: `${styles['input-new-card']} ${globalStyles.hidden}`,
-      child: null,
-      parent: this.form,
-      dataAttr: [
-        ['type', 'text'],
-        ['name', 'name'],
-        ['placeholder', 'Enter list title...'],
-        ['autocomplete', 'off'],
-        ['maxlength', '512'],
-      ],
-    });
-
+    this.input = inputElement();
+    this.input.classList.add(globalStyles.hidden);
+    this.form?.append(this.input);
     const addListBtn = addBtn('Add List');
     const closeListBtn = closeBtn();
 
@@ -126,14 +121,13 @@ export default class AddListCardBtnView extends EventEmitter {
     }
   }
 
-  renderNewList() {
-    if (!this.boardModel.inputNeListName) {
+  renderNewList(insertBeforeElement: null | HTMLElement) {
+    if (!this.boardModel.inputNewListName) {
       return;
     }
     const list = new CardListView(this.boardModel, this.board);
     this.newList = list.show();
-
-    this.boardModel.listViewer = list;
+    list.appendList(insertBeforeElement);
 
     this.boardModel.changeNewListName('');
     if (this.input) {

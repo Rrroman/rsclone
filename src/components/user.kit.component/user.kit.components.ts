@@ -35,6 +35,21 @@ function closeBtn() {
   });
 }
 
+function inputElement() {
+  return create('input', {
+    className: `${styles['input-new-card']}`,
+    child: null,
+    parent: null,
+    dataAttr: [
+      ['type', 'text'],
+      ['name', 'name'],
+      ['placeholder', 'Enter list title...'],
+      ['autocomplete', 'off'],
+      ['maxlength', '512'],
+    ],
+  }) as HTMLInputElement;
+}
+
 function textAreaAutoHeight(element: HTMLElement) {
   const myElement = element;
   myElement.style.height = 'auto';
@@ -42,4 +57,4 @@ function textAreaAutoHeight(element: HTMLElement) {
   myElement.style.height = `${element.scrollHeight}px`;
 }
 
-export { addBtn, closeBtn, renderTextArea, textAreaAutoHeight };
+export { addBtn, closeBtn, renderTextArea, inputElement, textAreaAutoHeight };

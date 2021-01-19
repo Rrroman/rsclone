@@ -74,7 +74,6 @@ export default class CardView extends EventEmitter {
     if (event.target.previousSibling.textContent !== '') {
       this.savedText = event.target.previousSibling.textContent;
     }
-    return this;
   }
 
   addCardDataToPopup(event: any) {

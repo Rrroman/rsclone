@@ -3,11 +3,12 @@ import globalStyles from '../../globals.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
-import CardView from '../card.component/card.view';
-import CardController from '../card.component/card.controller';
+
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import ListMenu from '../listMenu.component/listMenu.view';
 import ListMenuController from '../listMenu.component/listMenu.controller';
 import { renderTextArea } from '../user.kit.component/user.kit.components';
+import renderNewCard from '../user.kit.component/user.kit.render.component'
 
 export default class CardListView extends EventEmitter {
   cardListBottom: HTMLElement | null;
@@ -72,9 +73,16 @@ export default class CardListView extends EventEmitter {
       dataAttr: [['listWrapper', 'true']],
     });
 
-    this.board.insertBefore(this.cardList, this.board.lastChild);
+    return this.cardContent;
+  }
+
+  appendList(insertBeforeElement: null | HTMLElement) {
+    this.board.insertBefore(
+      this.cardList,
+      insertBeforeElement || this.board.lastChild
+    );
     if (this.cardListBody) {
-      this.cardList.addEventListener('dragover', (event: Event) => {
+      this.cardList?.addEventListener('dragover', (event: Event) => {
         this.emit('cardDragover', event);
       });
     }
@@ -219,6 +227,7 @@ export default class CardListView extends EventEmitter {
   createSettingsBottomBtn() {
     const settingsBtn = create('div', {
       parent: this.cardListBottom,
+      child: '...',
     });
     return settingsBtn;
   }
@@ -257,30 +266,9 @@ export default class CardListView extends EventEmitter {
   }
 
   renderCard() {
-    const card = new CardView(this.boardModel, this.cardListBody);
-
-    const newCard = card.show();
-
-    // eslint-disable-next-line no-new
-    new CardController(this.boardModel, card);
-
-    newCard.addEventListener('click', (event: Event) =>
-      card.emit('openOverlay', event)
-    );
-
-    newCard.addEventListener('click', (event: Event) =>
-      card.emit('addCardDataToPopup', event)
-    );
-
-    newCard.addEventListener('dragstart', (event: Event) => {
-      event.stopPropagation();
-      card.emit('cardDragstart', event.target);
-    });
-
-    newCard.addEventListener('dragend', (event: Event) => {
-      event.stopPropagation();
-      card.emit('cardDragend');
-    });
+    if (this.cardListBody) {
+      renderNewCard(this.boardModel, this.cardListBody);
+    }
   }
 
   openListMenu(event: MouseEvent) {

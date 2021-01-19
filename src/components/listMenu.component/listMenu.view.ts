@@ -1,6 +1,15 @@
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import styles from './listMenu.module.css';
+import globalStyles from '../../globals.module.css';
+import {
+  addBtn,
+  closeBtn,
+  inputElement,
+} from '../user.kit.component/user.kit.components';
+import renderNewCard from '../user.kit.component/user.kit.render.component';
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
+import AddListCardBtnView from '../addListCardBtn.component/addListCardBtn.view';
 
 export default class ListMenu extends EventEmitter {
   menuBody: null | HTMLElement;
@@ -9,23 +18,47 @@ export default class ListMenu extends EventEmitter {
 
   menuList: null | HTMLElement;
 
+  activeBlock: null | HTMLElement;
+
+  activeElement: null | HTMLElement;
+
+  inputListName: null | HTMLInputElement;
+
+  listsIndexSelect: null | HTMLElement;
+
+  currentList: HTMLElement;
+
+  currentIndex: number;
+
   constructor(
     public boardModel: any,
     public board: HTMLElement,
-    public currentList: HTMLElement
+    public currentListContainer: HTMLElement
   ) {
     super();
     this.menuBody = null;
     this.menuElement = null;
     this.menuList = null;
+    this.activeBlock = null;
+    this.activeElement = null;
+    this.inputListName = null;
+    this.listsIndexSelect = null;
+    this.currentList = currentListContainer.firstChild as HTMLElement;
+    this.currentIndex = 0;
   }
 
   show() {
     this.renderListMenu();
+    this.calcCurrentIndex();
+  }
+
+  calcCurrentIndex() {
+    const listArr = Array.from(this.board.childNodes);
+    this.currentIndex = listArr.indexOf(this.currentListContainer);
   }
 
   renderListMenu() {
-    const closeBtn = create('div', {
+    const closeMenuBtn = create('div', {
       className: styles['close-menu'],
       child: '&times;',
     });
@@ -37,7 +70,7 @@ export default class ListMenu extends EventEmitter {
           className: styles['header-name'],
           child: 'List Actions',
         }),
-        closeBtn,
+        closeMenuBtn,
       ],
     });
 
@@ -51,7 +84,7 @@ export default class ListMenu extends EventEmitter {
     this.menuAlign();
     this.renderMenuBody();
 
-    closeBtn.addEventListener('click', (event: Event) => {
+    closeMenuBtn.addEventListener('click', (event: Event) => {
       event.stopPropagation();
       this.emit('closemenu');
     });
@@ -69,34 +102,41 @@ export default class ListMenu extends EventEmitter {
 
   renderMenuBody() {
     const addListBtn = create('li', {
-      // className: styles['list-item'],
       child: create('a', {
         className: styles['list-link'],
         child: 'Add card...',
       }),
     });
     const copyListBtn = create('li', {
-      // className: styles['list-item'],
       child: create('a', {
         className: styles['list-link'],
         child: 'Copy List...',
       }),
     });
     const moveListBtn = create('li', {
-      // className: styles['list-item'],
       child: create('a', {
         className: styles['list-link'],
         child: 'Move List...',
       }),
     });
+    const deleteListBtn = create('li', {
+      child: create('a', {
+        className: styles['list-link'],
+        child: 'Remove List...',
+      }),
+    });
+
     this.menuList = create('ul', {
-      // className: styles['menu-list'],
-      child: [addListBtn, copyListBtn, moveListBtn],
+      child: [addListBtn, copyListBtn, moveListBtn, deleteListBtn],
       parent: this.menuBody,
     });
 
     addListBtn.addEventListener('click', () => this.emit('addCardEvent'));
-    copyListBtn.addEventListener('click', () => this.emit('copyListEvent'));
+    copyListBtn.addEventListener('click', () => this.emit('renderCopyBlock'));
+    moveListBtn.addEventListener('click', () => this.emit('renderMoveBlock'));
+    deleteListBtn.addEventListener('click', () =>
+      this.emit('deleteCurrentList')
+    );
   }
 
   menuAlign() {
@@ -117,18 +157,143 @@ export default class ListMenu extends EventEmitter {
   }
 
   closeMenu() {
-    if (this.menuElement) {
-      this.menuElement.remove();
-    }
+    this.menuElement?.remove();
   }
 
   addCardHandler() {
-    this.boardModel.listViewer.showAddCardBlock();
+    const addCardBtn = this.currentList.lastChild?.childNodes[0];
+    const inputCard = this.currentList.lastChild?.childNodes[1];
+    (inputCard as HTMLElement).classList.add(globalStyles.hidden);
+    (addCardBtn as HTMLElement).classList.remove(globalStyles.hidden);
     this.closeMenu();
   }
 
-  copyListHandler() {
-    const clone: Node = this.currentList.cloneNode(true);
-    this.board.insertBefore(clone, this.board.lastChild);
+  renderCopyBlock() {
+    if (this.activeBlock) {
+      this.activeBlock.remove();
+    }
+
+    this.inputListName = inputElement();
+    if (this.inputListName) {
+      this.inputListName.value =
+        (this.currentList as HTMLInputElement).dataset.listName || '';
+      this.boardModel.changeNewListName(this.inputListName.value);
+    }
+
+    const addListBtn = addBtn('Create List');
+
+    this.createControlButtons(addListBtn, this.inputListName);
+
+    addListBtn.addEventListener('click', () => this.emit('createListCopy'));
+  }
+
+  renderMoveBlock() {
+    if (this.activeBlock) {
+      this.activeBlock.remove();
+    }
+
+    this.listsIndexSelect = create('select', {
+      className: styles.select,
+      dataAttr: [['size', '1']],
+    });
+    const label = create('span', {
+      className: styles['select-label'],
+      child: 'Position',
+    });
+    const selectBlock = create('div', {
+      className: styles['select-block'],
+      child: [label, this.listsIndexSelect],
+    });
+
+    const { length } = this.board.childNodes;
+
+    for (let i = 0; i < length - 1; i += 1) {
+      const optionValue: number = i + 1;
+      create('option', {
+        child: optionValue.toString(),
+        parent: this.listsIndexSelect,
+        dataAttr: [['value', optionValue.toString()]],
+      });
+    }
+
+    const moveBtn = addBtn('Move List');
+
+    this.createControlButtons(moveBtn, selectBlock);
+
+    moveBtn.addEventListener('click', () => this.emit('moveListTo'));
+  }
+
+  createControlButtons(createBtn: HTMLElement, element: HTMLElement) {
+    const closeBlockBtn = closeBtn();
+    const btnContainer = create('div', {
+      className: styles['add-list-btn-container'],
+      child: [createBtn, closeBlockBtn],
+    });
+
+    this.activeBlock = create('div', {
+      className: styles['menu-body'],
+      child: [element, btnContainer],
+      parent: this.menuElement,
+    });
+
+    closeBlockBtn.addEventListener('click', (event: Event) =>
+      this.emit('closeActiveBlock', event)
+    );
+  }
+
+  closeActiveBlock() {
+    this.activeBlock?.remove();
+    this.boardModel.changeNewListName('');
+  }
+
+  createListCopy(insertBeforeElement: null | HTMLElement) {
+    if (this.inputListName) {
+      this.boardModel.changeNewListName(this.inputListName?.value);
+    } else {
+      this.boardModel.changeNewListName(this.currentList.dataset.listName);
+    }
+
+    const listCopy = new AddListCardBtnView(this.boardModel, this.board);
+    listCopy.renderNewList(insertBeforeElement);
+
+    if (listCopy.newList) {
+      const { length } = this.currentList.children[1].childNodes;
+      for (let i = 0; i < length; i += 1) {
+        this.boardModel.cardName = this.currentList.children[1].children[
+          i
+        ].innerHTML;
+
+        renderNewCard(this.boardModel, listCopy.newList.children[1]);
+      }
+    }
+
+    this.closeMenu();
+  }
+
+  moveListTo() {
+    const newIndex: number =
+      +(this.listsIndexSelect as HTMLSelectElement).value - 1;
+
+    if (newIndex === this.currentIndex) {
+      this.closeMenu();
+      return;
+    }
+
+    this.deleteCurrentList();
+
+    if (newIndex < this.currentIndex) {
+      this.createListCopy(this.board.children[newIndex] as HTMLElement);
+    }
+
+    if (newIndex > this.currentIndex) {
+      this.createListCopy(this.board.children[newIndex + 1] as HTMLElement);
+    }
+
+    this.closeMenu();
+  }
+
+  deleteCurrentList() {
+    this.board.children[this.currentIndex].remove();
+    this.closeMenu();
   }
 }

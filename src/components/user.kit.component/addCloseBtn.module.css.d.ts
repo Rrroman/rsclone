@@ -4,6 +4,7 @@ interface CssExports {
   'add-button': string;
   'close-input': string;
   'element-textarea': string;
+  'input-new-card': string;
 }
 export const cssExports: CssExports;
 export default cssExports;
