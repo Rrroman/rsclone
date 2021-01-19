@@ -1,13 +1,15 @@
-import EventEmitter from '../../utils/eventEmitter';
-import create from '../../utils/create';
 import styles from './addListCardBtn.module.css';
 import globalStyles from '../../globals.module.css';
+
+import EventEmitter from '../../utils/eventEmitter';
+import create from '../../utils/create';
 import CardListController from '../card.list.component/card.list.controller';
 import {
   addBtn,
   closeBtn,
   inputElement,
 } from '../user.kit.component/user.kit.components';
+/* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import CardListView from '../card.list.component/card.list.view';
 
 export default class AddListCardBtnView extends EventEmitter {
@@ -41,7 +43,7 @@ export default class AddListCardBtnView extends EventEmitter {
 
   renderPlusBtn() {
     if (this.addBtnContainer) {
-      this.addBtnContainer.classList.add('hidden');
+      this.addBtnContainer.classList.add(globalStyles.hidden);
     }
     this.wrapper = create('div', {
       className: `${styles['card-list_wrapper']} ${styles['add-list-btn_wrapper']}`,

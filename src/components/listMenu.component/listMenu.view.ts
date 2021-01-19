@@ -6,8 +6,8 @@ import {
   addBtn,
   closeBtn,
   inputElement,
-  renderNewCard,
 } from '../user.kit.component/user.kit.components';
+import renderNewCard from '../user.kit.component/user.kit.render.component';
 /* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import AddListCardBtnView from '../addListCardBtn.component/addListCardBtn.view';
 

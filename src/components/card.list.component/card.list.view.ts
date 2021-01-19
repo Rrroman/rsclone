@@ -1,12 +1,14 @@
 import styles from './card.list.module.css';
+import globalStyles from '../../globals.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
-import { renderNewCard } from '../user.kit.component/user.kit.components';
+
 /* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import ListMenu from '../listMenu.component/listMenu.view';
 import ListMenuController from '../listMenu.component/listMenu.controller';
-import globalStyles from '../../globals.module.css';
+import { renderTextArea } from '../user.kit.component/user.kit.components';
+import renderNewCard from '../user.kit.component/user.kit.render.component'
 
 export default class CardListView extends EventEmitter {
   cardListBottom: HTMLElement | null;
@@ -23,6 +25,8 @@ export default class CardListView extends EventEmitter {
 
   textarea: HTMLElement | null;
 
+  cardContent: HTMLElement | null;
+
   constructor(
     public boardModel: any,
     public board: any,
@@ -36,6 +40,7 @@ export default class CardListView extends EventEmitter {
     this.cardListBody = null;
     this.cardList = null;
     this.textarea = null;
+    this.cardContent = null;
   }
 
   show() {
@@ -50,7 +55,7 @@ export default class CardListView extends EventEmitter {
 
     const cardListBottom = this.createAddBottomBtn();
 
-    const cardContent = create('div', {
+    this.cardContent = create('div', {
       className: styles['card-content'],
       child: [cardListHeader, this.cardListBody, cardListBottom],
       parent: null,
@@ -63,12 +68,12 @@ export default class CardListView extends EventEmitter {
 
     this.cardList = create('div', {
       className: styles['card-list'],
-      child: cardContent,
+      child: this.cardContent,
       parent: null,
       dataAttr: [['listWrapper', 'true']],
     });
 
-    return cardContent;
+    return this.cardContent;
   }
 
   appendList(insertBeforeElement: null | HTMLElement) {
@@ -81,6 +86,8 @@ export default class CardListView extends EventEmitter {
         this.emit('cardDragover', event);
       });
     }
+
+    return this.cardContent;
   }
 
   createListHeader() {
@@ -94,6 +101,14 @@ export default class CardListView extends EventEmitter {
         ['draggable', 'false'],
       ],
     });
+
+    headerText.addEventListener('click', (selectEvent) =>
+      this.emit('selectText', selectEvent)
+    );
+
+    headerText.addEventListener('input', (headerTextChangeEvent) =>
+      this.emit('headerTextChange', headerTextChangeEvent)
+    );
 
     const menuBtn = CardListView.renderCardListMenuBtn();
     const cardListHeader = create('div', {
@@ -146,15 +161,7 @@ export default class CardListView extends EventEmitter {
   }
 
   addNewCardBlock() {
-    this.textarea = create('textarea', {
-      className: styles['add-card-block__textarea'],
-      child: null,
-      parent: null,
-      dataAttr: [
-        ['dir', 'auto'],
-        ['placeholder', 'Enter card title...'],
-      ],
-    });
+    this.textarea = renderTextArea('Enter card title...');
 
     this.textarea.addEventListener('input', (event: Event) =>
       this.emit('addCardName', event)
@@ -246,6 +253,7 @@ export default class CardListView extends EventEmitter {
       this.addCardBlock.classList.remove(globalStyles.hidden);
       this.addBtn.classList.add(globalStyles.hidden);
       this.bottomSettingsBtn.classList.add(globalStyles.hidden);
+      (this.addCardBlock.firstChild as HTMLInputElement)?.focus();
     }
   }
 
@@ -267,7 +275,7 @@ export default class CardListView extends EventEmitter {
     const currentList = (event.target as HTMLElement).closest(
       '[data-list-wrapper]'
     );
-    // eslint-disable-next-line no-new
+
     const listMenu = new ListMenu(
       this.boardModel,
       this.board,
@@ -333,5 +341,14 @@ export default class CardListView extends EventEmitter {
 
     // eslint-disable-next-line consistent-return
     return closestCard;
+  }
+
+  selectText(event: any) {
+    event.target.select(event);
+    return this;
+  }
+
+  headerTextChange(event: any) {
+    this.cardContent!.dataset.listName = event.target.value;
   }
 }

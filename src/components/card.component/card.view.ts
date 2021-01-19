@@ -4,6 +4,7 @@ import stylesFromList from '../card.list.component/card.list.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
+import { textAreaAutoHeight } from '../user.kit.component/user.kit.components';
 
 export default class CardView extends EventEmitter {
   popupTitle: HTMLElement | null;
@@ -16,6 +17,14 @@ export default class CardView extends EventEmitter {
 
   listName: string | HTMLElement | null;
 
+  descriptionTextContainer: HTMLElement | null;
+
+  textareaDescription: HTMLElement | null;
+
+  textareaDescriptionText: any;
+
+  savedText: string;
+
   constructor(
     public boardModel: any,
     public cardListBody: any,
@@ -27,6 +36,10 @@ export default class CardView extends EventEmitter {
     this.card = null;
     this.clickedCard = null;
     this.listName = null;
+    this.descriptionTextContainer = null;
+    this.textareaDescription = null;
+    this.textareaDescriptionText = 'More detailed description ...';
+    this.savedText = '';
   }
 
   show() {
@@ -34,22 +47,36 @@ export default class CardView extends EventEmitter {
   }
 
   createCard() {
+    this.descriptionTextContainer = create('div', {
+      className: globalStyles.hidden,
+    });
+
+    const cardDescriptionTextHidden = create('div', {
+      child: this.boardModel.cardName,
+    });
+
     this.card = create('div', {
       className: styles.card,
-      child: this.boardModel.cardName,
+      child: cardDescriptionTextHidden,
       parent: this.cardListBody,
-      dataAttr: [['draggable', 'true']],
+      dataAttr: [
+        ['draggable', 'true'],
+        ['card', 'card'],
+      ],
     });
+    this.card.prepend(this.descriptionTextContainer);
 
     return this.card;
   }
 
-  openOverlay() {
+  openOverlay(event: any) {
     this.boardModel.overlayElement.classList.remove(globalStyles.hidden);
-    return this;
+    if (event.target.previousSibling.textContent !== '') {
+      this.savedText = event.target.previousSibling.textContent;
+    }
   }
 
-  addCardNameToPopup(event: any) {
+  addCardDataToPopup(event: any) {
     const { target } = event;
     this.clickedCard = target;
     this.popupCardName = target.textContent;
@@ -73,6 +100,10 @@ export default class CardView extends EventEmitter {
       this.emit('addPopupNameToCard', inputEvent)
     );
 
+    this.popupTitle.addEventListener('click', (selectEvent) =>
+      this.emit('selectText', selectEvent)
+    );
+
     const spanListName: HTMLSpanElement = create('span', {
       className: styles['popup__list-name'],
       child: this.listName,
@@ -86,23 +117,40 @@ export default class CardView extends EventEmitter {
 
     const popupDescriptionHeader = create('h3', {
       className: styles.popup__description,
-      child: 'Description wrapper',
+      child: 'Description',
     });
 
-    const fakeDescription = create('a', {
-      className: styles['popup__fake-description'],
-      child: 'More detailed description ...',
-      dataAttr: [['href', '#']],
+    this.textareaDescription = create('textarea', {
+      className: styles['popup__textarea-description'],
+      parent: null,
+      dataAttr: [
+        ['maxlength', '512'],
+        ['spellcheck', 'false'],
+        ['draggable', 'false'],
+        ['placeholder', `${this.textareaDescriptionText}`],
+      ],
     });
+
+    this.textareaDescription.addEventListener('click', (selectEvent) =>
+      this.emit('selectText', selectEvent)
+    );
+
+    this.textareaDescription.addEventListener('blur', (blurEvent) =>
+      this.emit('saveText', blurEvent)
+    );
+
+    this.textareaDescription.addEventListener('input', () =>
+      textAreaAutoHeight(this.textareaDescription!)
+    );
 
     const popupDescriptionWrapper = create('div', {
       className: styles['popup__description-wrapper'],
-      child: [popupDescriptionHeader, fakeDescription],
+      child: [popupDescriptionHeader, this.textareaDescription],
     });
 
-    popupDescriptionWrapper.addEventListener('click', () =>
-      this.emit('editPopupDescription')
-    );
+    if (this.textareaDescription) {
+      (this.textareaDescription as HTMLTextAreaElement)!.value = this.savedText;
+    }
 
     popupBody.append(this.popupTitle);
     popupBody.append(popupListName);
@@ -127,5 +175,14 @@ export default class CardView extends EventEmitter {
         stylesFromList['black-back']
       );
     }
+  }
+
+  selectText(event: any) {
+    event.target.select();
+    return this;
+  }
+
+  saveText(text: string) {
+    this.descriptionTextContainer!.textContent = text;
   }
 }

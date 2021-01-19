@@ -6,9 +6,9 @@ interface CssExports {
   'popup__card-name': string;
   'popup__description': string;
   'popup__description-wrapper': string;
-  'popup__fake-description': string;
   'popup__list-name': string;
   'popup__list-text': string;
+  'popup__textarea-description': string;
   'popup__title': string;
 }
 export const cssExports: CssExports;

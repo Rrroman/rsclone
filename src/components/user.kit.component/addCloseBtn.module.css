@@ -33,3 +33,11 @@
   line-height: 20px;
   padding: 8px 12px;
 }
+
+.element-textarea {
+  overflow: hidden;
+  overflow-wrap: break-word;
+  resize: none;
+  height: 54px;
+  width: 100%;
+}

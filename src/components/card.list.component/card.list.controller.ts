@@ -31,7 +31,7 @@ export default class CardListController {
       })
       .on({
         event: 'addCard',
-        listener: () => this.renderCardHandler(),
+        listener: () => this.addCard(),
       })
       .on({
         event: 'openmenu',
@@ -41,6 +41,22 @@ export default class CardListController {
         event: 'clearTextarea',
         listener: () => this.clearTextarea(),
       })
+      .on({
+        event: 'selectText',
+        listener: (event: Event) => this.selectText(event),
+      })
+      .on({
+        event: 'headerTextChange',
+        listener: (event: Event) => this.headerTextChange(event),
+      });
+  }
+
+  headerTextChange(event: Event) {
+    this.cardList.headerTextChange(event);
+  }
+  
+  selectText(event: Event) {
+    this.cardList.selectText(event);
   }
 
   clearTextarea() {
@@ -76,7 +92,7 @@ export default class CardListController {
     }
   }
 
-  renderCardHandler() {
+  addCard() {
     this.cardList.renderCard();
   }
 
