@@ -28,6 +28,8 @@ export default class ListMenu extends EventEmitter {
 
   currentList: HTMLElement;
 
+  currentIndex: number;
+
   constructor(
     public boardModel: any,
     public board: HTMLElement,
@@ -42,10 +44,17 @@ export default class ListMenu extends EventEmitter {
     this.inputListName = null;
     this.listsIndexSelect = null;
     this.currentList = currentListContainer.firstChild as HTMLElement;
+    this.currentIndex = 0;
   }
 
   show() {
     this.renderListMenu();
+    this.calcCurrentIndex();
+  }
+
+  calcCurrentIndex() {
+    const listArr = Array.from(this.board.childNodes);
+    this.currentIndex = listArr.indexOf(this.currentListContainer);
   }
 
   renderListMenu() {
@@ -110,14 +119,24 @@ export default class ListMenu extends EventEmitter {
         child: 'Move List...',
       }),
     });
+    const deleteListBtn = create('li', {
+      child: create('a', {
+        className: styles['list-link'],
+        child: 'Remove List...',
+      }),
+    });
+
     this.menuList = create('ul', {
-      child: [addListBtn, copyListBtn, moveListBtn],
+      child: [addListBtn, copyListBtn, moveListBtn, deleteListBtn],
       parent: this.menuBody,
     });
 
     addListBtn.addEventListener('click', () => this.emit('addCardEvent'));
     copyListBtn.addEventListener('click', () => this.emit('renderCopyBlock'));
     moveListBtn.addEventListener('click', () => this.emit('renderMoveBlock'));
+    deleteListBtn.addEventListener('click', () =>
+      this.emit('deleteCurrentList')
+    );
   }
 
   menuAlign() {
@@ -254,23 +273,27 @@ export default class ListMenu extends EventEmitter {
   moveListTo() {
     const newIndex: number =
       +(this.listsIndexSelect as HTMLSelectElement).value - 1;
-    const listArr = Array.from(this.board.childNodes);
-    const currentIndex = listArr.indexOf(this.currentListContainer);
 
-    if (newIndex === currentIndex) {
+    if (newIndex === this.currentIndex) {
+      this.closeMenu();
       return;
     }
 
-    this.board.children[currentIndex].remove();
+    this.deleteCurrentList();
 
-    if (newIndex < currentIndex) {
+    if (newIndex < this.currentIndex) {
       this.createListCopy(this.board.children[newIndex] as HTMLElement);
     }
 
-    if (newIndex > currentIndex) {
+    if (newIndex > this.currentIndex) {
       this.createListCopy(this.board.children[newIndex + 1] as HTMLElement);
     }
 
+    this.closeMenu();
+  }
+
+  deleteCurrentList() {
+    this.board.children[this.currentIndex].remove();
     this.closeMenu();
   }
 }

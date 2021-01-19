@@ -31,6 +31,10 @@ export default class ListMenuController {
       .on({
         event: 'moveListTo',
         listener: () => this.moveListTo(),
+      })
+      .on({
+        event: 'deleteCurrentList',
+        listener: () => this.deleteCurrentList(),
       });
   }
 
@@ -61,5 +65,9 @@ export default class ListMenuController {
 
   moveListTo() {
     this.menu.moveListTo();
+  }
+
+  deleteCurrentList() {
+    this.menu.deleteCurrentList();
   }
 }

@@ -10,10 +10,10 @@ function renderNewCard(boardModel: any, cardListBody: Element) {
   new CardController(boardModel, card);
 
   newCard.addEventListener('click', (event: Event) =>
-    card.emit('cardClick', event)
+    card.emit('openOverlay', event)
   );
   newCard.addEventListener('click', (event: Event) =>
-    card.emit('addCardNameToPopup', event)
+    card.emit('addCardDataToPopup', event)
   );
   newCard.addEventListener('dragstart', (event: Event) => {
     event.stopPropagation();
