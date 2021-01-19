@@ -13,6 +13,11 @@ export default class CardController {
         listener: (event: Event) => this.addCardDataToPopup(event),
       })
       .on({
+        event: 'addPopupNameToCard',
+        listener: (event: { [key: string]: string }) =>
+          this.addPopupNameToCard(event),
+      })
+      .on({
         event: 'cardDragstart',
         listener: (card: HTMLElement) => this.dragStartFunc(card),
       })
@@ -40,6 +45,11 @@ export default class CardController {
 
   addCardDataToPopup(event: Event) {
     this.cardViewer.addCardDataToPopup(event);
+  }
+
+  addPopupNameToCard(event: { [key: string]: any }) {
+    this.boardModel.setPopupCardName(event.target.value);
+    this.cardViewer.addPopupNameToCard();
   }
 
   openOverlay(event: Event) {
