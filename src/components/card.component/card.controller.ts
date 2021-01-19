@@ -5,7 +5,7 @@ export default class CardController {
     this.cardViewer = viewer;
     this.cardViewer
       .on({
-        event: 'cardClick',
+        event: 'openOverlay',
         listener: (event: Event) => this.openOverlay(event),
       })
       .on({
@@ -14,8 +14,8 @@ export default class CardController {
           this.addPopupNameToCard(event),
       })
       .on({
-        event: 'addCardNameToPopup',
-        listener: (event: Event) => this.addCardNameToPopup(event),
+        event: 'addCardDataToPopup',
+        listener: (event: Event) => this.addCardDataToPopup(event),
       })
       .on({
         event: 'cardDragstart',
@@ -26,13 +26,21 @@ export default class CardController {
         listener: () => this.dragEndFunc(),
       })
       .on({
-        event: 'editPopupDescription',
-        listener: () => this.editPopupDescription(),
+        event: 'selectText',
+        listener: (event: Event) => this.selectText(event),
+      })
+      .on({
+        event: 'saveText',
+        listener: (event: Event) => this.saveText(event),
       });
   }
 
-  editPopupDescription() {
-    console.log('Edit Descriptiong ...', this);
+  saveText(event: any) {
+    this.cardViewer.saveText(event.target.value);
+  }
+
+  selectText(event: Event) {
+    this.cardViewer.selectText(event);
   }
 
   addPopupNameToCard(event: { [key: string]: any }) {
@@ -40,8 +48,8 @@ export default class CardController {
     this.cardViewer.addPopupNameToCard();
   }
 
-  addCardNameToPopup(event: Event) {
-    this.cardViewer.addCardNameToPopup(event);
+  addCardDataToPopup(event: Event) {
+    this.cardViewer.addCardDataToPopup(event);
   }
 
   openOverlay(event: Event) {

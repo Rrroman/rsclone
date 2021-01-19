@@ -6,7 +6,6 @@ interface CssExports {
   'add-card-block__close-btn': string;
   'add-card-block__controls': string;
   'add-card-block__menu': string;
-  'add-card-block__textarea': string;
   'black-back': string;
   'card-content': string;
   'card-header': string;
@@ -21,7 +20,6 @@ interface CssExports {
   'card-list__settings-btn': string;
   'card-name': string;
   'close-input': string;
-  'hidden': string;
   'rotate': string;
   'rotating': string;
 }

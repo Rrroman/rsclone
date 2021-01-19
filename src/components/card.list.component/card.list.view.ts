@@ -1,4 +1,5 @@
 import styles from './card.list.module.css';
+import globalStyles from '../../globals.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
@@ -6,6 +7,7 @@ import CardView from '../card.component/card.view';
 import CardController from '../card.component/card.controller';
 import ListMenu from '../listMenu.component/listMenu.view';
 import ListMenuController from '../listMenu.component/listMenu.controller';
+import { renderTextArea } from '../user.kit.component/user.kit.components';
 
 export default class CardListView extends EventEmitter {
   cardListBottom: HTMLElement | null;
@@ -22,6 +24,8 @@ export default class CardListView extends EventEmitter {
 
   textarea: HTMLElement | null;
 
+  cardContent: HTMLElement | null;
+
   constructor(
     public boardModel: any,
     public board: any,
@@ -35,6 +39,7 @@ export default class CardListView extends EventEmitter {
     this.cardListBody = null;
     this.cardList = null;
     this.textarea = null;
+    this.cardContent = null;
   }
 
   show() {
@@ -49,7 +54,7 @@ export default class CardListView extends EventEmitter {
 
     const cardListBottom = this.createAddBottomBtn();
 
-    const cardContent = create('div', {
+    this.cardContent = create('div', {
       className: styles['card-content'],
       child: [cardListHeader, this.cardListBody, cardListBottom],
       parent: null,
@@ -62,7 +67,7 @@ export default class CardListView extends EventEmitter {
 
     this.cardList = create('div', {
       className: styles['card-list'],
-      child: cardContent,
+      child: this.cardContent,
       parent: null,
       dataAttr: [['listWrapper', 'true']],
     });
@@ -74,7 +79,7 @@ export default class CardListView extends EventEmitter {
       });
     }
 
-    return cardContent;
+    return this.cardContent;
   }
 
   createListHeader() {
@@ -88,6 +93,14 @@ export default class CardListView extends EventEmitter {
         ['draggable', 'false'],
       ],
     });
+
+    headerText.addEventListener('click', (selectEvent) =>
+      this.emit('selectText', selectEvent)
+    );
+
+    headerText.addEventListener('input', (headerTextChangeEvent) =>
+      this.emit('headerTextChange', headerTextChangeEvent)
+    );
 
     const menuBtn = CardListView.renderCardListMenuBtn();
     const cardListHeader = create('div', {
@@ -108,6 +121,7 @@ export default class CardListView extends EventEmitter {
   static renderCardListMenuBtn() {
     return create('div', {
       className: styles['card-list__menu-btn'],
+      child: '...',
     });
   }
 
@@ -139,15 +153,7 @@ export default class CardListView extends EventEmitter {
   }
 
   addNewCardBlock() {
-    this.textarea = create('textarea', {
-      className: styles['add-card-block__textarea'],
-      child: null,
-      parent: null,
-      dataAttr: [
-        ['dir', 'auto'],
-        ['placeholder', 'Enter card title...'],
-      ],
-    });
+    this.textarea = renderTextArea('Enter card title...');
 
     this.textarea.addEventListener('input', (event: Event) =>
       this.emit('addCardName', event)
@@ -196,7 +202,7 @@ export default class CardListView extends EventEmitter {
     });
 
     const addOneMoreCardBlock = create('div', {
-      className: `${styles['card-list__add-card-block']} ${styles.hidden}`,
+      className: `${styles['card-list__add-card-block']} ${globalStyles.hidden}`,
       child: [this.textarea, controls],
       parent: this.cardListBottom,
     });
@@ -235,17 +241,18 @@ export default class CardListView extends EventEmitter {
 
   showAddCardBlock() {
     if (this.addCardBlock && this.addBtn && this.bottomSettingsBtn) {
-      this.addCardBlock.classList.remove(styles.hidden);
-      this.addBtn.classList.add(styles.hidden);
-      this.bottomSettingsBtn.classList.add(styles.hidden);
+      this.addCardBlock.classList.remove(globalStyles.hidden);
+      this.addBtn.classList.add(globalStyles.hidden);
+      this.bottomSettingsBtn.classList.add(globalStyles.hidden);
+      (this.addCardBlock.firstChild as HTMLInputElement)?.focus();
     }
   }
 
   closeAddCardBlock() {
     if (this.addCardBlock && this.addBtn && this.bottomSettingsBtn) {
-      this.addCardBlock.classList.add(styles.hidden);
-      this.addBtn.classList.remove(styles.hidden);
-      this.bottomSettingsBtn.classList.remove(styles.hidden);
+      this.addCardBlock.classList.add(globalStyles.hidden);
+      this.addBtn.classList.remove(globalStyles.hidden);
+      this.bottomSettingsBtn.classList.remove(globalStyles.hidden);
     }
   }
 
@@ -258,15 +265,18 @@ export default class CardListView extends EventEmitter {
     new CardController(this.boardModel, card);
 
     newCard.addEventListener('click', (event: Event) =>
-      card.emit('cardClick', event)
+      card.emit('openOverlay', event)
     );
+
     newCard.addEventListener('click', (event: Event) =>
-      card.emit('addCardNameToPopup', event)
+      card.emit('addCardDataToPopup', event)
     );
+
     newCard.addEventListener('dragstart', (event: Event) => {
       event.stopPropagation();
       card.emit('cardDragstart', event.target);
     });
+
     newCard.addEventListener('dragend', (event: Event) => {
       event.stopPropagation();
       card.emit('cardDragend');
@@ -277,7 +287,7 @@ export default class CardListView extends EventEmitter {
     const currentList = (event.target as HTMLElement).closest(
       '[data-list-wrapper]'
     );
-    // eslint-disable-next-line no-new
+
     const listMenu = new ListMenu(
       this.boardModel,
       this.board,
@@ -343,5 +353,14 @@ export default class CardListView extends EventEmitter {
 
     // eslint-disable-next-line consistent-return
     return closestCard;
+  }
+
+  selectText(event: any) {
+    event.target.select(event);
+    return this;
+  }
+
+  headerTextChange(event: any) {
+    this.cardContent!.dataset.listName = event.target.value;
   }
 }

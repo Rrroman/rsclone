@@ -7,7 +7,6 @@ interface CssExports {
   'card-list_wrapper': string;
   'close-input': string;
   'form': string;
-  'hidden': string;
   'input-new-card': string;
   'open-add-list': string;
   'plus': string;
