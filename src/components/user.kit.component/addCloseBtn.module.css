@@ -18,4 +18,18 @@
   width: 32px;
   font-size: 2.5rem;
   margin-left: 10px;
+  cursor: pointer;
+}
+
+.input-new-card {
+  background-color: #fff;
+  box-shadow: inset 0 0 0 2px #0079bf;
+  margin: 0;
+  transition: margin 85ms ease-in, background 85ms ease-in;
+  width: 100%;
+  outline: none;
+  border: none;
+  border-radius: 3px;
+  line-height: 20px;
+  padding: 8px 12px;
 }

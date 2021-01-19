@@ -3,6 +3,7 @@
 interface CssExports {
   'add-button': string;
   'close-input': string;
+  'input-new-card': string;
 }
 export const cssExports: CssExports;
 export default cssExports;

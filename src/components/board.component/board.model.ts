@@ -1,7 +1,7 @@
 import EventEmitter from '../../utils/eventEmitter';
 
 export default class BoardModel extends EventEmitter {
-  inputNeListName: any | null;
+  inputNewListName: any | null;
 
   draggableList: HTMLElement | null;
 
@@ -9,29 +9,26 @@ export default class BoardModel extends EventEmitter {
 
   cardName: string | null;
 
-  listViewer: any | null;
-
   overlayElement: HTMLElement | null;
 
   popupCardName: string | null;
 
   constructor() {
     super();
-    this.inputNeListName = null;
+    this.inputNewListName = null;
     this.draggableList = null;
     this.draggableCard = null;
     this.cardName = null;
-    this.listViewer = null;
     this.overlayElement = null;
     this.popupCardName = null;
   }
 
   changeNewListName(newName: string) {
-    this.inputNeListName = newName;
+    this.inputNewListName = newName;
   }
 
   getNewListName() {
-    return this.inputNeListName;
+    return this.inputNewListName;
   }
 
   setDraggableList(draggableList: HTMLElement) {

@@ -1,8 +1,13 @@
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import styles from './addListCardBtn.module.css';
+import globalStyles from '../../globals.module.css';
 import CardListController from '../card.list.component/card.list.controller';
-import { addBtn, closeBtn } from '../user.kit.component/user.kit.components';
+import {
+  addBtn,
+  closeBtn,
+  inputElement,
+} from '../user.kit.component/user.kit.components';
 import CardListView from '../card.list.component/card.list.view';
 
 export default class AddListCardBtnView extends EventEmitter {
@@ -71,24 +76,14 @@ export default class AddListCardBtnView extends EventEmitter {
   }
 
   renderAddCardInputForm() {
-    this.input = create('input', {
-      className: `${styles['input-new-card']} ${styles.hidden}`,
-      child: null,
-      parent: this.form,
-      dataAttr: [
-        ['type', 'text'],
-        ['name', 'name'],
-        ['placeholder', 'Enter list title...'],
-        ['autocomplete', 'off'],
-        ['maxlength', '512'],
-      ],
-    });
-
+    this.input = inputElement();
+    this.input.classList.add(globalStyles.hidden);
+    this.form?.append(this.input);
     const addListBtn = addBtn('Add List');
     const closeListBtn = closeBtn();
 
     this.addBtnContainer = create('div', {
-      className: styles.hidden,
+      className: globalStyles.hidden,
       child: [addListBtn, closeListBtn],
       parent: this.form,
     });
@@ -107,31 +102,30 @@ export default class AddListCardBtnView extends EventEmitter {
 
   showInputForm() {
     if (this.link && this.addBtnContainer && this.input) {
-      this.link.classList.add(styles.hidden);
-      this.addBtnContainer.classList.remove(styles.hidden);
+      this.link.classList.add(globalStyles.hidden);
+      this.addBtnContainer.classList.remove(globalStyles.hidden);
       this.addBtnContainer.classList.add(styles['addBtn-container']);
-      this.input.classList.remove(styles.hidden);
+      this.input.classList.remove(globalStyles.hidden);
       this.input.focus();
     }
   }
 
   closeInputForm() {
     if (this.link && this.addBtnContainer && this.input) {
-      this.link.classList.remove(styles.hidden);
-      this.addBtnContainer.classList.add(styles.hidden);
+      this.link.classList.remove(globalStyles.hidden);
+      this.addBtnContainer.classList.add(globalStyles.hidden);
       this.addBtnContainer.classList.remove(styles['addBtn-container']);
-      this.input.classList.add(styles.hidden);
+      this.input.classList.add(globalStyles.hidden);
     }
   }
 
-  renderNewList() {
-    if (!this.boardModel.inputNeListName) {
+  renderNewList(insertBeforeElement: null | HTMLElement) {
+    if (!this.boardModel.inputNewListName) {
       return;
     }
     const list = new CardListView(this.boardModel, this.board);
     this.newList = list.show();
-
-    this.boardModel.listViewer = list;
+    list.appendList(insertBeforeElement);
 
     this.boardModel.changeNewListName('');
     if (this.input) {
