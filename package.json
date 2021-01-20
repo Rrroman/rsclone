@@ -7,8 +7,8 @@
     "install:client": "cd ./client && npm install",
     "install:server": "cd ./server && npm install",
     "postinstall": "run-p install:*",
-    "start:client:dev": "cd ./client && npm run dev",
     "start:server:dev": "cd ./server && npm run start:dev",
+    "start:client:dev": "cd ./client && npm run dev",
     "start:dev": "run-p start:*:dev"
   },
   "repository": {

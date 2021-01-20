@@ -1,65 +1,71 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Db, ObjectId } from 'mongodb';
-import { DbConnectionKey } from 'src/db-connection/db-connection.module';
-import { CreateBoardDto } from './dto/create-board.dto';
-import { UpdateBoardDto } from './dto/update-board.dto';
-import { Board } from './entities/board.entity';
+import { ObjectId } from 'mongodb';
+import { Board } from './boards.types';
+import { RSMongoClient } from '../db-client/mongo-client';
 
-@Injectable()
-export class BoardsService {
-  constructor(@Inject(DbConnectionKey) private db: Db) {}
+export const getBoardsService = (mongoClient: RSMongoClient) => {
+  const getCollection = async () => {
+    const db = await mongoClient.connect();
+    return db.collection('boards');
+  };
 
-  private COLLECTION_NAME = 'boards';
+  return {
+    async create({ name }: { name: string }): Promise<{ data: Board }> {
+      const collection = await getCollection();
 
-  private getCollection() {
-    return this.db.collection(this.COLLECTION_NAME);
-  }
+      const createdAt = new Date();
 
-  async create(createBoardDto: CreateBoardDto): Promise<{ data: Board }> {
-    const createdAt = new Date();
-    const { ops } = await this.getCollection().insertOne({
-      createdAt,
-      updatedAt: createdAt,
-      ...createBoardDto,
-    });
+      const { ops } = await collection.insertOne({
+        createdAt,
+        updatedAt: createdAt,
+        name,
+      });
 
-    return { data: ops[0] };
-  }
+      return { data: ops[0] };
+    },
 
-  async findAll(): Promise<{ data: Board[] }> {
-    const boards = await this.getCollection().find().toArray();
+    async findAll(): Promise<{ data: Board[] }> {
+      const collection = await getCollection();
 
-    return { data: boards };
-  }
+      const boards = await collection.find<Board>().toArray();
 
-  async findOne(id: string): Promise<{ data: Board }> {
-    const data = await this.getCollection().findOne({ _id: new ObjectId(id) });
+      return { data: boards };
+    },
 
-    return { data };
-  }
+    async findById(id: string): Promise<{ data: Board | null }> {
+      const collection = await getCollection();
 
-  async update(
-    id: string,
-    updateBoardDto: UpdateBoardDto,
-  ): Promise<{ data: Board }> {
-    const { value } = await this.getCollection().findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      {
-        $currentDate: {
-          updatedAt: true,
+      const data = await collection.findOne<Board>({ _id: new ObjectId(id) });
+
+      return { data };
+    },
+
+    async update(
+      id: string,
+      { name }: { name: string }
+    ): Promise<{ data: Board }> {
+      const collection = await getCollection();
+
+      const { value } = await collection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        {
+          $currentDate: {
+            updatedAt: true,
+          },
+          $set: { name },
         },
-        $set: updateBoardDto,
-      },
-      { returnOriginal: false },
-    );
-    return { data: value };
-  }
+        { returnOriginal: false }
+      );
+      return { data: value };
+    },
 
-  async remove(id: string) {
-    const { deletedCount } = await this.getCollection().deleteOne({
-      _id: new ObjectId(id),
-    });
+    async remove(id: string) {
+      const collection = await getCollection();
 
-    return { data: { deletedCount } };
-  }
-}
+      const { deletedCount } = await collection.deleteOne({
+        _id: new ObjectId(id),
+      });
+
+      return { data: { deletedCount } };
+    },
+  };
+};
