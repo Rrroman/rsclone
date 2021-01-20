@@ -8,7 +8,7 @@ export const createMongoClient = () => {
       if (!client) {
         const user = process.env.DB_USER;
         const password = process.env.DB_PASSWORD;
-        const uri = `mongodb+srv://${user}:${password}@rsclone.oiwhe.mongodb.net/rsclone?retryWrites=true&w=majority`;
+        const uri = `mongodb+srv://${user}:${password}@rsclone.sgnsa.mongodb.net/rsclone?retryWrites=true&w=majority`;
         client = await MongoClient.connect(uri, {
           poolSize: 5,
           useUnifiedTopology: true,
