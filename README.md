@@ -1,3 +1,24 @@
-Server and client represent two completely separate projects for now.
+## Description
 
-Ideally they should be split in two separate repositories or the whole repo should be transformed in to monorepo
+[RSSchool task] (https://github.com/rolling-scopes-school/tasks/blob/master/tasks/rsclone/rsclone.md)
+
+This project is a clone of [Trello](https://trello.com/)
+
+The root project is just a wrapper around two completely independent apps (client and server). You can do your work form the root or jump straight to the project you are interested in
+
+## Installation
+
+```bash
+npm install
+```
+
+Will install dependencies for all projects including nested ones
+
+## Running the app
+
+```bash
+# watch mode
+npm run start:dev
+```
+
+Run watch scripts for client and server

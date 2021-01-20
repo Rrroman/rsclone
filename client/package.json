@@ -1,5 +1,5 @@
 {
-  "name": "rsclone",
+  "name": "rsclone-client",
   "version": "1.0.0",
   "description": "RSSchool team task",
   "private": true,
@@ -28,17 +28,12 @@
     "copy-webpack-plugin": "7.0.0",
     "css-loader": "5.0.1",
     "css-modules-typescript-loader": "4.0.1",
-    "eslint": "7.15.0",
     "eslint-config-airbnb-base": "14.2.1",
     "eslint-config-airbnb-typescript": "12.0.0",
     "eslint-config-prettier": "7.0.0",
     "eslint-plugin-import": "2.22.1",
     "file-loader": "6.2.0",
     "html-webpack-plugin": "4.5.0",
-    "husky": "4.3.5",
-    "lint-staged": "10.5.3",
-    "npm-run-all": "4.1.5",
-    "prettier": "2.2.1",
     "style-loader": "2.0.0",
     "ts-loader": "6.2.1",
     "typescript": "3.7.2",
@@ -48,14 +43,5 @@
   },
   "dependencies": {
     "normalize.css": "8.0.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.js": "eslint --cache --fix",
-    "*.{js,css,md}": "prettier --write"
   }
 }
