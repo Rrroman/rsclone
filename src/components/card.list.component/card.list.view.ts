@@ -8,7 +8,7 @@ import create from '../../utils/create';
 import ListMenu from '../listMenu.component/listMenu.view';
 import ListMenuController from '../listMenu.component/listMenu.controller';
 import { renderTextArea } from '../user.kit.component/user.kit.components';
-import renderNewCard from '../user.kit.component/user.kit.render.component'
+import renderNewCard from '../user.kit.component/user.kit.render.component';
 
 export default class CardListView extends EventEmitter {
   cardListBottom: HTMLElement | null;
@@ -62,7 +62,7 @@ export default class CardListView extends EventEmitter {
       dataAttr: [
         ['draggable', 'true'],
         ['list', 'true'],
-        ['data-list-name', this.boardModel.getNewListName()],
+        ['listName', this.boardModel.getNewListName()],
       ],
     });
 
@@ -273,7 +273,7 @@ export default class CardListView extends EventEmitter {
 
   openListMenu(event: MouseEvent) {
     const currentList = (event.target as HTMLElement).closest(
-      '[data-list-wrapper]'
+      '[dataListWrapper]'
     );
 
     const listMenu = new ListMenu(

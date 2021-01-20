@@ -38,17 +38,19 @@
 }
 
 .popup__textarea-description {
+  display: block;
   width: 100%;
-  resize: none;
+
+  padding: 8px 12px;
+  margin: 5px 0;
+  min-height: 60px;
 
   background-color: rgba(9, 30, 66, 0.04);
   box-shadow: none;
   border: none;
   border-radius: 3px;
-  display: block;
-  min-height: 60px;
-  padding: 8px 12px;
   text-decoration: none;
+  resize: none;
   cursor: pointer;
 }
 
@@ -62,4 +64,9 @@
   background-color: #e4f0f6;
   color: #0079bf;
   outline: 0;
+}
+
+.popup__buttons {
+  display: flex;
+  flex-wrap: wrap;
 }

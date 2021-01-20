@@ -174,7 +174,18 @@
   color: #fff;
 }
 
+.add-card-block__add-card-btn:focus {
+  outline: none;
+}
+.add-card-block__add-card-btn:active {
+  outline: none;
+}
+
 .add-card-block__add-card-btn:hover {
+  background-color: #61bd4f;
+  box-shadow: none;
+  border: none;
+  color: #fff;
   cursor: pointer;
 }
 

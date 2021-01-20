@@ -36,7 +36,10 @@ export default class CardController {
   }
 
   saveText(event: any) {
-    this.cardViewer.saveText(event.target.value);
+    const target = event.target.closest('[data-popup]');
+    const textareaValue = target.querySelector('[data-popup-textarea]').value;
+    const closeButton = target.querySelector('[data-close-button]');
+    this.cardViewer.saveText(textareaValue, closeButton, event);
   }
 
   selectText(event: Event) {

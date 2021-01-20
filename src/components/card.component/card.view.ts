@@ -4,7 +4,11 @@ import stylesFromList from '../card.list.component/card.list.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
-import { textAreaAutoHeight } from '../user.kit.component/user.kit.components';
+import {
+  textAreaAutoHeight,
+  addBtn,
+  closeBtn,
+} from '../user.kit.component/user.kit.components';
 
 export default class CardView extends EventEmitter {
   popupTitle: HTMLElement | null;
@@ -122,12 +126,12 @@ export default class CardView extends EventEmitter {
 
     this.textareaDescription = create('textarea', {
       className: styles['popup__textarea-description'],
-      parent: null,
       dataAttr: [
         ['maxlength', '512'],
         ['spellcheck', 'false'],
         ['draggable', 'false'],
         ['placeholder', `${this.textareaDescriptionText}`],
+        ['data-popup-textarea', ''],
       ],
     });
 
@@ -135,17 +139,26 @@ export default class CardView extends EventEmitter {
       this.emit('selectText', selectEvent)
     );
 
-    this.textareaDescription.addEventListener('blur', (blurEvent) =>
-      this.emit('saveText', blurEvent)
+    popupBody.addEventListener('click', (saveEvent: Event) =>
+      this.emit('saveText', saveEvent)
     );
 
     this.textareaDescription.addEventListener('input', () =>
       textAreaAutoHeight(this.textareaDescription!)
     );
 
+    const popupDescriptionButtons = create('div', {
+      className: styles.popup__buttons,
+      child: [addBtn('Save'), closeBtn()],
+    });
+
     const popupDescriptionWrapper = create('div', {
       className: styles['popup__description-wrapper'],
-      child: [popupDescriptionHeader, this.textareaDescription],
+      child: [
+        popupDescriptionHeader,
+        this.textareaDescription,
+        popupDescriptionButtons,
+      ],
     });
 
     if (this.textareaDescription) {
@@ -182,7 +195,13 @@ export default class CardView extends EventEmitter {
     return this;
   }
 
-  saveText(text: string) {
-    this.descriptionTextContainer!.textContent = text;
+  // todo hidden class on close btn click and on save btn.
+  saveText(text: string, closeButton: HTMLElement, event: Event) {
+    if (
+      event.target !== this.textareaDescription &&
+      event.target !== closeButton
+    ) {
+      this.descriptionTextContainer!.textContent = text;
+    }
   }
 }

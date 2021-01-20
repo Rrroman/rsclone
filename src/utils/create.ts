@@ -49,7 +49,7 @@ export default function create(
   if (dataAttr && dataAttr.length) {
     dataAttr.forEach(([attrName, attrValue]) => {
       if (attrValue === '' && element) {
-        element.setAttribute(attrValue, '');
+        element.setAttribute(attrName, '');
       } else if (
         (attrName.match(
           /value|id|placeholder|cols|rows|autocorrect|spellcheck|for|type|draggable/

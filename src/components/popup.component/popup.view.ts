@@ -16,12 +16,8 @@ export default class PopupView extends EventEmitter {
     const popup = create('div', {
       className: styles.popup,
       parent: this.overlay,
+      dataAttr: [['data-popup', '']],
     });
-
-    // create('div', {
-    //   className: styles.popup__inner,
-    //   parent: popup,
-    // });
 
     return popup;
   }
