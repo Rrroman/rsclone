@@ -3,7 +3,6 @@ import globalStyles from '../../globals.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
-import PopupView from '../popup.component/popup.view';
 
 export default class OverlayView extends EventEmitter {
   overlay: HTMLElement | null;
@@ -22,9 +21,11 @@ export default class OverlayView extends EventEmitter {
   }
 
   createOverlay() {
-    const popupView = new PopupView(null, this.appBody);
-
-    this.popup = popupView.createPopup();
+    this.popup = create('div', {
+      className: styles.popup,
+      parent: this.overlay,
+      dataAttr: [['data-popup', '']],
+    });
 
     this.overlay = create('div', {
       className: `${styles.overlay} ${globalStyles.hidden}`,

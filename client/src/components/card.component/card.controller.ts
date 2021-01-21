@@ -5,10 +5,6 @@ export default class CardController {
     this.cardViewer = viewer;
     this.cardViewer
       .on({
-        event: 'openOverlay',
-        listener: (event: Event) => this.openOverlay(event),
-      })
-      .on({
         event: 'addCardDataToPopup',
         listener: (event: Event) => this.addCardDataToPopup(event),
       })

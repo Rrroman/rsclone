@@ -14,3 +14,16 @@
   position: fixed;
   z-index: 20;
 }
+
+.popup {
+  min-height: 300px;
+  max-width: 768px;
+  margin: 48px auto 80px;
+  padding: 20px;
+
+  background-color: #f4f5f7;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+  z-index: 25;
+}
