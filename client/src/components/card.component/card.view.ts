@@ -165,9 +165,6 @@ export default class CardView extends EventEmitter {
     popupBody.addEventListener('click', (hideEvent: Event) =>
       this.emit('hideDescriptionButtons', hideEvent)
     );
-    // popupDescriptionButtons.addEventListener('click', (event) =>
-    //   this.emit('hideDescriptionButtons', event)
-    // );
 
     popupDescriptionCloseButton.addEventListener(
       'click',
@@ -235,7 +232,6 @@ export default class CardView extends EventEmitter {
     return this;
   }
 
-  // todo add previous text to hidden card in list.
   addPreviousText(event: Event) {
     const previousText = (event.target as HTMLTextAreaElement).closest(
       '[data-popup-description-buttons]'
