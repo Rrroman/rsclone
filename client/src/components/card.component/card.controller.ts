@@ -32,18 +32,40 @@ export default class CardController {
       .on({
         event: 'saveText',
         listener: (event: Event) => this.saveText(event),
+      })
+      .on({
+        event: 'showDescriptionButtons',
+        listener: (event: Event) => this.showDescriptionButtons(event),
+      })
+      .on({
+        event: 'addPreviousText',
+        listener: (event: Event) => this.addPreviousText(event),
+      })
+      .on({
+        event: 'hideDescriptionButtons',
+        listener: (event: Event) => this.hideDescriptionButtons(event),
       });
   }
 
+  addPreviousText(event: any) {
+    this.cardViewer.addPreviousText(event);
+  }
+
+  hideDescriptionButtons(event: any) {
+    this.cardViewer.hideDescriptionButtons(event);
+  }
+
+  showDescriptionButtons(event: any) {
+    this.cardViewer.showDescriptionButtons(event);
+  }
+
   saveText(event: any) {
-    const target = event.target.closest('[data-popup]');
-    const textareaValue = target.querySelector('[data-popup-textarea]').value;
-    const closeButton = target.querySelector('[data-close-button]');
-    this.cardViewer.saveText(textareaValue, closeButton, event);
+    this.cardViewer.saveText(event.target.value, event);
   }
 
   selectText(event: Event) {
     this.cardViewer.selectText(event);
+    this.cardViewer.initialPopupText(event);
   }
 
   addCardDataToPopup(event: Event) {

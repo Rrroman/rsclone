@@ -25,6 +25,8 @@ export default class CardView extends EventEmitter {
 
   textareaDescription: HTMLElement | null;
 
+  savedDescriptionTextElement: HTMLElement | null;
+
   textareaDescriptionText: any;
 
   savedText: string;
@@ -44,6 +46,7 @@ export default class CardView extends EventEmitter {
     this.textareaDescription = null;
     this.textareaDescriptionText = 'More detailed description ...';
     this.savedText = '';
+    this.savedDescriptionTextElement = null;
   }
 
   show() {
@@ -65,7 +68,7 @@ export default class CardView extends EventEmitter {
       parent: this.cardListBody,
       dataAttr: [
         ['draggable', 'true'],
-        ['card', 'card'],
+        ['data-card', ''],
       ],
     });
     this.card.prepend(this.descriptionTextContainer);
@@ -139,26 +142,63 @@ export default class CardView extends EventEmitter {
       this.emit('selectText', selectEvent)
     );
 
-    popupBody.addEventListener('click', (saveEvent: Event) =>
-      this.emit('saveText', saveEvent)
+    this.textareaDescription.addEventListener('click', (showEvent) =>
+      this.emit('showDescriptionButtons', showEvent)
+    );
+
+    this.textareaDescription.addEventListener('blur', (blurEvent) =>
+      this.emit('saveText', blurEvent)
     );
 
     this.textareaDescription.addEventListener('input', () =>
       textAreaAutoHeight(this.textareaDescription!)
     );
 
+    const popupDescriptionCloseButton = closeBtn();
+
     const popupDescriptionButtons = create('div', {
-      className: styles.popup__buttons,
-      child: [addBtn('Save'), closeBtn()],
+      className: `${styles.popup__buttons} ${globalStyles.hidden}`,
+      child: [addBtn('Save'), popupDescriptionCloseButton],
+      dataAttr: [['data-popup-description-buttons', '']],
     });
 
-    const popupDescriptionWrapper = create('div', {
-      className: styles['popup__description-wrapper'],
+    popupBody.addEventListener('click', (hideEvent: Event) =>
+      this.emit('hideDescriptionButtons', hideEvent)
+    );
+    // popupDescriptionButtons.addEventListener('click', (event) =>
+    //   this.emit('hideDescriptionButtons', event)
+    // );
+
+    popupDescriptionCloseButton.addEventListener(
+      'click',
+      (addPreviousText: any) => {
+        this.emit('addPreviousText', addPreviousText);
+      }
+    );
+
+    this.savedDescriptionTextElement = create('div', {
+      className: globalStyles.hidden,
+      dataAttr: [['data-save-description-text', '']],
+    });
+
+    const popupDescriptionInner = create('div', {
+      className: styles['popup__description-inner'],
       child: [
         popupDescriptionHeader,
         this.textareaDescription,
         popupDescriptionButtons,
+        this.savedDescriptionTextElement,
       ],
+    });
+
+    const popupSidebar = create('div', {
+      className: styles['popup__sidebar'],
+      child: 'Sidebar',
+    });
+
+    const popupDescriptionWrapper = create('div', {
+      className: styles['popup__description-wrapper'],
+      child: [popupDescriptionInner, popupSidebar],
     });
 
     if (this.textareaDescription) {
@@ -195,13 +235,44 @@ export default class CardView extends EventEmitter {
     return this;
   }
 
-  // todo hidden class on close btn click and on save btn.
-  saveText(text: string, closeButton: HTMLElement, event: Event) {
-    if (
-      event.target !== this.textareaDescription &&
-      event.target !== closeButton
-    ) {
-      this.descriptionTextContainer!.textContent = text;
+  // todo add previous text to hidden card in list.
+  addPreviousText(event: Event) {
+    const previousText = (event.target as HTMLTextAreaElement).closest(
+      '[data-popup-description-buttons]'
+    )!.nextSibling!.textContent;
+
+    if (previousText) {
+      (this.textareaDescription as HTMLTextAreaElement).value = previousText;
     }
+
+    this.descriptionTextContainer!.firstChild!.textContent = previousText;
+
+    console.log(previousText);
+  }
+
+  saveText(text: string) {
+    this.descriptionTextContainer!.textContent = text;
+  }
+
+  hideDescriptionButtons(event: any) {
+    const popupDescriptionButtons = event.target
+      .closest('[data-popup]')
+      .querySelector('[data-popup-description-buttons]');
+    const descriptionTextarea = event.target
+      .closest('[data-popup]')
+      .querySelector('[data-popup-textarea]');
+
+    if (event.target !== descriptionTextarea) {
+      popupDescriptionButtons.classList.add(globalStyles.hidden);
+    }
+  }
+
+  showDescriptionButtons(event: any) {
+    const controlButtons = event.target.nextSibling;
+    controlButtons.classList.remove(globalStyles.hidden);
+  }
+
+  initialPopupText(event: Event) {
+    this.savedDescriptionTextElement!.textContent = (event.target as HTMLTextAreaElement)!.value;
   }
 }
