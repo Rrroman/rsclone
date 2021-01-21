@@ -220,7 +220,7 @@ export default class CardView extends EventEmitter {
 
   popupClose() {
     this.popupBody!.parentElement!.classList.add(globalStyles.hidden);
-    this.popupBody!.innerHTML = ''
+    this.popupBody!.innerHTML = '';
   }
 
   addPopupNameToCard() {
@@ -255,11 +255,8 @@ export default class CardView extends EventEmitter {
 
     if (previousText) {
       (this.textareaDescription as HTMLTextAreaElement).value = previousText;
+      this.descriptionTextContainer!.firstChild!.textContent = previousText;
     }
-
-    this.descriptionTextContainer!.firstChild!.textContent = previousText;
-
-    console.log(previousText);
   }
 
   saveText(text: string) {
