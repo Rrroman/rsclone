@@ -14,11 +14,3 @@
   position: fixed;
   z-index: 20;
 }
-
-.show {
-  display: block;
-}
-
-.hidden {
-  display: none;
-}

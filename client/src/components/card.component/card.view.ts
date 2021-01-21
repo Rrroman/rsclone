@@ -27,6 +27,8 @@ export default class CardView extends EventEmitter {
 
   savedDescriptionTextElement: HTMLElement | null;
 
+  popupBody: HTMLElement | null;
+
   textareaDescriptionText: any;
 
   savedText: string;
@@ -47,6 +49,7 @@ export default class CardView extends EventEmitter {
     this.textareaDescriptionText = 'More detailed description ...';
     this.savedText = '';
     this.savedDescriptionTextElement = null;
+    this.popupBody = null;
   }
 
   show() {
@@ -88,7 +91,7 @@ export default class CardView extends EventEmitter {
     this.clickedCard = target;
     this.popupCardName = target.textContent;
 
-    const popupBody = this.boardModel.overlayElement.firstChild;
+    this.popupBody = this.boardModel.overlayElement.firstChild;
 
     this.listName = target.closest('[data-list-name]').dataset.listName;
 
@@ -162,7 +165,7 @@ export default class CardView extends EventEmitter {
       dataAttr: [['data-popup-description-buttons', '']],
     });
 
-    popupBody.addEventListener('click', (hideEvent: Event) =>
+    this.popupBody!.addEventListener('click', (hideEvent: Event) =>
       this.emit('hideDescriptionButtons', hideEvent)
     );
 
@@ -202,9 +205,22 @@ export default class CardView extends EventEmitter {
       (this.textareaDescription as HTMLTextAreaElement)!.value = this.savedText;
     }
 
-    popupBody.append(this.popupTitle);
-    popupBody.append(popupListName);
-    popupBody.append(popupDescriptionWrapper);
+    const popupCloseButton = closeBtn();
+    popupCloseButton.classList.add(styles['popup__close-button']);
+
+    popupCloseButton.addEventListener('click', () =>
+      this.emit('popupClose', event)
+    );
+
+    this.popupBody!.prepend(popupCloseButton);
+    this.popupBody!.append(this.popupTitle);
+    this.popupBody!.append(popupListName);
+    this.popupBody!.append(popupDescriptionWrapper);
+  }
+
+  popupClose() {
+    this.popupBody!.parentElement!.classList.add(globalStyles.hidden);
+    this.popupBody!.innerHTML = ''
   }
 
   addPopupNameToCard() {

@@ -44,9 +44,16 @@ export default class CardController {
       .on({
         event: 'hideDescriptionButtons',
         listener: (event: Event) => this.hideDescriptionButtons(event),
+      })
+      .on({
+        event: 'popupClose',
+        listener: (event: Event) => this.popupClose(event),
       });
   }
 
+  popupClose(event: any) {
+    this.cardViewer.popupClose(event);
+  }
   addPreviousText(event: any) {
     this.cardViewer.addPreviousText(event);
   }

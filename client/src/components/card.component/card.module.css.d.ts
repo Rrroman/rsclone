@@ -5,6 +5,7 @@ interface CssExports {
   'hidden': string;
   'popup__buttons': string;
   'popup__card-name': string;
+  'popup__close-button': string;
   'popup__description': string;
   'popup__description-inner': string;
   'popup__description-wrapper': string;
