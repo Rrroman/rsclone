@@ -3,6 +3,7 @@
 interface CssExports {
   'card': string;
   'hidden': string;
+  'popup__body': string;
   'popup__buttons': string;
   'popup__card-name': string;
   'popup__close-button': string;

@@ -29,6 +29,8 @@ export default class CardView extends EventEmitter {
 
   popupBody: HTMLElement | null;
 
+  popupCloseButton: HTMLElement | null;
+
   textareaDescriptionText: any;
 
   savedText: string;
@@ -50,6 +52,7 @@ export default class CardView extends EventEmitter {
     this.savedText = '';
     this.savedDescriptionTextElement = null;
     this.popupBody = null;
+    this.popupCloseButton = null;
   }
 
   show() {
@@ -91,7 +94,11 @@ export default class CardView extends EventEmitter {
     this.clickedCard = target;
     this.popupCardName = target.textContent;
 
-    this.popupBody = this.boardModel.overlayElement.firstChild;
+    const popupWrapper = this.boardModel.overlayElement.firstChild;
+
+    this.popupBody = create('div', {
+      className: styles['popup__body'],
+    });
 
     this.listName = target.closest('[data-list-name]').dataset.listName;
 
@@ -165,7 +172,7 @@ export default class CardView extends EventEmitter {
       dataAttr: [['data-popup-description-buttons', '']],
     });
 
-    this.popupBody!.addEventListener('click', (hideEvent: Event) =>
+    this.popupBody!.addEventListener('click', (hideEvent) =>
       this.emit('hideDescriptionButtons', hideEvent)
     );
 
@@ -205,21 +212,27 @@ export default class CardView extends EventEmitter {
       (this.textareaDescription as HTMLTextAreaElement)!.value = this.savedText;
     }
 
-    const popupCloseButton = closeBtn();
-    popupCloseButton.classList.add(styles['popup__close-button']);
+    this.popupCloseButton = create('div', {
+      className: styles['popup__close-button'],
+      child: '&times;',
+      dataAttr: [['data-close-button', '']],
+    });
 
-    popupCloseButton.addEventListener('click', () =>
+    this.popupCloseButton.addEventListener('click', () =>
       this.emit('popupClose', event)
     );
 
-    this.popupBody!.prepend(popupCloseButton);
     this.popupBody!.append(this.popupTitle);
     this.popupBody!.append(popupListName);
     this.popupBody!.append(popupDescriptionWrapper);
+    this.popupBody!.append(this.popupCloseButton);
+    popupWrapper.append(this.popupBody);
   }
 
   popupClose() {
-    this.popupBody!.parentElement!.classList.add(globalStyles.hidden);
+    this.popupBody!.parentElement!.parentElement!.classList.add(
+      globalStyles.hidden
+    );
     this.popupBody!.innerHTML = '';
   }
 
@@ -264,9 +277,15 @@ export default class CardView extends EventEmitter {
   }
 
   hideDescriptionButtons(event: any) {
+    console.log(this.popupCloseButton);
+    console.log(event.target);
+    if (event.target === this.popupCloseButton) {
+      return;
+    }
     const popupDescriptionButtons = event.target
       .closest('[data-popup]')
       .querySelector('[data-popup-description-buttons]');
+
     const descriptionTextarea = event.target
       .closest('[data-popup]')
       .querySelector('[data-popup-textarea]');

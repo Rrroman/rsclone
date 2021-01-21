@@ -12,6 +12,10 @@
   display: none;
 }
 
+.popup__body {
+  font-size: 14px;
+}
+
 .popup__title {
   text-align: center;
 }
@@ -97,6 +101,11 @@
   padding-top: 3px;
   padding-left: 11px;
   z-index: 20;
+
+  color: #42526e;
+  line-height: 32px;
+  font-size: 37px;
+  margin-left: 10px;
 }
 
 .popup__close-button:hover {
@@ -104,4 +113,5 @@
   color: #42526e;
   border-radius: 50%;
   transition: background-color 0.3s ease;
+  cursor: pointer;
 }
