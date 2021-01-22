@@ -9,11 +9,6 @@ export default class CardController {
         listener: (event: Event) => this.addCardDataToPopup(event),
       })
       .on({
-        event: 'addPopupNameToCard',
-        listener: (event: { [key: string]: string }) =>
-          this.addPopupNameToCard(event),
-      })
-      .on({
         event: 'cardDragstart',
         listener: (card: HTMLElement) => this.dragStartFunc(card),
       })
@@ -24,46 +19,7 @@ export default class CardController {
       .on({
         event: 'selectText',
         listener: (event: Event) => this.selectText(event),
-      })
-      .on({
-        event: 'saveText',
-        listener: (event: Event) => this.saveText(event),
-      })
-      .on({
-        event: 'showDescriptionButtons',
-        listener: (event: Event) => this.showDescriptionButtons(event),
-      })
-      .on({
-        event: 'addPreviousText',
-        listener: (event: Event) => this.addPreviousText(event),
-      })
-      .on({
-        event: 'hideDescriptionButtons',
-        listener: (event: Event) => this.hideDescriptionButtons(event),
-      })
-      .on({
-        event: 'popupClose',
-        listener: (event: Event) => this.popupClose(event),
       });
-  }
-
-  popupClose(event: any) {
-    this.cardViewer.popupClose(event);
-  }
-  addPreviousText(event: any) {
-    this.cardViewer.addPreviousText(event);
-  }
-
-  hideDescriptionButtons(event: any) {
-    this.cardViewer.hideDescriptionButtons(event);
-  }
-
-  showDescriptionButtons(event: any) {
-    this.cardViewer.showDescriptionButtons(event);
-  }
-
-  saveText(event: any) {
-    this.cardViewer.saveText(event.target.value, event);
   }
 
   selectText(event: Event) {
@@ -73,15 +29,6 @@ export default class CardController {
 
   addCardDataToPopup(event: Event) {
     this.cardViewer.addCardDataToPopup(event);
-  }
-
-  addPopupNameToCard(event: { [key: string]: any }) {
-    this.boardModel.setPopupCardName(event.target.value);
-    this.cardViewer.addPopupNameToCard();
-  }
-
-  openOverlay(event: Event) {
-    this.cardViewer.openOverlay(event);
   }
 
   dragStartFunc(card: HTMLElement) {

@@ -5,6 +5,7 @@ import stylesFromList from '../card.list.component/card.list.module.css';
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import PopupView from '../popup.component/popup.view';
+import PopupController from '../popup.component/popup.controller';
 
 export default class CardView extends EventEmitter {
   card: HTMLElement | null;
@@ -58,6 +59,7 @@ export default class CardView extends EventEmitter {
         event.target as HTMLElement
       );
       popupView.show();
+      new PopupController(this.boardModel, popupView);
     }
   }
 
@@ -79,4 +81,5 @@ export default class CardView extends EventEmitter {
     event.target.select();
     return this;
   }
+
 }

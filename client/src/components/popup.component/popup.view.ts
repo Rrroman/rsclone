@@ -14,7 +14,7 @@ export default class PopupView extends EventEmitter {
   savedText: string | null;
   popupCardName: string | null;
   popupBody: HTMLElement | null;
-  listName: string | HTMLElement | null;
+  listName: undefined | string | null;
   popupTitle: HTMLElement | null;
   textareaDescription: HTMLElement | null;
   textareaDescriptionText: any;
@@ -28,9 +28,10 @@ export default class PopupView extends EventEmitter {
     this.listName = null;
     this.textareaDescription = null;
     this.textareaDescriptionText = 'More detailed description ...';
-    this.savedText = '';
+    this.savedText = null;
     this.savedDescriptionTextElement = null;
     this.popupBody = null;
+    this.popupCloseButton = null;
     this.popupCloseButton = null;
   }
 
@@ -55,9 +56,9 @@ export default class PopupView extends EventEmitter {
       className: styles['popup__body'],
     });
 
-    this.listName = this.currentCard.closest(
+    this.listName = (this.currentCard.closest(
       '[data-list-name]'
-    )!.dataset.listName;
+    ) as HTMLElement).dataset.listName;
 
     this.popupTitle = create('textarea', {
       className: `${stylesFromCardList['card-name']} ${styles['popup__card-name']}`,
@@ -135,7 +136,7 @@ export default class PopupView extends EventEmitter {
 
     popupDescriptionCloseButton.addEventListener(
       'click',
-      (addPreviousText: any) => {
+      (addPreviousText: Event) => {
         this.emit('addPreviousText', addPreviousText);
       }
     );
@@ -165,7 +166,7 @@ export default class PopupView extends EventEmitter {
       child: [popupDescriptionInner, popupSidebar],
     });
 
-    if (this.textareaDescription) {
+    if (this.textareaDescription && this.savedText) {
       (this.textareaDescription as HTMLTextAreaElement).value = this.savedText;
     }
 
@@ -206,12 +207,12 @@ export default class PopupView extends EventEmitter {
 
     if (previousText) {
       (this.textareaDescription as HTMLTextAreaElement).value = previousText;
-      this.descriptionTextContainer!.firstChild!.textContent = previousText;
+      this.currentCard.previousSibling!.textContent = previousText;
     }
   }
 
   saveText(text: string) {
-    this.descriptionTextContainer!.textContent = text;
+    this.currentCard.previousSibling!.textContent = text;
   }
 
   selectText(event: any) {
@@ -224,8 +225,6 @@ export default class PopupView extends EventEmitter {
   }
 
   hideDescriptionButtons(event: any) {
-    console.log(this.popupCloseButton);
-    console.log(event.target);
     if (event.target === this.popupCloseButton) {
       return;
     }
