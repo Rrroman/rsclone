@@ -13,6 +13,8 @@ export default class BoardModel extends EventEmitter {
 
   popupCardName: string | null;
 
+  dataError: null | { [key: string]: string | { [key: string]: string } };
+
   constructor() {
     super();
     this.inputNewListName = null;
@@ -21,6 +23,49 @@ export default class BoardModel extends EventEmitter {
     this.cardName = null;
     this.overlayElement = null;
     this.popupCardName = null;
+    this.dataError = null;
+  }
+
+  async fetchNewUser(userData: { name: string; password: string }) {
+    await fetch('http://localhost:3000/api/user/register', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then((data: { [key: string]: string | { [key: string]: string } }) => {
+        this.checkErrors(data);
+        console.log(this.dataError);
+      })
+      .catch(alert);
+  }
+
+  async fetchCurrentUser(userData: { name: string; password: string }) {
+    await fetch('http://localhost:3000/api/user/login', {
+      method: 'POST',
+      body: JSON.stringify(userData),
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then((data: { [key: string]: string | { [key: string]: string } }) => {
+        this.checkErrors(data);
+        console.log(this.dataError);
+      })
+      .catch(alert);
+  }
+
+  checkErrors(data: {
+    [key: string]: string | { [key: string]: string };
+  }): void {
+    if (data.errors) {
+      this.dataError = data;
+    } else {
+      this.dataError = null;
+    }
   }
 
   changeNewListName(newName: string) {

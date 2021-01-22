@@ -55,7 +55,7 @@ export default function create(
           /value|id|placeholder|cols|rows|autocorrect|spellcheck|for|type|draggable/
         ) ||
           attrName.match(
-            /style|src|alt|href|target|size|key|autocomplete|maxlength|name/
+            /style|src|alt|href|target|size|key|autocomplete|maxlength|name|action|method/
           ) ||
           attrName.match(
             /accept|align|checked|defaultChecked|defaultValue|dir|dirName|disabled|files/

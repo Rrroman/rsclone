@@ -8,16 +8,16 @@ import AppController from './app.controller';
 import OverlayController from '../overlay.component/overlay.controller';
 
 export default class AppView extends EventEmitter {
-  constructor(public model: unknown, public elements: any) {
+  constructor(public model: unknown, public body: any) {
     super();
   }
 
   show() {
     const appModel = new AppModel();
-    const header = new HeaderView(null, this.elements.body);
-    const footer = new FooterView(null, this.elements.body);
-    const main = new MainView(appModel, this.elements.body);
-    const overlay = new OverlayView(null, this.elements.body);
+    const header = new HeaderView(null, this.body);
+    const footer = new FooterView(null, this.body);
+    const main = new MainView(appModel, this.body);
+    const overlay = new OverlayView(null, this.body);
 
     footer.show();
     main.show();
