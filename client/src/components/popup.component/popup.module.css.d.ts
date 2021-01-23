@@ -12,8 +12,10 @@ interface CssExports {
   'popup__list-name': string;
   'popup__list-text': string;
   'popup__sidebar': string;
+  'popup__sidebar-button': string;
   'popup__textarea-description': string;
   'popup__title': string;
+  'sidebar__title': string;
 }
 export const cssExports: CssExports;
 export default cssExports;

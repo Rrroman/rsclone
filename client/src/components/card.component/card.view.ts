@@ -35,6 +35,7 @@ export default class CardView extends EventEmitter {
     });
 
     const cardDescriptionTextHidden = create('div', {
+      className: styles['card__text'],
       child: this.boardModel.cardName,
     });
 
@@ -81,5 +82,4 @@ export default class CardView extends EventEmitter {
     event.target.select();
     return this;
   }
-
 }

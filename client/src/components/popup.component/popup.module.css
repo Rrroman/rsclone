@@ -9,6 +9,7 @@
   overflow: hidden;
   position: relative;
   z-index: 25;
+  color: #172b4d;
 }
 
 .popup__body {
@@ -25,11 +26,13 @@
 
 .popup__list-text {
   padding: 9px;
+  color: #5e6c84;
 }
 
 .popup__card-name {
-  font-size: 20px;
   height: 32px;
+  font-size: 20px;
+  color: #172b4d;
 }
 
 .popup__description-wrapper {
@@ -43,6 +46,7 @@
   width: 168px;
   overflow: hidden;
   z-index: 10;
+  color: #5e6c84;
 }
 
 .popup__description-inner {
@@ -52,6 +56,7 @@
 }
 
 .popup__description {
+  margin: 12px 0;
   font-size: 16px;
 }
 
@@ -61,7 +66,7 @@
 
   padding: 8px 12px;
   margin: 5px 0;
-  min-height: 60px;
+  min-height: 71px;
   max-height: 300px;
 
   background-color: rgba(9, 30, 66, 0.04);
@@ -113,4 +118,47 @@
   border-radius: 50%;
   transition: background-color 0.3s ease;
   cursor: pointer;
+}
+
+.popup__sidebar-button {
+  position: relative;
+  margin-top: 8px;
+  padding: 6px 12px;
+  height: 32px;
+  width: 100%;
+  max-width: 300px;
+
+  background-color: rgba(9, 30, 66, 0.04);
+  box-shadow: none;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  overflow: hidden;
+
+  text-align: start;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  transition-property: background-color, border-color, box-shadow;
+  transition-duration: 85ms;
+  transition-timing-function: ease;
+}
+
+.popup__sidebar-button:hover {
+  background-color: rgba(9, 30, 66, 0.08);
+  box-shadow: none;
+  border: none;
+}
+
+.popup__sidebar-button:active {
+  background-color: #e4f0f6;
+  box-shadow: none;
+  border: none;
+  outline: 0;
+}
+
+.sidebar__title {
+  margin-bottom: 4px;
+  text-transform: uppercase;
 }

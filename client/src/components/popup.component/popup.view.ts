@@ -156,9 +156,26 @@ export default class PopupView extends EventEmitter {
       ],
     });
 
+    const sidebarTitle = create('h3', {
+      className: styles['sidebar__title'],
+      child: 'add to card',
+    });
+
+    const labelsButton = create('button', {
+      className: styles['popup__sidebar-button'],
+      child: 'Labels',
+      dataAttr: [['title', 'label']],
+    });
+
+    const checklistButton = create('button', {
+      className: styles['popup__sidebar-button'],
+      child: 'Checklist',
+      dataAttr: [['title', 'checklist']],
+    });
+
     const popupSidebar = create('div', {
       className: styles['popup__sidebar'],
-      child: 'Sidebar',
+      child: [sidebarTitle, labelsButton, checklistButton],
     });
 
     const popupDescriptionWrapper = create('div', {
