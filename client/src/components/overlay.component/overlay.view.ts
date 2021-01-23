@@ -10,7 +10,7 @@ export default class OverlayView extends EventEmitter {
 
   popup: HTMLElement | null;
 
-  constructor(public overlayModel: any, public appBody: HTMLElement) {
+  constructor(public boardModel: any, public appBody: HTMLElement) {
     super();
     this.overlay = null;
     this.popup = null;
@@ -18,6 +18,7 @@ export default class OverlayView extends EventEmitter {
 
   show() {
     this.createOverlay();
+    this.boardModel.overlayElement = this.overlay;
     return this.overlay;
   }
 

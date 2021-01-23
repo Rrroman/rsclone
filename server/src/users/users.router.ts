@@ -10,17 +10,6 @@ export const getUsersRouter = (mongoClient: RSMongoClient) => {
   const router = express.Router();
   const usersService = getUsersService(mongoClient);
 
-  router.get(`/login`, async (req, res) => {
-    res.send('login rout work');
-
-    // try {
-    //   const data = await usersService.findAll();
-
-    //   res.json({ data });
-    // } catch (err) {
-    //   next(err);
-    // }
-  });
   router.post('/login', async (req, res) => {
     const validateErr = validationResult(req);
     if (!validateErr.isEmpty()) {
@@ -91,25 +80,6 @@ export const getUsersRouter = (mongoClient: RSMongoClient) => {
       }
     }
   );
-  // router.get(`/:id`, async (req, res, next) => {
-  //   try {
-  //     const data = await boardsService.findById(req.params.id);
-
-  //     res.json({ data });
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // });
-
-  // router.put(`/:id`, async (req, res, next) => {
-  //   try {
-  //     const data = await boardsService.update(req.params.id, req.body);
-
-  //     res.json({ data });
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // });
 
   return router;
 };

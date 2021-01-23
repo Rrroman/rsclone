@@ -11,6 +11,7 @@ export default class BoardHeaderView extends EventEmitter {
   }
 
   show() {
+    XMLDocument;
     this.renderBoardHeader();
   }
 
