@@ -100,7 +100,7 @@
   padding: 4px 8px;
   resize: none;
   max-height: 256px;
-  width: 100%;
+  width: 95%;
   outline: none;
   border: none;
   transition-property: background-color, border-color, box-shadow;
@@ -174,7 +174,18 @@
   color: #fff;
 }
 
+.add-card-block__add-card-btn:focus {
+  outline: none;
+}
+.add-card-block__add-card-btn:active {
+  outline: none;
+}
+
 .add-card-block__add-card-btn:hover {
+  background-color: #61bd4f;
+  box-shadow: none;
+  border: none;
+  color: #fff;
   cursor: pointer;
 }
 

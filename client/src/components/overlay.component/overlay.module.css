@@ -15,10 +15,15 @@
   z-index: 20;
 }
 
-.show {
-  display: block;
-}
+.popup {
+  min-height: 300px;
+  max-width: 768px;
+  margin: 48px auto 80px;
+  padding: 20px;
 
-.hidden {
-  display: none;
+  background-color: #f4f5f7;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+  z-index: 25;
 }
