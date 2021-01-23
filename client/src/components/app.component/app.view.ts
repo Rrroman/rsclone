@@ -6,32 +6,28 @@ import OverlayView from '../overlay.component/overlay.view';
 import AppModel from './app.model';
 import AppController from './app.controller';
 import OverlayController from '../overlay.component/overlay.controller';
+import BoardModel from '../board.component/board.model';
 
 export default class AppView extends EventEmitter {
-  constructor(public model: unknown, public elements: any) {
+  constructor(public model: unknown, public body: any) {
     super();
   }
 
   show() {
     const appModel = new AppModel();
-    const header = new HeaderView(null, this.elements.body);
-    const footer = new FooterView(null, this.elements.body);
-    const main = new MainView(appModel, this.elements.body);
-    const overlay = new OverlayView(null, this.elements.body);
+    const boardModel = new BoardModel();
+    const header = new HeaderView(boardModel, this.body);
+    const footer = new FooterView(null, this.body);
+    const main = new MainView(appModel, this.body);
+    const overlay = new OverlayView(appModel, this.body);
 
     footer.show();
     main.show();
     header.show();
-    const overlayElement = overlay.show();
+    overlay.show();
 
-    // eslint-disable-next-line no-new
     new OverlayController(appModel, overlay);
 
-    // eslint-disable-next-line no-new
     new AppController(appModel, main);
-
-    document.addEventListener('DOMContentLoaded', () => {
-      main.emit('documentLoaded', overlayElement);
-    });
   }
 }

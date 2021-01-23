@@ -29,7 +29,6 @@ export const getBoardsRouter = (mongoClient: RSMongoClient) => {
   router.post(`/`, async (req, res, next) => {
     try {
       const data = await boardsService.create(req.body);
-
       res.json({ data });
     } catch (err) {
       next(err);
