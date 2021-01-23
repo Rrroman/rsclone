@@ -2,7 +2,20 @@
 // Please do not change this file!
 interface CssExports {
   'popup': string;
-  'popup__inner': string;
+  'popup__body': string;
+  'popup__buttons': string;
+  'popup__card-name': string;
+  'popup__close-button': string;
+  'popup__description': string;
+  'popup__description-inner': string;
+  'popup__description-wrapper': string;
+  'popup__list-name': string;
+  'popup__list-text': string;
+  'popup__sidebar': string;
+  'popup__sidebar-button': string;
+  'popup__textarea-description': string;
+  'popup__title': string;
+  'sidebar__title': string;
 }
 export const cssExports: CssExports;
 export default cssExports;

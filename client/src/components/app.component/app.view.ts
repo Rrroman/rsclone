@@ -19,7 +19,7 @@ export default class AppView extends EventEmitter {
     const header = new HeaderView(boardModel, this.body);
     const footer = new FooterView(null, this.body);
     const main = new MainView(appModel, this.body);
-    const overlay = new OverlayView(AppModel, this.body);
+    const overlay = new OverlayView(appModel, this.body);
 
     footer.show();
     main.show();

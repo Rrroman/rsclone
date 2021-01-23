@@ -40,7 +40,7 @@ export default class AddListCardBtnController {
     event.preventDefault();
     this.addListCardBtn.renderNewList(null);
     this.addListCardBtn.closeInputForm();
-    // this.boardModel.overlayElement = this.appModel.overlayElement;
+    this.boardModel.overlayElement = this.appModel.overlayElement;
   }
 
   inputNewListName(event: { [key: string]: any }) {

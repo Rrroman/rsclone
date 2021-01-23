@@ -5,17 +5,8 @@ export default class CardController {
     this.cardViewer = viewer;
     this.cardViewer
       .on({
-        event: 'openOverlay',
-        listener: (event: Event) => this.openOverlay(event),
-      })
-      .on({
         event: 'addCardDataToPopup',
         listener: (event: Event) => this.addCardDataToPopup(event),
-      })
-      .on({
-        event: 'addPopupNameToCard',
-        listener: (event: { [key: string]: string }) =>
-          this.addPopupNameToCard(event),
       })
       .on({
         event: 'cardDragstart',
@@ -28,32 +19,16 @@ export default class CardController {
       .on({
         event: 'selectText',
         listener: (event: Event) => this.selectText(event),
-      })
-      .on({
-        event: 'saveText',
-        listener: (event: Event) => this.saveText(event),
       });
-  }
-
-  saveText(event: any) {
-    this.cardViewer.saveText(event.target.value);
   }
 
   selectText(event: Event) {
     this.cardViewer.selectText(event);
+    this.cardViewer.initialPopupText(event);
   }
 
   addCardDataToPopup(event: Event) {
     this.cardViewer.addCardDataToPopup(event);
-  }
-
-  addPopupNameToCard(event: { [key: string]: any }) {
-    this.boardModel.setPopupCardName(event.target.value);
-    this.cardViewer.addPopupNameToCard();
-  }
-
-  openOverlay(event: Event) {
-    this.cardViewer.openOverlay(event);
   }
 
   dragStartFunc(card: HTMLElement) {

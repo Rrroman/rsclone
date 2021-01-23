@@ -32,6 +32,7 @@ function closeBtn() {
   return create('div', {
     className: styles['close-input'],
     child: '&times;',
+    dataAttr: [['data-close-button', '']],
   });
 }
 
