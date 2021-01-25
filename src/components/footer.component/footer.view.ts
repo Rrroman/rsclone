@@ -29,31 +29,16 @@ export default class FooterView extends EventEmitter {
       parent: footerContainer,
     });
 
-    create('div', {
-      className: styles.year,
-      child: 'created in 2021 by',
-      parent: footerInfo,
-    });
-
-    const RSlogo = createIcon(styles.rs_logo, rsLogo);
-
-    const rsLink = create('div', {
-      className: styles.rs_link,
-      child: RSlogo,
-      parent: footerInfo,
-    });
-
-    create('a', {
-      className: styles.rs_link,
+    const githubInfo = create('div', {
+      className: styles.github_info,
       child: null,
-      parent: rsLink,
-      dataAttr: [['href', 'https://rs.school/js/']],
+      parent: footerInfo,
     });
 
-    const gitHubLinks = create('div', {
+const gitHubLinks = create('div', {
       className: styles.github_links,
       child: null,
-      parent: footerInfo,
+      parent: githubInfo,
     });
 
     create('a', {
@@ -63,6 +48,12 @@ export default class FooterView extends EventEmitter {
       dataAttr: [['href', 'https://github.com/Gaziz666']],
     });
 
+    create('span', {
+      className: styles.github_link,
+      child: '&',
+      parent: gitHubLinks,
+    });
+
     create('a', {
       className: styles.github_link,
       child: 'Rrroman',
@@ -70,11 +61,50 @@ export default class FooterView extends EventEmitter {
       dataAttr: [['href', 'https://github.com/Rrroman']],
     });
 
+    create('span', {
+      className: styles.github_link,
+      child: '&',
+      parent: gitHubLinks,
+    });
+
     create('a', {
       className: styles.github_link,
       child: 'filonushka',
       parent: gitHubLinks,
       dataAttr: [['href', 'https://github.com/filonushka']],
+    });
+
+const rsInfo = create('div', {
+      className: styles.rs_info,
+      child: null,
+      parent: footerInfo,
+    });
+
+    create('div', {
+      className: styles.year,
+      child: 'created at',
+      parent: rsInfo,
+    });
+
+    const RSlogo = createIcon(styles.rs_logo, rsLogo);
+
+    const rsLink = create('div', {
+      className: styles.rs_link,
+      child: RSlogo,
+      parent: rsInfo,
+    });
+        
+    create('a', {
+      className: styles.rs_link,
+      child: null,
+      parent: rsLink,
+      dataAttr: [['href', 'https://rs.school/js/']],
+    });
+    
+      create('div', {
+      className: styles.year,
+      child: 'in 2021',
+      parent: rsInfo,
     });
 
     this.elements.prepend(footer);

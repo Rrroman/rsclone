@@ -4,8 +4,10 @@ interface CssExports {
   'footer': string;
   'footer_container': string;
   'footer_info': string;
+  'github_info': string;
   'github_link': string;
   'github_links': string;
+  'rs_info': string;
   'rs_link': string;
   'rs_logo': string;
   'year': string;

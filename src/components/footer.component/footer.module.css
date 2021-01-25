@@ -6,7 +6,6 @@
   height: 70px;
   font-size: 1rem;
   font-weight: 900;
-  margin-top: 25px;
 }
 
 .footer_container {
@@ -25,6 +24,11 @@
   margin: 0 auto;
 }
 
+.github_info, .rs_info {
+  display: flex;
+  align-items: center;
+}
+
 .github_links,
 .year {
   display: flex;
@@ -37,7 +41,7 @@
   color: #000000;
   align-items: center;
   text-align: center;
-  padding: 0 10px;
+  padding: 0 5px;
 }
 
 .rs_link {
@@ -46,6 +50,6 @@
 }
 
 .rs_logo {
-  height: 30px;
+  height: 20px;
   width: 60px;
 }

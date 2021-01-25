@@ -86,7 +86,7 @@ export default class CardView extends EventEmitter {
 
     const popupDescriptionHeader = create('h3', {
       className: styles.popup__description,
-      child: 'Description wrapper',
+      child: '<i class="fas fa-align-left"></i> Description wrapper',
     });
 
     const fakeDescription = create('a', {
