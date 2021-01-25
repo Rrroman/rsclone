@@ -1,0 +1,11 @@
+.hidden {
+  display: none;
+}
+
+div.hidden {
+  display: none;
+}
+
+.show {
+  display: block;
+}
