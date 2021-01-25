@@ -78,7 +78,7 @@ export default class AddListCardBtnView extends EventEmitter {
   }
 
   renderAddCardInputForm() {
-    this.input = inputElement();
+    this.input = inputElement('Enter list title...');
     this.input.classList.add(globalStyles.hidden);
     this.form?.append(this.input);
     const addListBtn = addBtn('Add List');

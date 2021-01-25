@@ -3,14 +3,11 @@ import create from '../../utils/create';
 import styles from './board.module.css';
 import AddListCardBtnView from '../addListCardBtn.component/addListCardBtn.view';
 import AddListCardBtnController from '../addListCardBtn.component/addListCardBtn.controller';
-import BoardModel from './board.model';
 
 export default class Board extends EventEmitter {
   boardWrapper: HTMLElement;
 
   board: HTMLElement | null;
-
-  boardModel: any;
 
   dragSpeed: number;
 
@@ -20,7 +17,7 @@ export default class Board extends EventEmitter {
 
   left: number;
 
-  constructor(public model: any, public elements: HTMLElement) {
+  constructor(public boardModel: any, public elements: HTMLElement) {
     super();
     this.boardWrapper = elements;
     this.board = null;
@@ -41,7 +38,6 @@ export default class Board extends EventEmitter {
       parent: this.boardWrapper,
     });
 
-    this.boardModel = new BoardModel();
     const addNewListBtn = new AddListCardBtnView(this.boardModel, this.board);
     const addBtnElement = addNewListBtn.show();
     if (addBtnElement) {
@@ -49,7 +45,7 @@ export default class Board extends EventEmitter {
     }
 
     // eslint-disable-next-line no-new
-    new AddListCardBtnController(this.boardModel, this.model, addNewListBtn);
+    new AddListCardBtnController(this.boardModel, addNewListBtn);
 
     this.board.addEventListener('dragover', (event: Event) =>
       this.emit('dragover', event)

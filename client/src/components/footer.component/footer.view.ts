@@ -97,6 +97,6 @@ export default class FooterView extends EventEmitter {
     gitHubInfo.append(year, gitHubLogo, gitHubLinks);
     footerContainer.append(rsLink, gitHubInfo);
     footer.append(footerContainer);
-    this.elements.prepend(footer);
+    this.elements.append(footer);
   }
 }

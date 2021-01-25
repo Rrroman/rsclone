@@ -9,25 +9,18 @@ import BoardController from '../board.component/board.controller';
 export default class MainView extends EventEmitter {
   main!: HTMLElement;
 
-  constructor(public model: any, public elements: any) {
+  constructor(public boardModel: any, public mainElement: any) {
     super();
   }
 
   show() {
     this.createMain();
-    return this.main;
   }
 
   createMain() {
-    this.main = create('main', {
-      className: styles.main,
-      child: null,
-    });
-
     const mainInner = create('div', {
       className: styles['main-inner'],
       child: null,
-      parent: this.main,
     });
 
     const boardContainer = create('div', {
@@ -36,7 +29,7 @@ export default class MainView extends EventEmitter {
       parent: mainInner,
     });
 
-    new BoardHeaderView(this.model, boardContainer).show();
+    new BoardHeaderView(this.boardModel, boardContainer).show();
 
     const boardWrapper = create('div', {
       className: styles['board-wrapper'],
@@ -44,12 +37,12 @@ export default class MainView extends EventEmitter {
       parent: boardContainer,
     });
 
-    const boardView = new Board(this.model, boardWrapper);
+    const boardView = new Board(this.boardModel, boardWrapper);
     boardView.show();
 
     // eslint-disable-next-line no-new
-    new BoardController(this.model, boardView);
+    new BoardController(this.boardModel, boardView);
 
-    this.elements.prepend(this.main);
+    this.mainElement.prepend(mainInner);
   }
 }
