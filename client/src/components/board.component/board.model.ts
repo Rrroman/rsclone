@@ -1,5 +1,6 @@
 import { Board } from './../board.component/board.type';
 import EventEmitter from '../../utils/eventEmitter';
+import { List } from '../card.list.component/card.list.types';
 
 export default class BoardModel extends EventEmitter {
   inputNewListName: any | null;
@@ -122,6 +123,37 @@ export default class BoardModel extends EventEmitter {
       .then((data: { data: { data: Board } }) => {
         this.userBoards!.push(data.data.data);
         console.log('new board data.json', this.userBoards);
+      })
+      .catch(alert);
+  }
+
+  async fetchNewList() {
+    if (typeof this.dataUser?.name !== 'string') {
+      return;
+    }
+    const listData: List = {
+      name: this.getNewListName(),
+      order: 0, // then changes .................................................................................................
+      userName: this.dataUser!.name,
+      boardId: this.userBoards![this.currentBoardIndex]._id,
+      cards: [],
+    };
+    console.log(listData);
+    await fetch('http://localhost:3000/api/list/new', {
+      method: 'POST',
+      body: JSON.stringify(listData),
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(function (response) {
+        console.log('new list response', response);
+        return response.json();
+      })
+      .then((data: { data: { data: List } }) => {
+        this.userBoards![this.currentBoardIndex].lists!.push(data.data.data);
+        console.log(
+          'new list data.json',
+          this.userBoards![this.currentBoardIndex].lists
+        );
       })
       .catch(alert);
   }

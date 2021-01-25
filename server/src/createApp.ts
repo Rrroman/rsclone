@@ -5,6 +5,7 @@ import cors from 'cors';
 import { getBoardsRouter } from './boards/boards.router';
 import { RSMongoClient } from './db-client/mongo-client';
 import { getUsersRouter } from './users/users.router';
+import { getListsRouter } from './lists/list.router';
 
 export const createApp = (mongoClient: RSMongoClient) => {
   const app = express();
@@ -15,6 +16,7 @@ export const createApp = (mongoClient: RSMongoClient) => {
 
   app.use('/api/board', getBoardsRouter(mongoClient));
   app.use('/api/user', getUsersRouter(mongoClient));
+  app.use('/api/list', getListsRouter(mongoClient));
 
   return app;
 };
