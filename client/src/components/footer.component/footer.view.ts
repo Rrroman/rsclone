@@ -35,7 +35,7 @@ export default class FooterView extends EventEmitter {
       parent: footerInfo,
     });
 
-const gitHubLinks = create('div', {
+    const gitHubLinks = create('div', {
       className: styles.github_links,
       child: null,
       parent: githubInfo,
@@ -74,7 +74,7 @@ const gitHubLinks = create('div', {
       dataAttr: [['href', 'https://github.com/filonushka']],
     });
 
-const rsInfo = create('div', {
+    const rsInfo = create('div', {
       className: styles.rs_info,
       child: null,
       parent: footerInfo,
@@ -93,20 +93,20 @@ const rsInfo = create('div', {
       child: RSlogo,
       parent: rsInfo,
     });
-        
+
     create('a', {
       className: styles.rs_link,
       child: null,
       parent: rsLink,
       dataAttr: [['href', 'https://rs.school/js/']],
     });
-    
-      create('div', {
+
+    create('div', {
       className: styles.year,
       child: 'in 2021',
       parent: rsInfo,
     });
 
-    this.elements.prepend(footer);
+    this.elements.append(footer);
   }
 }

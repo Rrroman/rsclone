@@ -11,12 +11,29 @@ import {
   notificationIcon,
 } from '../../utils/icons';
 
+import BoardModel from '../board.component/board.model';
+
+import HeaderBoardsMenuView from '../header.boardsMenu.component/header.boardsMenu.view';
+import HeaderBoardsMenuController from '../header.boardsMenu.component/header.boardsMenu.controller';
+
 export default class HeaderView extends EventEmitter {
   header: HTMLElement | null;
+  menuWrapper: HTMLElement | null;
+  addBoardText: HTMLElement | null;
+  inputForm: HTMLElement | null;
+  input: HTMLElement | null;
 
-  constructor(public model: unknown, public elements: any) {
+  constructor(
+    public boardModel: BoardModel,
+    public body: any,
+    public mainElement: HTMLElement
+  ) {
     super();
     this.header = null;
+    this.menuWrapper = null;
+    this.addBoardText = null;
+    this.inputForm = null;
+    this.input = null;
   }
 
   show() {
@@ -41,48 +58,10 @@ export default class HeaderView extends EventEmitter {
       parent: headerWrapper,
     });
 
-    const iconHome = createIcon(styles.home__icon, homeIcon);
-    create('button', {
-      className: styles.button__home,
-      child: iconHome,
-      parent: headerLeftColumn,
-    });
-
-    const iconTrello = createIcon(styles.trello__icon, trelloIcon);
-    const buttonBoard = create('button', {
-      className: styles.button__boards,
-      child: iconTrello,
-      parent: headerLeftColumn,
-    });
-
-    create('span', {
-      // className: styles.button__boards_text,
-      child: 'Boards',
-      parent: buttonBoard,
-    });
-
-    const iconSearch = createIcon(styles.search__icon, searchIcon);
-    create('button', {
-      className: styles.button__search,
-      child: iconSearch,
-      parent: headerLeftColumn,
-    });
-
     const headerLogo = create('div', {
       // className: styles.header__logo,
       child: null,
       parent: headerWrapper,
-    });
-
-    create('span', {
-      className: styles.header__loading_logo,
-      child: null,
-      parent: headerLogo,
-    });
-    create('span', {
-      className: styles.header__img,
-      child: null,
-      parent: headerLogo,
     });
 
     const headerRightColumn = create('div', {
@@ -114,7 +93,61 @@ export default class HeaderView extends EventEmitter {
       parent: headerRightColumn,
     });
 
-    this.elements.prepend(header);
+    create('span', {
+      className: styles.header__loading_logo,
+      child: null,
+      parent: headerLogo,
+    });
+    create('span', {
+      className: styles.header__img,
+      child: null,
+      parent: headerLogo,
+    });
+
+    const iconHome = createIcon(styles.home__icon, homeIcon);
+    create('button', {
+      className: styles.button__home,
+      child: iconHome,
+      parent: headerLeftColumn,
+    });
+
+    const iconTrello = createIcon(styles.trello__icon, trelloIcon);
+    const buttonBoard = create('button', {
+      className: styles.button__boards,
+      child: iconTrello,
+      parent: headerLeftColumn,
+    });
+
+    create('span', {
+      // className: styles.button__boards_text,
+      child: 'Boards',
+      parent: buttonBoard,
+    });
+
+    const iconSearch = createIcon(styles.search__icon, searchIcon);
+    create('button', {
+      className: styles.button__search,
+      child: iconSearch,
+      parent: headerLeftColumn,
+    });
+
+    this.body.prepend(header);
+
+    buttonBoard.addEventListener('click', () => this.emit('openBoardMenu'));
+  }
+
+  openBoardMenu() {
+    if (this.boardModel.headerBoardsMenuIsOpen) {
+      return;
+    }
+    const headerBoardsMenu = new HeaderBoardsMenuView(
+      this.boardModel,
+      this.body,
+      this.mainElement
+    );
+    headerBoardsMenu.show();
+    this.boardModel.headerBoardsMenuIsOpen = true;
+
+    new HeaderBoardsMenuController(this.boardModel, headerBoardsMenu);
   }
 }
-

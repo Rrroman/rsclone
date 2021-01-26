@@ -13,7 +13,7 @@ export const createApp = (mongoClient: RSMongoClient) => {
   app.use(cors());
   app.use(bodyParser.json());
 
-  app.use('/api/boards', getBoardsRouter(mongoClient));
+  app.use('/api/board', getBoardsRouter(mongoClient));
   app.use('/api/user', getUsersRouter(mongoClient));
 
   return app;

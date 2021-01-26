@@ -9,7 +9,15 @@ export const getBoardsService = (mongoClient: RSMongoClient) => {
   };
 
   return {
-    async create({ name }: { name: string }): Promise<{ data: Board }> {
+    async create({
+      name,
+      userName,
+      favorite,
+    }: {
+      name: string;
+      userName: string;
+      favorite: string;
+    }): Promise<{ data: Board }> {
       const collection = await getCollection();
 
       const createdAt = new Date();
@@ -18,9 +26,19 @@ export const getBoardsService = (mongoClient: RSMongoClient) => {
         createdAt,
         updatedAt: createdAt,
         name,
+        userName,
+        favorite,
       });
 
       return { data: ops[0] };
+    },
+
+    async findById(id: string): Promise<{ data: Board | null }> {
+      const collection = await getCollection();
+
+      const data = await collection.findOne<Board>({ _id: new ObjectId(id) });
+
+      return { data };
     },
 
     async findAll(): Promise<{ data: Board[] }> {
@@ -31,12 +49,14 @@ export const getBoardsService = (mongoClient: RSMongoClient) => {
       return { data: boards };
     },
 
-    async findById(id: string): Promise<{ data: Board | null }> {
+    async findByUserName(userName: string): Promise<{ data: Board[] }> {
       const collection = await getCollection();
 
-      const data = await collection.findOne<Board>({ _id: new ObjectId(id) });
+      const boards = await collection
+        .find<Board>({ userName: userName })
+        .toArray();
 
-      return { data };
+      return { data: boards };
     },
 
     async update(
