@@ -91,15 +91,6 @@ export default class BoardModel extends EventEmitter {
         return response.json();
       })
       .then((data: { [data: string]: { [data: string]: Board[] } }) => {
-        if (data.data.data[0] === undefined) {
-          this.fetchNewBoard({
-            name: 'my board',
-            userName: this.dataUser!.name,
-            favorite: true,
-          });
-          console.log('is empty', data);
-        }
-
         this.userBoards = data.data.data;
         console.log('find board in db', this.userBoards);
       })

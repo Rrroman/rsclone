@@ -80,6 +80,7 @@
   padding: 0 4px;
   z-index: 1;
   min-height: 0;
+  max-height: calc(100vh - 350px);
 }
 
 .card-list__menu-btn {
