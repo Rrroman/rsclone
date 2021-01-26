@@ -3,12 +3,13 @@
 interface CssExports {
   'footer': string;
   'footer_container': string;
+  'footer_info': string;
   'github_info': string;
   'github_link': string;
   'github_links': string;
-  'github_logo': string;
-  'rs_image': string;
+  'rs_info': string;
   'rs_link': string;
+  'rs_logo': string;
   'year': string;
 }
 export const cssExports: CssExports;
