@@ -1,4 +1,5 @@
 import { List } from './list.types';
+import { ObjectId } from 'mongodb';
 import { RSMongoClient } from '../db-client/mongo-client';
 
 export const getListsService = (mongoClient: RSMongoClient) => {
@@ -33,6 +34,16 @@ export const getListsService = (mongoClient: RSMongoClient) => {
       });
 
       return { data: ops[0] };
+    },
+
+    async remove(id: string) {
+      const collection = await getCollection();
+
+      const { deletedCount } = await collection.deleteOne({
+        _id: new ObjectId(id),
+      });
+
+      return { data: { deletedCount } };
     },
   };
 };

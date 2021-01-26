@@ -17,5 +17,14 @@ export const getListsRouter = (mongoClient: RSMongoClient) => {
     }
   });
 
+  router.delete(`/:id`, async (req, res, next) => {
+    try {
+      const data = await listsService.remove(req.params.id);
+      res.json({ data });
+    } catch (err) {
+      next(err);
+    }
+  });
+
   return router;
 };

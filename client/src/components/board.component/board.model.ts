@@ -20,6 +20,7 @@ export default class BoardModel extends EventEmitter {
   dataUser: null | { [key: string]: string | { [key: string]: string } };
   userBoards: Board[] | null;
   currentBoardIndex: number;
+  currentListIndex: number;
 
   constructor() {
     super();
@@ -34,6 +35,7 @@ export default class BoardModel extends EventEmitter {
     this.dataUser = null;
     this.userBoards = [];
     this.currentBoardIndex = 0;
+    this.currentListIndex = 0;
   }
 
   async fetchNewUser(userData: { name: string; password: string }) {
@@ -156,6 +158,32 @@ export default class BoardModel extends EventEmitter {
         );
       })
       .catch(alert);
+  }
+
+  async fetchListRemove() {
+    console.log(
+      this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]._id
+    );
+    await fetch(
+      `http://localhost:3000/api/list?${
+        this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
+          ._id
+      }`,
+      {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+      }
+    )
+      .then(function (response) {
+        console.log('list response', response);
+        return response.json();
+      })
+      .then((data: { [data: string]: { [data: string]: Board[] } }) => {
+        console.log('list is remove', data);
+      })
+      .catch((err) => {
+        console.log('list do not remove', err);
+      });
   }
 
   changeNewListName(newName: string) {

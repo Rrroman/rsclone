@@ -13,22 +13,13 @@ import AddListCardBtnView from '../addListCardBtn.component/addListCardBtn.view'
 
 export default class ListMenu extends EventEmitter {
   menuBody: null | HTMLElement;
-
   menuElement: null | HTMLElement;
-
   menuList: null | HTMLElement;
-
   activeBlock: null | HTMLElement;
-
   activeElement: null | HTMLElement;
-
   inputListName: null | HTMLInputElement;
-
   listsIndexSelect: null | HTMLElement;
-
   currentList: HTMLElement;
-
-  currentIndex: number;
 
   constructor(
     public boardModel: any,
@@ -44,7 +35,6 @@ export default class ListMenu extends EventEmitter {
     this.inputListName = null;
     this.listsIndexSelect = null;
     this.currentList = currentListContainer.firstChild as HTMLElement;
-    this.currentIndex = 0;
   }
 
   show() {
@@ -54,7 +44,9 @@ export default class ListMenu extends EventEmitter {
 
   calcCurrentIndex() {
     const listArr = Array.from(this.board.childNodes);
-    this.currentIndex = listArr.indexOf(this.currentListContainer);
+    this.boardModel.currentListIndex = listArr.indexOf(
+      this.currentListContainer
+    );
   }
 
   renderListMenu() {
@@ -274,18 +266,18 @@ export default class ListMenu extends EventEmitter {
     const newIndex: number =
       +(this.listsIndexSelect as HTMLSelectElement).value - 1;
 
-    if (newIndex === this.currentIndex) {
+    if (newIndex === this.boardModel.currentListIndex) {
       this.closeMenu();
       return;
     }
 
     this.deleteCurrentList();
 
-    if (newIndex < this.currentIndex) {
+    if (newIndex < this.boardModel.currentListIndex) {
       this.createListCopy(this.board.children[newIndex] as HTMLElement);
     }
 
-    if (newIndex > this.currentIndex) {
+    if (newIndex > this.boardModel.currentListIndex) {
       this.createListCopy(this.board.children[newIndex + 1] as HTMLElement);
     }
 
@@ -293,7 +285,10 @@ export default class ListMenu extends EventEmitter {
   }
 
   deleteCurrentList() {
-    this.board.children[this.currentIndex].remove();
+    this.board.children[this.boardModel.currentListIndex].remove();
+
+    this.boardModel.fetchListRemove();
+
     this.closeMenu();
   }
 }
