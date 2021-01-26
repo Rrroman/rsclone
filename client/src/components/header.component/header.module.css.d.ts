@@ -20,11 +20,6 @@ interface CssExports {
   'notification__icon': string;
   'search__icon': string;
   'trello__icon': string;
-  'header': string;
-  'header-buttons': string;
-  'header-buttons_text': string;
-  'header-title': string;
-  'left-block': string;
 }
 export const cssExports: CssExports;
 export default cssExports;
