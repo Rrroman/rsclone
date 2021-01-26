@@ -24,11 +24,3 @@ ol {
   list-style: none;
   margin: 0;
 }
-
-.hidden {
-  display: none;
-}
-
-.show {
-  display: block;
-}
