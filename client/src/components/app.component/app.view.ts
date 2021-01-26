@@ -16,28 +16,43 @@ export default class AppView extends EventEmitter {
   }
 
   show() {
-    const appModel = new AppModel();
     this.boardModel
       .fetchBoard()
       .then(() => {
-        const mainWrapper = create('main', {
-          className: styles.main,
-          parent: this.body,
-        });
-        const header = new HeaderView(this.boardModel, this.body, mainWrapper);
-        const main = new MainView(this.boardModel, mainWrapper);
-        const footer = new FooterView(null, this.body);
-        const overlay = new OverlayView(this.boardModel, this.body);
-
-        header.show();
-        main.show();
-        footer.show();
-        overlay.show();
-
-        new OverlayController(appModel, overlay);
-        new AppController(appModel, main);
-        new HeaderController(this.boardModel, header);
+        if (this.boardModel.userBoards[0] === undefined) {
+          this.boardModel
+            .fetchNewBoard({
+              name: 'my board',
+              userName: this.boardModel.dataUser!.name,
+              favorite: true,
+            })
+            .then(this.renderBoard.bind(this));
+          console.log('is empty', this.boardModel);
+        } else {
+          this.renderBoard();
+        }
       })
       .catch((err: Error) => console.log('err in board fetch', err));
+  }
+
+  renderBoard() {
+    const appModel = new AppModel();
+    const mainWrapper = create('main', {
+      className: styles.main,
+      parent: this.body,
+    });
+    const header = new HeaderView(this.boardModel, this.body, mainWrapper);
+    const main = new MainView(this.boardModel, mainWrapper);
+    const footer = new FooterView(null, this.body);
+    const overlay = new OverlayView(this.boardModel, this.body);
+
+    header.show();
+    main.show();
+    footer.show();
+    overlay.show();
+
+    new OverlayController(appModel, overlay);
+    new AppController(appModel, main);
+    new HeaderController(this.boardModel, header);
   }
 }

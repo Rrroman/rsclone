@@ -3,4 +3,5 @@ export type Board = {
   name: string;
   userName: string;
   favorite: boolean;
+  lists: [];
 };

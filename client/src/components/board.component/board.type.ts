@@ -1,3 +1,5 @@
+import { List } from '../card.list.component/card.list.types';
+
 export type Board = {
   _id: string;
   name: string;
@@ -5,4 +7,5 @@ export type Board = {
   favorite: boolean;
   updatedAt: string;
   createAt: string;
+  lists: List[];
 };
