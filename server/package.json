@@ -10,7 +10,7 @@
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node ./dist/server.js",
-    "start:dev": "node ./dist/server.js",
+    "start:dev": "tsc-watch --onSuccess \"node --inspect ./dist/server.js\"",
     "lint": "eslint ./src --fix"
   },
   "dependencies": {
