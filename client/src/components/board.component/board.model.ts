@@ -17,6 +17,7 @@ export default class BoardModel extends EventEmitter {
   headerBoardsMenuIsOpen: boolean;
 
   dataError: null | { [key: string]: string | { [key: string]: string } };
+
   dataUser: null | { [key: string]: string | { [key: string]: string } };
   userBoards: Board[] | null;
   currentBoardIndex: number;
@@ -51,7 +52,7 @@ export default class BoardModel extends EventEmitter {
         this.checkUserErrors(data);
         console.log(this.dataError);
       })
-      .catch(alert);
+      .catch(console.error);
   }
 
   async fetchCurrentUser(userData: { name: string; password: string }) {
@@ -67,7 +68,7 @@ export default class BoardModel extends EventEmitter {
         this.checkUserErrors(data);
         console.log(this.dataError);
       })
-      .catch(alert);
+      .catch(console.error);
   }
 
   checkUserErrors(data: {

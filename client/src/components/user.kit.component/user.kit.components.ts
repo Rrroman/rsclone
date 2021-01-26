@@ -58,4 +58,16 @@ function textAreaAutoHeight(element: HTMLElement) {
   myElement.style.height = `${element.scrollHeight}px`;
 }
 
-export { addBtn, closeBtn, renderTextArea, inputElement, textAreaAutoHeight };
+function selectText(event: Event) {
+  console.log('Selecting');
+  (event.target as HTMLTextAreaElement).select();
+}
+
+export {
+  addBtn,
+  closeBtn,
+  renderTextArea,
+  inputElement,
+  textAreaAutoHeight,
+  selectText,
+};
