@@ -24,7 +24,8 @@
   margin: 0 auto;
 }
 
-.github_info, .rs_info {
+.github_info,
+.rs_info {
   display: flex;
   align-items: center;
 }
