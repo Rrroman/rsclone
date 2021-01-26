@@ -287,7 +287,9 @@ export default class ListMenu extends EventEmitter {
   deleteCurrentList() {
     this.board.children[this.boardModel.currentListIndex].remove();
 
-    this.boardModel.fetchListRemove();
+    this.boardModel.removeListFromDB().then(() => {
+      this.boardModel.removeListFromData();
+    });
 
     this.closeMenu();
   }

@@ -6,16 +6,13 @@ import AddListCardBtnController from '../addListCardBtn.component/addListCardBtn
 
 export default class Board extends EventEmitter {
   boardWrapper: HTMLElement;
-
   board: HTMLElement | null;
-
   dragSpeed: number;
-
   isDraggable: boolean;
-
   coorX: number;
-
   left: number;
+  listArr: ChildNode[];
+  dragList: ChildNode | null;
 
   constructor(public boardModel: any, public elements: HTMLElement) {
     super();
@@ -25,6 +22,8 @@ export default class Board extends EventEmitter {
     this.isDraggable = false;
     this.coorX = 0;
     this.left = 0;
+    this.listArr = [];
+    this.dragList = null;
   }
 
   show() {
@@ -59,7 +58,7 @@ export default class Board extends EventEmitter {
     );
   }
 
-  boardDragStart(event: MouseEvent) {
+  boardMousedown(event: MouseEvent) {
     if (
       this.board &&
       event.target &&
@@ -87,31 +86,32 @@ export default class Board extends EventEmitter {
   }
 
   appendDraggableList(event: MouseEvent) {
-    if (this.board && this.boardModel.getDraggableList()) {
-      const closestList:
-        | HTMLElement
-        | null
-        | undefined = this.getDragAfterElement(event.clientX);
-      if (closestList) {
-        this.board.insertBefore(
-          this.boardModel.getDraggableList(),
-          closestList
-        );
-      }
+    const closestList:
+      | HTMLElement
+      | null
+      | undefined = this.getDragAfterElement(event.clientX);
+    if (closestList) {
+      this.board!.insertBefore(this.dragList as Node, closestList);
     }
   }
 
   getDragAfterElement(coordinateX: number) {
-    if (!this.board) return;
-    const listArr = [...this.board.childNodes];
+    this.listArr = [...this.board!.childNodes];
+
     let closestList: ChildNode | null = null;
-    listArr.filter((child: ChildNode, index: number) => {
+    this.listArr.filter((child: ChildNode, index: number) => {
       const box = (child as Element).getBoundingClientRect();
       const middle = box.left + box.width / 2;
+      if (
+        (child.firstChild as HTMLElement).dataset.order ===
+        this.boardModel.currentListIndex
+      ) {
+        this.dragList = child;
+      }
 
       if (coordinateX > box.left && coordinateX < middle) {
-        closestList = listArr[index + 1];
-        return listArr[index + 1];
+        closestList = this.listArr[index + 1];
+        return this.listArr[index + 1];
       }
       if (coordinateX > middle && coordinateX < box.right) {
         closestList = child;

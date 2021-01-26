@@ -125,31 +125,17 @@ export default class AddListCardBtnView extends EventEmitter {
     if (!this.boardModel.inputNewListName) {
       return;
     }
-    const list = new CardListView(this.boardModel, this.board);
-    this.newList = list.show();
-    list.appendList(insertBeforeElement);
 
-    this.createListInDB();
+    this.boardModel.createAndLoadNewList().then(() => {
+      const list = new CardListView(this.boardModel, this.board);
+      new CardListController(this.boardModel, list);
 
-    this.boardModel.changeNewListName('');
-    if (this.input) {
-      (this.input as HTMLInputElement).value = '';
-    }
+      list.show(insertBeforeElement);
 
-    // eslint-disable-next-line no-new
-    new CardListController(this.boardModel, list);
-
-    this.newList.addEventListener('dragstart', (event: DragEvent) => {
-      if (event.target && (event.target as HTMLElement).dataset.list)
-        list.emit('dragstart', event.target);
+      this.boardModel.changeNewListName('');
+      if (this.input) {
+        (this.input as HTMLInputElement).value = '';
+      }
     });
-
-    this.newList.addEventListener('dragend', () => {
-      list.emit('dragend');
-    });
-  }
-
-  createListInDB() {
-    this.boardModel.fetchNewList();
   }
 }

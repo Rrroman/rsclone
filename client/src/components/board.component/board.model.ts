@@ -85,7 +85,7 @@ export default class BoardModel extends EventEmitter {
 
   async fetchBoard() {
     console.log(this.dataUser!.name);
-    await fetch(`http://localhost:3000/api/board?${this.dataUser!.name}`, {
+    await fetch(`http://localhost:3000/api/board/${this.dataUser!.name}`, {
       method: 'GET',
       headers: { 'content-type': 'application/json' },
     })
@@ -123,13 +123,16 @@ export default class BoardModel extends EventEmitter {
       .catch(alert);
   }
 
-  async fetchNewList() {
+  async createAndLoadNewList() {
     if (typeof this.dataUser?.name !== 'string') {
       return;
     }
+    this.currentListIndex = this.userBoards![
+      this.currentBoardIndex
+    ].lists.length;
     const listData: List = {
       name: this.getNewListName(),
-      order: 0, // then changes .................................................................................................
+      order: this.currentListIndex,
       userName: this.dataUser!.name,
       boardId: this.userBoards![this.currentBoardIndex]._id,
       cards: [],
@@ -147,19 +150,19 @@ export default class BoardModel extends EventEmitter {
       .then((data: { data: { data: List } }) => {
         this.userBoards![this.currentBoardIndex].lists!.push(data.data.data);
         console.log(
-          'new list data.json',
+          'lists Array',
           this.userBoards![this.currentBoardIndex].lists
         );
       })
       .catch(alert);
   }
 
-  async fetchListRemove() {
+  async removeListFromDB() {
     console.log(
       this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]._id
     );
     await fetch(
-      `http://localhost:3000/api/list?${
+      `http://localhost:3000/api/list/${
         this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
           ._id
       }`,
@@ -178,6 +181,13 @@ export default class BoardModel extends EventEmitter {
       .catch((err) => {
         console.log('list do not remove', err);
       });
+  }
+
+  removeListFromData() {
+    this.userBoards![this.currentBoardIndex].lists.splice(
+      this.currentListIndex,
+      1
+    );
   }
 
   changeNewListName(newName: string) {

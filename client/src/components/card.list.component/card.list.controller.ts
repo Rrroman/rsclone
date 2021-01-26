@@ -54,7 +54,7 @@ export default class CardListController {
   headerTextChange(event: Event) {
     this.cardList.headerTextChange(event);
   }
-  
+
   selectText(event: Event) {
     this.cardList.selectText(event);
   }
@@ -64,13 +64,12 @@ export default class CardListController {
   }
 
   dragStartFunc(card: HTMLElement) {
-    this.boardModel.setDraggableList(card.parentNode);
+    this.boardModel.currentListIndex = card.dataset.order;
     this.cardList.dragStartElementChange();
   }
 
   dragEndFunc() {
     this.cardList.dragEndElementChange();
-    this.boardModel.setDraggableList(null);
   }
 
   dragOverInEmptyList(event: Event) {

@@ -43,8 +43,9 @@ export default class CardListView extends EventEmitter {
     this.cardContent = null;
   }
 
-  show() {
-    return this.createCardList();
+  show(insertBeforeElement: null | HTMLElement) {
+    this.createCardList();
+    this.appendList(insertBeforeElement);
   }
 
   createCardList() {
@@ -55,6 +56,10 @@ export default class CardListView extends EventEmitter {
 
     const cardListBottom = this.createAddBottomBtn();
 
+    const currentListOrder: number = this.boardModel.userBoards![
+      this.boardModel.currentBoardIndex
+    ].lists[this.boardModel.currentListIndex].order;
+
     this.cardContent = create('div', {
       className: styles['card-content'],
       child: [cardListHeader, this.cardListBody, cardListBottom],
@@ -62,6 +67,7 @@ export default class CardListView extends EventEmitter {
       dataAttr: [
         ['draggable', 'true'],
         ['list', 'true'],
+        ['order', currentListOrder],
         ['listName', this.boardModel.getNewListName()],
       ],
     });
@@ -73,7 +79,14 @@ export default class CardListView extends EventEmitter {
       dataAttr: [['listWrapper', 'true']],
     });
 
-    return this.cardContent;
+    this.cardContent.addEventListener('dragstart', (event: DragEvent) => {
+      if (event.target && (event.target as HTMLElement).dataset.list)
+        this.emit('dragstart', event.target);
+    });
+
+    this.cardContent.addEventListener('dragend', () => {
+      this.emit('dragend');
+    });
   }
 
   appendList(insertBeforeElement: null | HTMLElement) {
@@ -86,8 +99,6 @@ export default class CardListView extends EventEmitter {
         this.emit('cardDragover', event);
       });
     }
-
-    return this.cardContent;
   }
 
   createListHeader() {
@@ -233,19 +244,11 @@ export default class CardListView extends EventEmitter {
   }
 
   dragStartElementChange() {
-    if (this.boardModel.draggableList) {
-      this.boardModel.draggableList.firstChild.classList.add(
-        styles['black-back']
-      );
-    }
+    (this.cardContent as HTMLElement).classList.add(styles['black-back']);
   }
 
   dragEndElementChange() {
-    if (this.boardModel.draggableList) {
-      this.boardModel.draggableList.firstChild.classList.remove(
-        styles['black-back']
-      );
-    }
+    (this.cardContent as HTMLElement).classList.remove(styles['black-back']);
   }
 
   showAddCardBlock() {
