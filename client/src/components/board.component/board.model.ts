@@ -61,11 +61,12 @@ export default class BoardModel extends EventEmitter {
       headers: { 'content-type': 'application/json' },
     })
       .then(function (response) {
+        console.log(response);
         return response.json();
       })
       .then((data: { [key: string]: string | { [key: string]: string } }) => {
-        this.checkUserErrors(data);
         console.log(this.dataError);
+        this.checkUserErrors(data);
       })
       .catch(alert);
   }
@@ -88,6 +89,7 @@ export default class BoardModel extends EventEmitter {
       headers: { 'content-type': 'application/json' },
     })
       .then(function (response) {
+        console.log('response', response);
         return response.json();
       })
       .then((data: { [data: string]: { [data: string]: Board[] } }) => {
@@ -99,7 +101,7 @@ export default class BoardModel extends EventEmitter {
       });
   }
 
-  async fetchNewBoard(boardData: {
+  async createNewBoard(boardData: {
     name: string;
     userName: string | { [key: string]: string };
     favorite: boolean;

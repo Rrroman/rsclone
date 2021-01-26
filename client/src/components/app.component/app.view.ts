@@ -21,7 +21,7 @@ export default class AppView extends EventEmitter {
       .then(() => {
         if (this.boardModel.userBoards[0] === undefined) {
           this.boardModel
-            .fetchNewBoard({
+            .createNewBoard({
               name: 'my board',
               userName: this.boardModel.dataUser!.name,
               favorite: true,
