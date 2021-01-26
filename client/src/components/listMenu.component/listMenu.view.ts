@@ -173,7 +173,7 @@ export default class ListMenu extends EventEmitter {
       this.activeBlock.remove();
     }
 
-    this.inputListName = inputElement();
+    this.inputListName = inputElement('Enter list title...');
     if (this.inputListName) {
       this.inputListName.value =
         (this.currentList as HTMLInputElement).dataset.listName || '';

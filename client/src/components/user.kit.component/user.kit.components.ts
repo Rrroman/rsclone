@@ -36,7 +36,7 @@ function closeBtn() {
   });
 }
 
-function inputElement() {
+function inputElement(text: string) {
   return create('input', {
     className: `${styles['input-new-card']}`,
     child: null,
@@ -44,7 +44,7 @@ function inputElement() {
     dataAttr: [
       ['type', 'text'],
       ['name', 'name'],
-      ['placeholder', 'Enter list title...'],
+      ['placeholder', text],
       ['autocomplete', 'off'],
       ['maxlength', '512'],
     ],

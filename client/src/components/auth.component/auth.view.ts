@@ -111,7 +111,7 @@ export default class Auth extends EventEmitter {
     const userData: { name: string; password: string } = this.formContent();
     this.boardModel.fetchNewUser(userData).then(() => {
       if (this.checkAuthError()) {
-        console.log('eror auth');
+        console.log('error auth');
       }
       console.log('async register work');
     });
@@ -119,16 +119,19 @@ export default class Auth extends EventEmitter {
 
   login() {
     const userData: { name: string; password: string } = this.formContent();
-    this.boardModel.fetchCurrentUser(userData).then(() => {
-      if (this.checkAuthError()) {
-        return;
-      }
-      this.authPage?.remove();
-      const app = new App(this.boardModel, document.body);
-      app.show();
+    this.boardModel
+      .fetchCurrentUser(userData)
+      .then(() => {
+        if (this.checkAuthError()) {
+          return;
+        }
+        this.authPage?.remove();
 
-      console.log('asunc work');
-    });
+        console.log('async work', this.boardModel.dataUser);
+        const app = new App(this.boardModel, document.body);
+        app.show();
+      })
+      .catch((err: Error) => console.log('auth err', err));
   }
 
   checkAuthError() {

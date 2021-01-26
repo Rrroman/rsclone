@@ -1,3 +1,4 @@
+import { Board } from './../board.component/board.type';
 import EventEmitter from '../../utils/eventEmitter';
 
 export default class BoardModel extends EventEmitter {
@@ -12,10 +13,13 @@ export default class BoardModel extends EventEmitter {
   overlayElement: HTMLElement | null;
 
   popupCardName: string | null;
+  headerBoardsMenuIsOpen: boolean;
 
   dataError: null | { [key: string]: string | { [key: string]: string } };
 
   dataUser: null | { [key: string]: string | { [key: string]: string } };
+  userBoards: Board[] | null;
+  currentBoardIndex: number;
 
   constructor() {
     super();
@@ -25,8 +29,11 @@ export default class BoardModel extends EventEmitter {
     this.cardName = null;
     this.overlayElement = null;
     this.popupCardName = null;
+    this.headerBoardsMenuIsOpen = false;
     this.dataError = null;
     this.dataUser = null;
+    this.userBoards = [];
+    this.currentBoardIndex = 0;
   }
 
   async fetchNewUser(userData: { name: string; password: string }) {
@@ -39,7 +46,7 @@ export default class BoardModel extends EventEmitter {
         return response.json();
       })
       .then((data: { [key: string]: string | { [key: string]: string } }) => {
-        this.checkErrors(data);
+        this.checkUserErrors(data);
         console.log(this.dataError);
       })
       .catch(console.error);
@@ -55,13 +62,13 @@ export default class BoardModel extends EventEmitter {
         return response.json();
       })
       .then((data: { [key: string]: string | { [key: string]: string } }) => {
-        this.checkErrors(data);
+        this.checkUserErrors(data);
         console.log(this.dataError);
       })
       .catch(console.error);
   }
 
-  checkErrors(data: {
+  checkUserErrors(data: {
     [key: string]: string | { [key: string]: string };
   }): void {
     if (data.errors) {
@@ -70,6 +77,54 @@ export default class BoardModel extends EventEmitter {
       this.dataError = null;
       this.dataUser = data;
     }
+  }
+
+  async fetchBoard() {
+    console.log(this.dataUser!.name);
+    await fetch(`http://localhost:3000/api/board?${this.dataUser!.name}`, {
+      method: 'GET',
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then((data: { [data: string]: { [data: string]: Board[] } }) => {
+        if (data.data.data[0] === undefined) {
+          this.fetchNewBoard({
+            name: 'my board',
+            userName: this.dataUser!.name,
+            favorite: true,
+          });
+          console.log('is empty', data);
+        }
+
+        this.userBoards = data.data.data;
+        console.log('find board in db', this.userBoards);
+      })
+      .catch((err) => {
+        console.log('board not found', err);
+      });
+  }
+
+  async fetchNewBoard(boardData: {
+    name: string;
+    userName: string | { [key: string]: string };
+    favorite: boolean;
+  }) {
+    await fetch('http://localhost:3000/api/board/newBoard', {
+      method: 'POST',
+      body: JSON.stringify(boardData),
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(function (response) {
+        console.log('new board response', response);
+        return response.json();
+      })
+      .then((data: { data: { data: Board } }) => {
+        this.userBoards!.push(data.data.data);
+        console.log('new board data.json', this.userBoards);
+      })
+      .catch(alert);
   }
 
   changeNewListName(newName: string) {

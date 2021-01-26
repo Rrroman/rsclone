@@ -2,6 +2,8 @@ import styles from './footer.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
+import createIcon from '../../utils/createIcon';
+import { rsLogo } from '../../utils/icons';
 
 export default class FooterView extends EventEmitter {
   constructor(public model: unknown, public elements: any) {
@@ -21,54 +23,22 @@ export default class FooterView extends EventEmitter {
       parent: footer,
     });
 
-    const rsLink = create('div', {
-      className: styles.rs_link,
+    const footerInfo = create('div', {
+      className: styles.footer_info,
       child: null,
       parent: footerContainer,
     });
 
-    const rsLogo = create('a', {
-      child: null,
-      parent: rsLink,
-      dataAttr: [['href', 'https://rs.school/js/']],
-    });
-
-    const rsImg = create('img', {
-      className: styles.rs_image,
-      child: null,
-      parent: rsLogo,
-      dataAttr: [
-        ['src', './assets/img/rs_school_js.svg'],
-        ['alt', 'RS School logo'],
-      ],
-    });
-
-    const gitHubInfo = create('div', {
+    const githubInfo = create('div', {
       className: styles.github_info,
       child: null,
-      parent: footerContainer,
-    });
-
-    const year = create('div', {
-      className: styles.year,
-      child: 'created in 2020 by',
-      parent: gitHubInfo,
+      parent: footerInfo,
     });
 
     const gitHubLinks = create('div', {
       className: styles.github_links,
       child: null,
-      parent: gitHubInfo,
-    });
-
-    const gitHubLogo = create('img', {
-      className: styles.github_logo,
-      child: null,
-      parent: gitHubInfo,
-      dataAttr: [
-        ['src', './assets/img/github-logo.svg'],
-        ['alt', 'GitHub logo'],
-      ],
+      parent: githubInfo,
     });
 
     create('a', {
@@ -78,11 +48,23 @@ export default class FooterView extends EventEmitter {
       dataAttr: [['href', 'https://github.com/Gaziz666']],
     });
 
+    create('span', {
+      className: styles.github_link,
+      child: '&',
+      parent: gitHubLinks,
+    });
+
     create('a', {
       className: styles.github_link,
       child: 'Rrroman',
       parent: gitHubLinks,
       dataAttr: [['href', 'https://github.com/Rrroman']],
+    });
+
+    create('span', {
+      className: styles.github_link,
+      child: '&',
+      parent: gitHubLinks,
     });
 
     create('a', {
@@ -92,11 +74,39 @@ export default class FooterView extends EventEmitter {
       dataAttr: [['href', 'https://github.com/filonushka']],
     });
 
-    rsLogo.append(rsImg);
-    rsLink.append(rsLogo);
-    gitHubInfo.append(year, gitHubLogo, gitHubLinks);
-    footerContainer.append(rsLink, gitHubInfo);
-    footer.append(footerContainer);
-    this.elements.prepend(footer);
+    const rsInfo = create('div', {
+      className: styles.rs_info,
+      child: null,
+      parent: footerInfo,
+    });
+
+    create('div', {
+      className: styles.year,
+      child: 'created at',
+      parent: rsInfo,
+    });
+
+    const RSlogo = createIcon(styles.rs_logo, rsLogo);
+
+    const rsLink = create('div', {
+      className: styles.rs_link,
+      child: RSlogo,
+      parent: rsInfo,
+    });
+
+    create('a', {
+      className: styles.rs_link,
+      child: null,
+      parent: rsLink,
+      dataAttr: [['href', 'https://rs.school/js/']],
+    });
+
+    create('div', {
+      className: styles.year,
+      child: 'in 2021',
+      parent: rsInfo,
+    });
+
+    this.elements.append(footer);
   }
 }

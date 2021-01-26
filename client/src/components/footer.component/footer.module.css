@@ -2,11 +2,10 @@
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  background-color: rgba(201, 10, 14, 0.5);
-  height: 100px;
+  background-color: hsla(0, 0%, 100%, 0.3);
+  height: 70px;
   font-size: 1rem;
   font-weight: 900;
-  margin-top: 25px;
 }
 
 .footer_container {
@@ -19,16 +18,16 @@
   margin: 0px auto;
 }
 
-.github_logo {
-  height: 35px;
-  width: 35px;
-  margin: 5px auto;
-}
-
-.github_info {
+.footer_info {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+}
+
+.github_info,
+.rs_info {
+  display: flex;
+  align-items: center;
 }
 
 .github_links,
@@ -43,14 +42,15 @@
   color: #000000;
   align-items: center;
   text-align: center;
-  padding: 0 10px;
+  padding: 0 5px;
 }
 
 .rs_link {
-  margin: 0px auto;
+  margin: 5px auto;
+  display: flex;
 }
 
-.rs_image {
-  height: 80px;
-  width: 160px;
+.rs_logo {
+  height: 20px;
+  width: 60px;
 }

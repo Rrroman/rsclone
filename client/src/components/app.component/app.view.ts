@@ -6,28 +6,38 @@ import OverlayView from '../overlay.component/overlay.view';
 import AppModel from './app.model';
 import AppController from './app.controller';
 import OverlayController from '../overlay.component/overlay.controller';
-import BoardModel from '../board.component/board.model';
+import HeaderController from '../header.component/header.controller';
+import create from '../../utils/create';
+import styles from './app.module.css';
 
 export default class AppView extends EventEmitter {
-  constructor(public model: unknown, public body: any) {
+  constructor(public boardModel: any, public body: any) {
     super();
   }
 
   show() {
     const appModel = new AppModel();
-    const boardModel = new BoardModel();
-    const header = new HeaderView(boardModel, this.body);
-    const footer = new FooterView(null, this.body);
-    const main = new MainView(appModel, this.body);
-    const overlay = new OverlayView(appModel, this.body);
+    this.boardModel
+      .fetchBoard()
+      .then(() => {
+        const mainWrapper = create('main', {
+          className: styles.main,
+          parent: this.body,
+        });
+        const header = new HeaderView(this.boardModel, this.body, mainWrapper);
+        const main = new MainView(this.boardModel, mainWrapper);
+        const footer = new FooterView(null, this.body);
+        const overlay = new OverlayView(this.boardModel, this.body);
 
-    footer.show();
-    main.show();
-    header.show();
-    overlay.show();
+        header.show();
+        main.show();
+        footer.show();
+        overlay.show();
 
-    new OverlayController(appModel, overlay);
-
-    new AppController(appModel, main);
+        new OverlayController(appModel, overlay);
+        new AppController(appModel, main);
+        new HeaderController(this.boardModel, header);
+      })
+      .catch((err: Error) => console.log('err in board fetch', err));
   }
 }

@@ -18,15 +18,14 @@ export const getBoardsRouter = (mongoClient: RSMongoClient) => {
 
   router.get(`/:id`, async (req, res, next) => {
     try {
-      const data = await boardsService.findById(req.params.id);
-
+      const data = await boardsService.findByUserName(req.params.id);
       res.json({ data });
     } catch (err) {
       next(err);
     }
   });
 
-  router.post(`/`, async (req, res, next) => {
+  router.post(`/newBoard`, async (req, res, next) => {
     try {
       const data = await boardsService.create(req.body);
       res.json({ data });

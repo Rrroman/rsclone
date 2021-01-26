@@ -273,7 +273,7 @@ export default class CardListView extends EventEmitter {
 
   openListMenu(event: MouseEvent) {
     const currentList = (event.target as HTMLElement).closest(
-      '[dataListWrapper]'
+      '[data-list-wrapper]'
     );
 
     const listMenu = new ListMenu(
