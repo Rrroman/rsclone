@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { Board } from './boards.types';
+import { List } from './../lists/list.types';
 import { RSMongoClient } from '../db-client/mongo-client';
 
 export const getBoardsService = (mongoClient: RSMongoClient) => {
@@ -21,6 +22,7 @@ export const getBoardsService = (mongoClient: RSMongoClient) => {
       const collection = await getCollection();
 
       const createdAt = new Date();
+      const lists: List[] = [];
 
       const { ops } = await collection.insertOne({
         createdAt,
@@ -28,6 +30,7 @@ export const getBoardsService = (mongoClient: RSMongoClient) => {
         name,
         userName,
         favorite,
+        lists,
       });
 
       return { data: ops[0] };

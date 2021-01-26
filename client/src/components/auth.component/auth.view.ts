@@ -87,12 +87,16 @@ export default class Auth extends EventEmitter {
 
     createAccount.addEventListener('click', (event) => {
       event.preventDefault();
-      this.emit('signin', event);
+      if (!event.detail || event.detail == 1) {
+        this.emit('signin', event);
+      }
     });
 
     loginBtn.addEventListener('click', (event) => {
       event.preventDefault();
-      this.emit('login', event);
+      if (!event.detail || event.detail == 1) {
+        this.emit('login', event);
+      }
     });
   }
 

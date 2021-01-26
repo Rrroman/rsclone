@@ -129,6 +129,8 @@ export default class AddListCardBtnView extends EventEmitter {
     this.newList = list.show();
     list.appendList(insertBeforeElement);
 
+    this.createListInDB();
+
     this.boardModel.changeNewListName('');
     if (this.input) {
       (this.input as HTMLInputElement).value = '';
@@ -145,5 +147,9 @@ export default class AddListCardBtnView extends EventEmitter {
     this.newList.addEventListener('dragend', () => {
       list.emit('dragend');
     });
+  }
+
+  createListInDB() {
+    this.boardModel.fetchNewList();
   }
 }
