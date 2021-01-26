@@ -32,7 +32,33 @@ export default class PopupController {
       .on({
         event: 'popupClose',
         listener: (event: Event) => this.popupClose(event),
+      })
+      .on({
+        event: 'openSidebarPopup',
+        listener: (event: Event) => this.openSidebarPopup(event),
+      })
+      .on({
+        event: 'closeSidebarPopup',
+        listener: (event: Event) => this.closeSidebarPopup(event),
       });
+  }
+
+  closeSidebarPopup(event: Event) {
+    this.popupView.closeSidebarPopup(event.target);
+  }
+
+  openSidebarPopup(event: Event) {
+    const hiddenPopup = (event.target as HTMLElement).nextElementSibling;
+    const sidebarBtn = (event.target as HTMLElement).dataset.title;
+
+    if (hiddenPopup && sidebarBtn) {
+      hiddenPopup.innerHTML = '';
+    }
+
+    if (sidebarBtn) {
+      this.popupView.openSidebarPopup(event);
+    }
+    this.popupView.renderSidebarPopupContent(event.target);
   }
 
   popupClose(event: Event) {

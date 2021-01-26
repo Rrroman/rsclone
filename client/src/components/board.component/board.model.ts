@@ -14,6 +14,7 @@ export default class BoardModel extends EventEmitter {
   popupCardName: string | null;
 
   dataError: null | { [key: string]: string | { [key: string]: string } };
+
   dataUser: null | { [key: string]: string | { [key: string]: string } };
 
   constructor() {
@@ -41,7 +42,7 @@ export default class BoardModel extends EventEmitter {
         this.checkErrors(data);
         console.log(this.dataError);
       })
-      .catch(alert);
+      .catch(console.error);
   }
 
   async fetchCurrentUser(userData: { name: string; password: string }) {
@@ -57,7 +58,7 @@ export default class BoardModel extends EventEmitter {
         this.checkErrors(data);
         console.log(this.dataError);
       })
-      .catch(alert);
+      .catch(console.error);
   }
 
   checkErrors(data: {

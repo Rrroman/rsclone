@@ -9,6 +9,8 @@ import {
   addBtn,
   closeBtn,
 } from '../user.kit.component/user.kit.components';
+import ChecklistView from '../checklist.component/checklist.view';
+import ChecklistController from '../checklist.component/checklist.controller';
 
 export default class PopupView extends EventEmitter {
   savedText: string | null;
@@ -20,6 +22,10 @@ export default class PopupView extends EventEmitter {
   textareaDescriptionText: any;
   savedDescriptionTextElement: HTMLElement | null;
   popupCloseButton: HTMLElement | null;
+  labelsPopup: HTMLElement | null;
+  checklistButton: HTMLElement | null;
+  sidebarPopup: HTMLElement | null;
+  checklistWrapper: HTMLElement | null;
 
   constructor(public boardModel: any, public currentCard: HTMLElement) {
     super();
@@ -32,7 +38,10 @@ export default class PopupView extends EventEmitter {
     this.savedDescriptionTextElement = null;
     this.popupBody = null;
     this.popupCloseButton = null;
-    this.popupCloseButton = null;
+    this.labelsPopup = null;
+    this.checklistButton = null;
+    this.sidebarPopup = null;
+    this.checklistWrapper = null;
   }
 
   show() {
@@ -167,16 +176,27 @@ export default class PopupView extends EventEmitter {
       dataAttr: [['title', 'label']],
     });
 
-    const checklistButton = create('button', {
+    this.checklistButton = create('button', {
       className: styles['popup__sidebar-button'],
       child: 'Checklist',
       dataAttr: [['title', 'checklist']],
     });
 
+    const labelButtonWrapper = this.createChecklistButtonWrapper(labelsButton);
+
+    const checklistButtonWrapper = this.createChecklistButtonWrapper(
+      this.checklistButton
+    );
+
     const popupSidebar = create('div', {
       className: styles['popup__sidebar'],
-      child: [sidebarTitle, labelsButton, checklistButton],
+      child: [sidebarTitle, labelButtonWrapper, checklistButtonWrapper],
+      dataAttr: [['data-sidebar-popup', '']],
     });
+
+    popupSidebar.addEventListener('click', (event: Event) =>
+      this.emit('openSidebarPopup', event)
+    );
 
     const popupDescriptionWrapper = create('div', {
       className: styles['popup__description-wrapper'],
@@ -193,14 +213,19 @@ export default class PopupView extends EventEmitter {
       dataAttr: [['data-close-button', '']],
     });
 
-    this.popupCloseButton.addEventListener('click', () =>
+    this.popupCloseButton.addEventListener('click', (event: Event) =>
       this.emit('popupClose', event)
     );
+
+    this.checklistWrapper = create('div', {
+      className: styles['checklist-wrapper'],
+    });
 
     this.popupBody!.append(this.popupTitle);
     this.popupBody!.append(popupListName);
     this.popupBody!.append(popupDescriptionWrapper);
     this.popupBody!.append(this.popupCloseButton);
+    this.popupBody!.append(this.checklistWrapper);
     popupWrapper.append(this.popupBody);
   }
 
@@ -242,9 +267,13 @@ export default class PopupView extends EventEmitter {
   }
 
   hideDescriptionButtons(event: any) {
-    if (event.target === this.popupCloseButton) {
+    if (
+      event.target === this.popupCloseButton ||
+      event.target.dataset.checklistButton
+    ) {
       return;
     }
+
     const popupDescriptionButtons = event.target
       .closest('[data-popup]')
       .querySelector('[data-popup-description-buttons]');
@@ -261,5 +290,36 @@ export default class PopupView extends EventEmitter {
   showDescriptionButtons(event: any) {
     const controlButtons = event.target.nextSibling;
     controlButtons.classList.remove(globalStyles.hidden);
+  }
+
+  openSidebarPopup(event: Event) {
+    const target = event.target as HTMLElement;
+    target.nextElementSibling!.classList.toggle(globalStyles.hidden);
+  }
+
+  createChecklistButtonWrapper(buttonElement: HTMLElement) {
+    this.sidebarPopup = create('div', {
+      className: `${styles['sidebar__popup']} ${globalStyles.hidden}`,
+    });
+
+    const labelsWrapper = create('div', {
+      className: styles['sidebar__wrapper'],
+      child: [buttonElement, this.sidebarPopup],
+    });
+
+    return labelsWrapper;
+  }
+
+  renderSidebarPopupContent(element: HTMLElement) {
+    if (element === this.checklistButton && this.checklistWrapper) {
+      const checklistView = new ChecklistView(
+        this.boardModel,
+        element,
+        this.checklistWrapper
+      );
+
+      checklistView.show();
+      new ChecklistController(this.boardModel, checklistView);
+    }
   }
 }
