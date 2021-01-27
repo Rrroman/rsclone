@@ -42,7 +42,7 @@ export default class BoardModel extends EventEmitter {
   }
 
   async fetchNewUser(userData: { name: string; password: string }) {
-    await fetch('http://localhost:3000/api/user/register', {
+    await fetch('http://rs-trello-clone.herokuapp.com/api/user/register', {
       method: 'POST',
       body: JSON.stringify(userData),
       headers: { 'content-type': 'application/json' },
@@ -57,7 +57,7 @@ export default class BoardModel extends EventEmitter {
   }
 
   async fetchCurrentUser(userData: { name: string; password: string }) {
-    await fetch('http://localhost:3000/api/user/login', {
+    await fetch('http://rs-trello-clone.herokuapp.com/api/user/login', {
       method: 'POST',
       body: JSON.stringify(userData),
       headers: { 'content-type': 'application/json' },
@@ -83,10 +83,13 @@ export default class BoardModel extends EventEmitter {
   }
 
   async fetchBoard() {
-    await fetch(`http://localhost:3000/api/board/${this.dataUser!.name}`, {
-      method: 'GET',
-      headers: { 'content-type': 'application/json' },
-    })
+    await fetch(
+      `http://rs-trello-clone.herokuapp.com/api/board/${this.dataUser!.name}`,
+      {
+        method: 'GET',
+        headers: { 'content-type': 'application/json' },
+      }
+    )
       .then(function (response) {
         return response.json();
       })
@@ -103,7 +106,7 @@ export default class BoardModel extends EventEmitter {
     userName: string | { [key: string]: string };
     favorite: boolean;
   }) {
-    await fetch('http://localhost:3000/api/board/newBoard', {
+    await fetch('http://rs-trello-clone.herokuapp.com/api/board/newBoard', {
       method: 'POST',
       body: JSON.stringify(boardData),
       headers: { 'content-type': 'application/json' },
@@ -131,7 +134,7 @@ export default class BoardModel extends EventEmitter {
       boardId: this.userBoards![this.currentBoardIndex]._id,
       cards: [],
     };
-    await fetch('http://localhost:3000/api/list/new', {
+    await fetch('http://rs-trello-clone.herokuapp.com/api/list/new', {
       method: 'POST',
       body: JSON.stringify(listData),
       headers: { 'content-type': 'application/json' },
@@ -147,7 +150,7 @@ export default class BoardModel extends EventEmitter {
 
   async removeListFromDB() {
     await fetch(
-      `http://localhost:3000/api/list/${
+      `http://rs-trello-clone.herokuapp.com/api/list/${
         this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
           ._id
       }`,
@@ -178,20 +181,25 @@ export default class BoardModel extends EventEmitter {
     const currentListId = this.userBoards![this.currentBoardIndex].lists[
       this.currentListIndex
     ]._id;
-    await fetch(`http://localhost:3000/api/list/${currentListId}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        name:
-          data.name ||
-          this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
-            .name,
-        order:
-          data.order ||
-          this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
-            .order,
-      }),
-      headers: { 'content-type': 'application/json' },
-    })
+    await fetch(
+      `http://rs-trello-clone.herokuapp.com/api/list/${currentListId}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          name:
+            data.name ||
+            this.userBoards![this.currentBoardIndex].lists[
+              this.currentListIndex
+            ].name,
+          order:
+            data.order ||
+            this.userBoards![this.currentBoardIndex].lists[
+              this.currentListIndex
+            ].order,
+        }),
+        headers: { 'content-type': 'application/json' },
+      }
+    )
       .then(function (response) {
         return response.json();
       })
@@ -211,7 +219,7 @@ export default class BoardModel extends EventEmitter {
       userName: this.dataUser!.name,
     };
 
-    await fetch('http://localhost:3000/api/list/all', {
+    await fetch('http://rs-trello-clone.herokuapp.com/api/list/all', {
       method: 'POST',
       body: JSON.stringify(listData),
       headers: { 'content-type': 'application/json' },
