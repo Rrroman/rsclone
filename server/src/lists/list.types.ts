@@ -3,5 +3,4 @@ export type List = {
   order: number;
   boardId: string;
   userName: string;
-  cards: [];
 };

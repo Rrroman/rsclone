@@ -4,22 +4,9 @@ import CardView from '../card.component/card.view';
 function renderNewCard(boardModel: any, cardListBody: Element) {
   const card = new CardView(boardModel, cardListBody);
 
-  const newCard = card.show();
+  card.show();
 
-  // eslint-disable-next-line no-new
   new CardController(boardModel, card);
-
-  newCard.addEventListener('click', (event: Event) =>
-    card.emit('addCardDataToPopup', event)
-  );
-  newCard.addEventListener('dragstart', (event: Event) => {
-    event.stopPropagation();
-    card.emit('cardDragstart', event.target);
-  });
-  newCard.addEventListener('dragend', (event: Event) => {
-    event.stopPropagation();
-    card.emit('cardDragend');
-  });
 }
 
 export default renderNewCard;

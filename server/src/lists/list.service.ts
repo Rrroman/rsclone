@@ -45,5 +45,40 @@ export const getListsService = (mongoClient: RSMongoClient) => {
 
       return { data: { deletedCount } };
     },
+
+    async update(
+      id: string,
+      { name, order }: { name: string; order: string }
+    ): Promise<{ data: List }> {
+      const collection = await getCollection();
+
+      const { value } = await collection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        {
+          $currentDate: {
+            updatedAt: true,
+          },
+          $set: { name, order },
+        },
+        { returnOriginal: false }
+      );
+      return { data: value };
+    },
+
+    async findAllByUserBoard({
+      userName,
+      boardId,
+    }: {
+      userName: string;
+      boardId: string;
+    }): Promise<{ data: List[] }> {
+      const collection = await getCollection();
+
+      const lists = await collection
+        .find<List>({ userName: userName, boardId: boardId })
+        .toArray();
+
+      return { data: lists };
+    },
   };
 };

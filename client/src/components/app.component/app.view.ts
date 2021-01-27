@@ -26,8 +26,10 @@ export default class AppView extends EventEmitter {
               userName: this.boardModel.dataUser!.name,
               favorite: true,
             })
-            .then(this.renderBoard.bind(this));
-          console.log('is empty', this.boardModel);
+            .then(this.renderBoard.bind(this))
+            .catch((err: Error) =>
+              console.log('cant create new boar in DB', err)
+            );
         } else {
           this.renderBoard();
         }

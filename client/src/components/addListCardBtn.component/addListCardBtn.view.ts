@@ -126,16 +126,19 @@ export default class AddListCardBtnView extends EventEmitter {
       return;
     }
 
-    this.boardModel.createAndLoadNewList().then(() => {
-      const list = new CardListView(this.boardModel, this.board);
-      new CardListController(this.boardModel, list);
+    this.boardModel
+      .createAndLoadNewList()
+      .then(() => {
+        const list = new CardListView(this.boardModel, this.board);
+        new CardListController(this.boardModel, list);
 
-      list.show(insertBeforeElement);
+        list.show(insertBeforeElement);
 
-      this.boardModel.changeNewListName('');
-      if (this.input) {
-        (this.input as HTMLInputElement).value = '';
-      }
-    });
+        this.boardModel.changeNewListName('');
+        if (this.input) {
+          (this.input as HTMLInputElement).value = '';
+        }
+      })
+      .catch((err: Error) => console.log('error on load new List', err));
   }
 }
