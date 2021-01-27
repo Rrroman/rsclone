@@ -22,6 +22,7 @@ export default class BoardModel extends EventEmitter {
   userBoards: Board[] | null;
   currentBoardIndex: number;
   currentListIndex: number;
+  listPositionArray: number[];
 
   constructor() {
     super();
@@ -37,6 +38,7 @@ export default class BoardModel extends EventEmitter {
     this.userBoards = [];
     this.currentBoardIndex = 0;
     this.currentListIndex = 0;
+    this.listPositionArray = [];
   }
 
   async fetchNewUser(userData: { name: string; password: string }) {
@@ -50,7 +52,6 @@ export default class BoardModel extends EventEmitter {
       })
       .then((data: { [key: string]: string | { [key: string]: string } }) => {
         this.checkUserErrors(data);
-        console.log(this.dataError);
       })
       .catch(console.error);
   }
@@ -66,7 +67,6 @@ export default class BoardModel extends EventEmitter {
       })
       .then((data: { [key: string]: string | { [key: string]: string } }) => {
         this.checkUserErrors(data);
-        console.log(this.dataError);
       })
       .catch(console.error);
   }
@@ -83,8 +83,7 @@ export default class BoardModel extends EventEmitter {
   }
 
   async fetchBoard() {
-    console.log(this.dataUser!.name);
-    await fetch(`http://localhost:3000/api/board?${this.dataUser!.name}`, {
+    await fetch(`http://localhost:3000/api/board/${this.dataUser!.name}`, {
       method: 'GET',
       headers: { 'content-type': 'application/json' },
     })
@@ -93,14 +92,13 @@ export default class BoardModel extends EventEmitter {
       })
       .then((data: { [data: string]: { [data: string]: Board[] } }) => {
         this.userBoards = data.data.data;
-        console.log('find board in db', this.userBoards);
       })
       .catch((err) => {
         console.log('board not found', err);
       });
   }
 
-  async fetchNewBoard(boardData: {
+  async createNewBoard(boardData: {
     name: string;
     userName: string | { [key: string]: string };
     favorite: boolean;
@@ -111,53 +109,45 @@ export default class BoardModel extends EventEmitter {
       headers: { 'content-type': 'application/json' },
     })
       .then(function (response) {
-        console.log('new board response', response);
         return response.json();
       })
       .then((data: { data: { data: Board } }) => {
         this.userBoards!.push(data.data.data);
-        console.log('new board data.json', this.userBoards);
       })
       .catch(alert);
   }
 
-  async fetchNewList() {
+  async createAndLoadNewList() {
     if (typeof this.dataUser?.name !== 'string') {
       return;
     }
+    this.currentListIndex = this.userBoards![
+      this.currentBoardIndex
+    ].lists.length;
     const listData: List = {
       name: this.getNewListName(),
-      order: 0, // then changes .................................................................................................
+      order: this.currentListIndex,
       userName: this.dataUser!.name,
       boardId: this.userBoards![this.currentBoardIndex]._id,
       cards: [],
     };
-    console.log(listData);
     await fetch('http://localhost:3000/api/list/new', {
       method: 'POST',
       body: JSON.stringify(listData),
       headers: { 'content-type': 'application/json' },
     })
       .then(function (response) {
-        console.log('new list response', response);
         return response.json();
       })
       .then((data: { data: { data: List } }) => {
         this.userBoards![this.currentBoardIndex].lists!.push(data.data.data);
-        console.log(
-          'new list data.json',
-          this.userBoards![this.currentBoardIndex].lists
-        );
       })
       .catch(alert);
   }
 
-  async fetchListRemove() {
-    console.log(
-      this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]._id
-    );
+  async removeListFromDB() {
     await fetch(
-      `http://localhost:3000/api/list?${
+      `http://localhost:3000/api/list/${
         this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
           ._id
       }`,
@@ -167,15 +157,72 @@ export default class BoardModel extends EventEmitter {
       }
     )
       .then(function (response) {
-        console.log('list response', response);
         return response.json();
-      })
-      .then((data: { [data: string]: { [data: string]: Board[] } }) => {
-        console.log('list is remove', data);
       })
       .catch((err) => {
         console.log('list do not remove', err);
       });
+  }
+
+  removeListFromData() {
+    this.userBoards![this.currentBoardIndex].lists.splice(
+      this.currentListIndex,
+      1
+    );
+  }
+
+  async updateListsDB(data: List) {
+    if (typeof this.dataUser?.name !== 'string') {
+      return;
+    }
+    const currentListId = this.userBoards![this.currentBoardIndex].lists[
+      this.currentListIndex
+    ]._id;
+    await fetch(`http://localhost:3000/api/list/${currentListId}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        name:
+          data.name ||
+          this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
+            .name,
+        order:
+          data.order ||
+          this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
+            .order,
+      }),
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .catch(alert);
+  }
+
+  async fetchAllLists() {
+    if (typeof this.dataUser?.name !== 'string') {
+      return;
+    }
+
+    const listData: {
+      boardId: string;
+      userName: string;
+    } = {
+      boardId: this.userBoards![this.currentBoardIndex]._id,
+      userName: this.dataUser!.name,
+    };
+
+    await fetch('http://localhost:3000/api/list/all', {
+      method: 'POST',
+      body: JSON.stringify(listData),
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then((data: { data: { data: List[] } }) => {
+        this.userBoards![this.currentBoardIndex].lists = data.data.data;
+      })
+      .catch(console.error);
   }
 
   changeNewListName(newName: string) {

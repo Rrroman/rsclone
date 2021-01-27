@@ -117,7 +117,11 @@ export default class Auth extends EventEmitter {
       if (this.checkAuthError()) {
         console.log('error auth');
       }
-      console.log('async register work');
+
+      this.authPage?.remove();
+
+      const app = new App(this.boardModel, document.body);
+      app.show();
     });
   }
 
@@ -131,7 +135,6 @@ export default class Auth extends EventEmitter {
         }
         this.authPage?.remove();
 
-        console.log('async work', this.boardModel.dataUser);
         const app = new App(this.boardModel, document.body);
         app.show();
       })

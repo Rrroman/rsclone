@@ -19,7 +19,6 @@ export default class BoardHeaderView extends EventEmitter {
     if (!this.boardModel.userBoards) {
       return;
     }
-    console.log('user board on header', this.boardModel.userBoards[0]);
     const boardName = create('div', {
       child: this.boardModel.userBoards[this.boardModel.currentBoardIndex].name,
     });
