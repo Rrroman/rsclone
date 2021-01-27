@@ -9,6 +9,7 @@ import ListMenu from '../listMenu.component/listMenu.view';
 import ListMenuController from '../listMenu.component/listMenu.controller';
 import { renderTextArea } from '../user.kit.component/user.kit.components';
 import renderNewCard from '../user.kit.component/user.kit.render.component';
+import { List } from './card.list.types';
 
 export default class CardListView extends EventEmitter {
   cardListBottom: HTMLElement | null;
@@ -43,8 +44,9 @@ export default class CardListView extends EventEmitter {
     this.cardContent = null;
   }
 
-  show() {
-    return this.createCardList();
+  show(insertBeforeElement: null | HTMLElement) {
+    this.createCardList();
+    this.appendList(insertBeforeElement);
   }
 
   createCardList() {
@@ -55,6 +57,10 @@ export default class CardListView extends EventEmitter {
 
     const cardListBottom = this.createAddBottomBtn();
 
+    const currentListOrder: number = this.boardModel.userBoards![
+      this.boardModel.currentBoardIndex
+    ].lists[this.boardModel.currentListIndex].order;
+
     this.cardContent = create('div', {
       className: styles['card-content'],
       child: [cardListHeader, this.cardListBody, cardListBottom],
@@ -62,6 +68,7 @@ export default class CardListView extends EventEmitter {
       dataAttr: [
         ['draggable', 'true'],
         ['list', 'true'],
+        ['order', currentListOrder],
         ['listName', this.boardModel.getNewListName()],
       ],
     });
@@ -73,7 +80,14 @@ export default class CardListView extends EventEmitter {
       dataAttr: [['listWrapper', 'true']],
     });
 
-    return this.cardContent;
+    this.cardContent.addEventListener('dragstart', (event: DragEvent) => {
+      if (event.target && (event.target as HTMLElement).dataset.list)
+        this.emit('dragstart', event.target);
+    });
+
+    this.cardContent.addEventListener('dragend', () => {
+      this.emit('dragend');
+    });
   }
 
   appendList(insertBeforeElement: null | HTMLElement) {
@@ -86,8 +100,6 @@ export default class CardListView extends EventEmitter {
         this.emit('cardDragover', event);
       });
     }
-
-    return this.cardContent;
   }
 
   createListHeader() {
@@ -233,19 +245,57 @@ export default class CardListView extends EventEmitter {
   }
 
   dragStartElementChange() {
-    if (this.boardModel.draggableList) {
-      this.boardModel.draggableList.firstChild.classList.add(
-        styles['black-back']
-      );
-    }
+    (this.cardContent as HTMLElement).classList.add(styles['black-back']);
   }
 
   dragEndElementChange() {
-    if (this.boardModel.draggableList) {
-      this.boardModel.draggableList.firstChild.classList.remove(
-        styles['black-back']
+    (this.cardContent as HTMLElement).classList.remove(styles['black-back']);
+
+    this.updateBoardModelListsOrder();
+    this.updateDBListsOrder();
+  }
+
+  updateBoardModelListsOrder() {
+    this.board.childNodes.forEach((child: HTMLElement) => {
+      this.boardModel.listPositionArray.push(
+        Number((child.firstChild as HTMLElement).dataset.order)
       );
+    });
+
+    const length = this.boardModel.userBoards[this.boardModel.currentBoardIndex]
+      .lists.length;
+
+    for (let i = 0; i < length; i += 1) {
+      const currentOrder = this.boardModel.userBoards[
+        this.boardModel.currentBoardIndex
+      ].lists[i].order;
+
+      const newOrder = this.boardModel.listPositionArray.indexOf(currentOrder);
+      this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists[
+        i
+      ].order = newOrder;
     }
+
+    this.board.childNodes.forEach((list: HTMLElement, index: number) => {
+      if (index < length) {
+        (list.firstChild as HTMLElement).dataset.order = index.toString();
+      }
+    });
+
+    this.boardModel.listPositionArray = [];
+  }
+
+  updateDBListsOrder() {
+    this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists.forEach(
+      (list: List, index: number) => {
+        this.boardModel.currentListIndex = index;
+        this.boardModel
+          .updateListsDB({ order: list.order })
+          .catch((err: Error) =>
+            console.log('cant update list order in DB', err)
+          );
+      }
+    );
   }
 
   showAddCardBlock() {
@@ -349,6 +399,20 @@ export default class CardListView extends EventEmitter {
   }
 
   headerTextChange(event: any) {
+    this.boardModel.currentListIndex = Number(this.cardContent!.dataset.order);
+    this.boardModel
+      .updateListsDB({
+        name: event.target.value,
+      })
+      .then(() => {
+        this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists[
+          this.boardModel.currentListIndex
+        ].name = event.target.value;
+      })
+      .catch((err: Error) =>
+        console.log('err update list name in DB in card.list.view', err)
+      );
+
     this.cardContent!.dataset.listName = event.target.value;
   }
 }

@@ -153,7 +153,7 @@ export default class HeaderBoardsMenuView extends EventEmitter {
       favorite: false,
     };
 
-    this.boardModel.fetchNewBoard(obj).then(() => {
+    this.boardModel.createNewBoard(obj).then(() => {
       this.boardModel.currentBoardIndex =
         this.boardModel.userBoards!.length - 1;
 

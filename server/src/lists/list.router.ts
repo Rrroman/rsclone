@@ -17,9 +17,27 @@ export const getListsRouter = (mongoClient: RSMongoClient) => {
     }
   });
 
+  router.post(`/all`, async (req, res, next) => {
+    try {
+      const data = await listsService.findAllByUserBoard(req.body);
+      res.json({ data });
+    } catch (err) {
+      next(err);
+    }
+  });
+
   router.delete(`/:id`, async (req, res, next) => {
     try {
       const data = await listsService.remove(req.params.id);
+      res.json({ data });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  router.put(`/:id`, async (req, res, next) => {
+    try {
+      const data = await listsService.update(req.params.id, req.body);
       res.json({ data });
     } catch (err) {
       next(err);

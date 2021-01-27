@@ -59,7 +59,6 @@ function textAreaAutoHeight(element: HTMLElement) {
 }
 
 function selectText(event: Event) {
-  console.log('Selecting');
   (event.target as HTMLTextAreaElement).select();
 }
 

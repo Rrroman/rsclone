@@ -10,7 +10,7 @@ export default class BoardController {
       })
       .on({
         event: 'boardMousedown',
-        listener: (event: Event) => this.boardDragStart(event),
+        listener: (event: Event) => this.boardMousedown(event),
       })
       .on({
         event: 'boardMouseup',
@@ -27,8 +27,8 @@ export default class BoardController {
     this.boardViewer.appendDraggableList(event);
   }
 
-  boardDragStart(event: Event) {
-    this.boardViewer.boardDragStart(event);
+  boardMousedown(event: Event) {
+    this.boardViewer.boardMousedown(event);
   }
 
   boardDragStop() {

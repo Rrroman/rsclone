@@ -18,7 +18,7 @@ export default class AddListCardBtnController {
       })
       .on({
         event: 'addListBtnCLick',
-        listener: (event: Event) => this.addNewCard(event),
+        listener: (event: Event) => this.addNewList(event),
       })
       .on({
         event: 'inputListName',
@@ -35,7 +35,7 @@ export default class AddListCardBtnController {
     this.addListCardBtn.closeInputForm();
   }
 
-  addNewCard(event: Event) {
+  addNewList(event: Event) {
     event.preventDefault();
     this.addListCardBtn.renderNewList(null);
     this.addListCardBtn.closeInputForm();

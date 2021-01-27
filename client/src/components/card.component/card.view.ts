@@ -26,7 +26,7 @@ export default class CardView extends EventEmitter {
   }
 
   show() {
-    return this.createCard();
+    this.createCard();
   }
 
   createCard() {
@@ -50,7 +50,17 @@ export default class CardView extends EventEmitter {
     });
     this.card.prepend(this.descriptionTextContainer);
 
-    return this.card;
+    this.card.addEventListener('click', (event: Event) =>
+      this.emit('addCardDataToPopup', event)
+    );
+    this.card.addEventListener('dragstart', (event: Event) => {
+      event.stopPropagation();
+      this.emit('cardDragstart', event.target);
+    });
+    this.card.addEventListener('dragend', (event: Event) => {
+      event.stopPropagation();
+      this.emit('cardDragend');
+    });
   }
 
   addCardDataToPopup(event: Event) {
