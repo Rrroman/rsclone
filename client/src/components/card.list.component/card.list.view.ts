@@ -183,11 +183,6 @@ export default class CardListView extends EventEmitter {
       className: styles['add-card-block__buttons'],
     });
 
-    const controlsSettings = create('div', {
-      className: styles['add-card-block__menu'],
-      child: '...',
-    });
-
     const addCardBtn = create('input', {
       className: styles['add-card-block__add-card-btn'],
       child: null,
@@ -218,7 +213,7 @@ export default class CardListView extends EventEmitter {
 
     const controls = create('div', {
       className: styles['add-card-block__controls'],
-      child: [controlsButtons, controlsSettings],
+      child: [controlsButtons],
     });
 
     const addOneMoreCardBlock = create('div', {

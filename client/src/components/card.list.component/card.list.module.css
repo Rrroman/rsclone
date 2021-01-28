@@ -197,13 +197,6 @@
   align-items: center;
 }
 
-.add-card-block__menu {
-  color: #6b778c;
-  font-size: 16px;
-  line-height: 20px;
-  width: 20px;
-}
-
 .add-card-block__close-btn {
   text-decoration: none;
 }

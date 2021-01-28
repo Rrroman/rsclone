@@ -221,12 +221,31 @@ export default class PopupView extends EventEmitter {
       className: styles['checklist-wrapper'],
     });
 
+    const deleteCard = create('button', {
+      className: styles['card__delete'],
+      child: 'Delete card',
+      dataAttr: [
+        ['data-close-button', ''],
+        ['closeButton', 'close-button'],
+        ['cardDelete', 'card-delete'],
+      ],
+    });
+
+    deleteCard.addEventListener('click', () => this.emit('deleteCard'));
+
     this.popupBody!.append(this.popupTitle);
     this.popupBody!.append(popupListName);
     this.popupBody!.append(popupDescriptionWrapper);
     this.popupBody!.append(this.popupCloseButton);
     this.popupBody!.append(this.checklistWrapper);
+    this.popupBody!.append(this.checklistWrapper);
+    this.popupBody!.append(deleteCard);
     popupWrapper.append(this.popupBody);
+  }
+
+  deleteCard() {
+    this.currentCard.remove();
+    this.popupClose();
   }
 
   popupClose() {
@@ -269,7 +288,7 @@ export default class PopupView extends EventEmitter {
   hideDescriptionButtons(event: any) {
     if (
       event.target === this.popupCloseButton ||
-      event.target.dataset.checklistButton
+      event.target.dataset.closeButton
     ) {
       return;
     }
