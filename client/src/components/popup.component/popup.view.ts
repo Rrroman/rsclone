@@ -288,7 +288,8 @@ export default class PopupView extends EventEmitter {
   hideDescriptionButtons(event: any) {
     if (
       event.target === this.popupCloseButton ||
-      event.target.dataset.closeButton
+      event.target.dataset.closeButton ||
+      event.target.dataset.checklistButton
     ) {
       return;
     }
@@ -297,12 +298,30 @@ export default class PopupView extends EventEmitter {
       .closest('[data-popup]')
       .querySelector('[data-popup-description-buttons]');
 
+    // const popupChecklistTitle = event.target
+    //   .closest('[data-popup]')
+    //   .querySelector('[data-checklist-title]');
+
+    // const popupChecklistTitleButtons = event.target
+    //   .closest('[data-popup]')
+    //   .querySelectorAll('[data-title-buttons]');
+
     const descriptionTextarea = event.target
       .closest('[data-popup]')
       .querySelector('[data-popup-textarea]');
 
-    if (event.target !== descriptionTextarea) {
+    if (
+      event.target !== descriptionTextarea
+      // &&
+      // event.target !== popupChecklistTitle
+    ) {
       popupDescriptionButtons.classList.add(globalStyles.hidden);
+
+      // if (popupChecklistTitleButtons) {
+      //   popupChecklistTitleButtons.forEach((titleButtons: HTMLElement) => {
+      //     titleButtons.classList.add(globalStyles.hidden);
+      //   });
+      // }
     }
   }
 
@@ -338,7 +357,7 @@ export default class PopupView extends EventEmitter {
       );
 
       checklistView.show();
-      new ChecklistController(this.boardModel, checklistView);
+      new ChecklistController(this.boardModel, checklistView, this);
     }
   }
 }

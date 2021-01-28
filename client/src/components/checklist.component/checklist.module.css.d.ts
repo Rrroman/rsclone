@@ -9,6 +9,7 @@ interface CssExports {
   'checklist__header': string;
   'checklist__textarea-description': string;
   'checklist__title': string;
+  'checklist__title-buttons': string;
   'checklist__wrapper': string;
 }
 export const cssExports: CssExports;

@@ -135,3 +135,8 @@
 .checklist-section__delete:hover {
   background-color: rgba(9, 30, 66, 0.08);
 }
+
+.checklist__title-buttons {
+  display: flex;
+  flex-wrap: wrap;
+}

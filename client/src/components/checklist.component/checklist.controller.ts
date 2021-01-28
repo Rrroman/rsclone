@@ -1,20 +1,33 @@
 export default class ChecklistController {
   checklistView: any;
 
-  constructor(public boardModel: { [key: string]: any }, public view: any) {
+  constructor(
+    public boardModel: { [key: string]: any },
+    public view: any,
+    public popupView: any
+  ) {
     this.checklistView = view;
-    this.checklistView.on({
-      event: 'closeSidebarPopup',
-      listener: (event: Event) => this.closeSidebarPopup(event),
-    });
-    this.checklistView.on({
-      event: 'addCheckbox',
-      listener: (event: Event) => this.addCheckbox(event),
-    });
-    this.checklistView.on({
-      event: 'deleteChecklist',
-      listener: (event: Event) => this.deleteChecklist(event),
-    });
+    this.checklistView
+      .on({
+        event: 'closeSidebarPopup',
+        listener: (event: Event) => this.closeSidebarPopup(event),
+      })
+      .on({
+        event: 'addCheckbox',
+        listener: (event: Event) => this.addCheckbox(event),
+      })
+      .on({
+        event: 'deleteChecklist',
+        listener: (event: Event) => this.deleteChecklist(event),
+      })
+      .on({
+        event: 'showDescriptionButtons',
+        listener: (event: Event) => this.showDescriptionButtons(event),
+      })
+  }
+
+  showDescriptionButtons(event: Event) {
+    this.popupView.showDescriptionButtons(event);
   }
 
   deleteChecklist(event: Event) {

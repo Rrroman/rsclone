@@ -81,7 +81,7 @@ export default class ChecklistView extends EventEmitter {
         ['maxlength', '512'],
         ['spellcheck', 'false'],
         ['draggable', 'false'],
-        ['checklistTitle', `${checklistTitle}`],
+        ['checklistTitle', `checklist-title`],
       ],
     });
 
@@ -100,21 +100,30 @@ export default class ChecklistView extends EventEmitter {
       this.emit('deleteChecklist', event)
     );
 
-    const saveButton = addBtn('Save');
-    const closeButton = closeBtn();
+    // const saveButton = addBtn('Save');
+    // const closeButton = closeBtn();
+
+    // const checklistTitleButtons = create('div', {
+    //   className: `${styles['checklist__title-buttons']} ${globalStyles.hidden}`,
+    //   child: [saveButton, closeButton],
+    //   dataAttr: [['titleButtons', 'title-buttons']],
+    // });
 
     const checklistSectionHeader = create('div', {
       className: styles['checklist-section__header'],
       child: [
         checklistSectionTitle,
-        saveButton,
+        // checklistTitleButtons,
         checklistDeleteButton,
-        closeButton,
       ],
     });
 
     checklistSectionTitle.addEventListener('click', (event: Event) =>
       selectText(event)
+    );
+
+    checklistSectionTitle.addEventListener('click', (event: Event) =>
+      this.emit('showDescriptionButtons', event)
     );
 
     this.checklistWrapper.append(checklistSectionHeader);
