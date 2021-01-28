@@ -125,7 +125,7 @@
   background-color: rgba(9, 30, 66, 0.04);
   box-shadow: none;
   border: none;
-  z-index: 50;
+  z-index: 5;
 
   transition-property: background-color, border-color, box-shadow;
   transition-duration: 85ms;

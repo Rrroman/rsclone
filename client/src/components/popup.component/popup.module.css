@@ -168,3 +168,26 @@
 .checklist-wrapper {
   width: 100%;
 }
+
+.card__delete {
+  margin: 5px;
+  padding: 0 12px;
+
+  color: #172b4d;
+  line-height: 40px;
+  font-weight: 400;
+  border-radius: 3px;
+  cursor: pointer;
+  background-color: rgba(9, 30, 66, 0.04);
+  box-shadow: none;
+  border: none;
+  z-index: 5;
+
+  transition-property: background-color, border-color, box-shadow;
+  transition-duration: 85ms;
+  transition-timing-function: ease;
+}
+
+.card__delete:hover {
+  background-color: rgba(9, 30, 66, 0.08);
+}
