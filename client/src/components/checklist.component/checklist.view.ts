@@ -92,7 +92,7 @@ export default class ChecklistView extends EventEmitter {
       child: 'Delete',
       dataAttr: [
         ['data-close-button', ''],
-        ['checklistButton', 'checklist-button'],
+        ['closeButton', 'close-button'],
       ],
     });
 

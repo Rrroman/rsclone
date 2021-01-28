@@ -40,7 +40,15 @@ export default class PopupController {
       .on({
         event: 'closeSidebarPopup',
         listener: (event: Event) => this.closeSidebarPopup(event),
+      })
+      .on({
+        event: 'deleteCard',
+        listener: () => this.deleteCard(),
       });
+  }
+
+  deleteCard() {
+    this.popupView.deleteCard();
   }
 
   closeSidebarPopup(event: Event) {
