@@ -13,12 +13,12 @@ export const getListsService = (mongoClient: RSMongoClient) => {
       name,
       order,
       boardId,
-      userName,
+      cards,
     }: {
       name: string;
       order: string;
       boardId: string;
-      userName: string;
+      cards: [];
     }): Promise<{ data: List }> {
       const collection = await getCollection();
 
@@ -30,7 +30,7 @@ export const getListsService = (mongoClient: RSMongoClient) => {
         name,
         order,
         boardId,
-        userName,
+        cards,
       });
 
       return { data: ops[0] };
@@ -66,16 +66,14 @@ export const getListsService = (mongoClient: RSMongoClient) => {
     },
 
     async findAllByUserBoard({
-      userName,
       boardId,
     }: {
-      userName: string;
       boardId: string;
     }): Promise<{ data: List[] }> {
       const collection = await getCollection();
 
       const lists = await collection
-        .find<List>({ userName: userName, boardId: boardId })
+        .find<List>({ boardId: boardId })
         .toArray();
 
       return { data: lists };

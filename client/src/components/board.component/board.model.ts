@@ -1,6 +1,7 @@
 import { Board } from './../board.component/board.type';
 import EventEmitter from '../../utils/eventEmitter';
 import { List } from '../card.list.component/card.list.types';
+import { Card } from '../card.component/card.types';
 
 export default class BoardModel extends EventEmitter {
   inputNewListName: any | null;
@@ -10,6 +11,7 @@ export default class BoardModel extends EventEmitter {
   draggableCard: HTMLElement | null;
 
   cardName: string | null;
+  description: string;
 
   overlayElement: HTMLElement | null;
 
@@ -23,6 +25,7 @@ export default class BoardModel extends EventEmitter {
   currentBoardIndex: number;
   currentListIndex: number;
   listPositionArray: number[];
+  currentCardIndex: number;
 
   constructor() {
     super();
@@ -30,6 +33,7 @@ export default class BoardModel extends EventEmitter {
     this.draggableList = null;
     this.draggableCard = null;
     this.cardName = null;
+    this.description = '';
     this.overlayElement = null;
     this.popupCardName = null;
     this.headerBoardsMenuIsOpen = false;
@@ -39,6 +43,7 @@ export default class BoardModel extends EventEmitter {
     this.currentBoardIndex = 0;
     this.currentListIndex = 0;
     this.listPositionArray = [];
+    this.currentCardIndex = 0;
   }
 
   async fetchNewUser(userData: { name: string; password: string }) {
@@ -127,7 +132,6 @@ export default class BoardModel extends EventEmitter {
     const listData: List = {
       name: this.getNewListName(),
       order: this.currentListIndex,
-      userName: this.dataUser!.name,
       boardId: this.userBoards![this.currentBoardIndex]._id,
       cards: [],
     };
@@ -205,10 +209,8 @@ export default class BoardModel extends EventEmitter {
 
     const listData: {
       boardId: string;
-      userName: string;
     } = {
       boardId: this.userBoards![this.currentBoardIndex]._id,
-      userName: this.dataUser!.name,
     };
 
     await fetch('http://localhost:3000/api/list/all', {
@@ -223,6 +225,45 @@ export default class BoardModel extends EventEmitter {
         this.userBoards![this.currentBoardIndex].lists = data.data.data;
       })
       .catch(console.error);
+  }
+
+  async createNewCard() {
+    if (typeof this.dataUser?.name !== 'string') {
+      return;
+    }
+
+    this.currentCardIndex = this.userBoards![this.currentBoardIndex].lists[
+      this.currentListIndex
+    ].cards.length;
+
+    const cardData: Card = {
+      name: this.getCardName(),
+      order: this.currentCardIndex,
+      description: this.description,
+      listId: this.userBoards![this.currentBoardIndex].lists[
+        this.currentListIndex
+      ]._id!,
+      listName: this.userBoards![this.currentBoardIndex].lists[
+        this.currentListIndex
+      ].name,
+      checklists: [],
+      labelColorId: '',
+      labelTextId: '',
+    };
+    await fetch('http://localhost:3000/api/card/new', {
+      method: 'POST',
+      body: JSON.stringify(cardData),
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then((data: { data: { data: Card } }) => {
+        this.userBoards![this.currentBoardIndex].lists[
+          this.currentListIndex
+        ].cards.push(data.data.data);
+      })
+      .catch((err) => console.log('do not create new List server error', err));
   }
 
   changeNewListName(newName: string) {
@@ -249,8 +290,15 @@ export default class BoardModel extends EventEmitter {
     return this.draggableCard;
   }
 
-  getCardName(cardNameText: string) {
+  setCardName(cardNameText: string) {
     this.cardName = cardNameText;
+  }
+
+  getCardName() {
+    if (this.cardName) {
+      return this.cardName;
+    }
+    return '';
   }
 
   setPopupCardName(name: string) {

@@ -87,7 +87,7 @@ export default class CardListController {
 
   addCardNameHandler(event: { [key: string]: any }) {
     if (this.boardModel) {
-      this.boardModel.getCardName(event.target.value);
+      this.boardModel.setCardName(event.target.value);
     }
   }
 

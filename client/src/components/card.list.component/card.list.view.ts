@@ -316,9 +316,10 @@ export default class CardListView extends EventEmitter {
   }
 
   renderCard() {
-    if (this.cardListBody) {
-      renderNewCard(this.boardModel, this.cardListBody);
-    }
+    this.boardModel.currentListIndex = Number(this.cardContent?.dataset.order);
+    this.boardModel.createNewCard().then(() => {
+      renderNewCard(this.boardModel, this.cardListBody!);
+    });
   }
 
   openListMenu(event: MouseEvent) {
