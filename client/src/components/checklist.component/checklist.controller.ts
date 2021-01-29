@@ -24,6 +24,54 @@ export default class ChecklistController {
         event: 'showDescriptionButtons',
         listener: (event: Event) => this.showDescriptionButtons(event),
       })
+      .on({
+        event: 'addBasicPlaceholderText',
+        listener: (event: Event) => this.addBasicPlaceholderText(event),
+      })
+      .on({
+        event: 'addCheckboxItem',
+        listener: (event: Event) => this.addCheckboxItem(event),
+      })
+      .on({
+        event: 'showDeleteButton',
+        listener: (event: Event) => this.showDeleteButton(event),
+      })
+      .on({
+        event: 'hideDeleteButton',
+        listener: (event: Event) => this.hideDeleteButton(event),
+      })
+      .on({
+        event: 'deleteCurrentCheckbox',
+        listener: (event: Event) => this.deleteCurrentCheckbox(event),
+      })
+      .on({
+        event: 'checkCheckbox',
+        listener: (event: Event) => this.checkCheckbox(event),
+      });
+  }
+
+  checkCheckbox(event: Event) {
+    this.checklistView.checkCheckbox(event.target);
+  }
+
+  deleteCurrentCheckbox(event: Event) {
+    this.checklistView.deleteCurrentCheckbox(event.target);
+  }
+
+  hideDeleteButton(event: Event) {
+    this.checklistView.hideDeleteButton(event.target);
+  }
+
+  showDeleteButton(event: Event) {
+    this.checklistView.showDeleteButton(event.target);
+  }
+
+  addCheckboxItem(event: Event) {
+    this.checklistView.addCheckboxItem(event.target);
+  }
+
+  addBasicPlaceholderText(event: Event) {
+    this.checklistView.addBasicPlaceholderText(event.target);
   }
 
   showDescriptionButtons(event: Event) {

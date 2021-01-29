@@ -35,6 +35,7 @@
 
 .popup__description {
   margin: 12px 0;
+  padding: 4px 8px;
   font-size: 16px;
 }
 
@@ -190,4 +191,17 @@
 
 .card__delete:hover {
   background-color: rgba(9, 30, 66, 0.08);
+}
+
+.popup__title-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 0 5px;
+}
+
+.popup__description-header-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
 }
