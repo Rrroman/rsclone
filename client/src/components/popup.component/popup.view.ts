@@ -69,9 +69,6 @@ export default class PopupView extends EventEmitter {
       '[data-list-name]'
     ) as HTMLElement).dataset.listName;
 
-    // todo
-    // const icon = '<i class="fas fa-align-left"</i>';
-
     this.popupTitle = create('textarea', {
       className: `${stylesFromCardList['card-name']} ${styles['popup__card-name']}`,
       child: this.popupCardName!,
