@@ -6,9 +6,16 @@ import { getBoardsRouter } from './boards/boards.router';
 import { RSMongoClient } from './db-client/mongo-client';
 import { getUsersRouter } from './users/users.router';
 import { getListsRouter } from './lists/list.router';
+import path from 'path';
 
 export const createApp = (mongoClient: RSMongoClient) => {
   const app = express();
+
+  app.use(express.static(path.join(__dirname, '../../client/dist')));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/../client/dist/index.html'));
+  });
 
   app.use(morgan('dev'));
   app.use(cors());
