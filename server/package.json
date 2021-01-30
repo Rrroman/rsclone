@@ -12,7 +12,7 @@
     "start": "node ./dist/server.js",
     "start:dev": "tsc-watch --onSuccess \"node --inspect ./dist/server.js\"",
     "lint": "eslint ./src --fix",
-    "start:build": "prebuild && build && prestart && start"
+    "start:build": "npm run prebuild && npm run prestart && npm run start"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
