@@ -11,10 +11,10 @@ import path from 'path';
 export const createApp = (mongoClient: RSMongoClient) => {
   const app = express();
 
-  app.use(express.static(path.join(__dirname, '../../client/dist')));
+  app.use(express.static(path.join('../../client/dist')));
 
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname + '/../client/dist/index.html'));
+    res.sendFile(path.join('/../client/dist/index.html'));
   });
 
   app.use(morgan('dev'));
