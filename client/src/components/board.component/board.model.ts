@@ -19,11 +19,14 @@ export default class BoardModel extends EventEmitter {
   dataError: null | { [key: string]: string | { [key: string]: string } };
 
   dataUser: null | { [key: string]: string | { [key: string]: string } };
-  userBoards: Board[] | null;
-  currentBoardIndex: number;
-  currentListIndex: number;
-  listPositionArray: number[];
 
+  userBoards: Board[] | null;
+
+  currentBoardIndex: number;
+
+  currentListIndex: number;
+
+  listPositionArray: number[];
 
   constructor() {
     super();
