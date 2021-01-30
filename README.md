@@ -1,6 +1,6 @@
 ## Description
 
-[RSSchool task] (https://github.com/rolling-scopes-school/tasks/blob/master/tasks/rsclone/rsclone.md)
+[RSSchool task](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/rsclone/rsclone.md)
 
 This project is a clone of [Trello](https://trello.com/)
 
