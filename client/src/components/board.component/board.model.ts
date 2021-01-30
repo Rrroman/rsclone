@@ -24,6 +24,7 @@ export default class BoardModel extends EventEmitter {
   currentListIndex: number;
   listPositionArray: number[];
 
+
   constructor() {
     super();
     this.inputNewListName = null;

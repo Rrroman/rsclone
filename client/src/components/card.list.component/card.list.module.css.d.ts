@@ -5,7 +5,6 @@ interface CssExports {
   'add-card-block__buttons': string;
   'add-card-block__close-btn': string;
   'add-card-block__controls': string;
-  'add-card-block__menu': string;
   'black-back': string;
   'card-content': string;
   'card-header': string;
