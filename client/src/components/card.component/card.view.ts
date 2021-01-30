@@ -1,6 +1,5 @@
 import styles from './card.module.css';
 import globalStyles from '../../globals.module.css';
-import stylesFromList from '../card.list.component/card.list.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
@@ -25,18 +24,22 @@ export default class CardView extends EventEmitter {
     this.descriptionTextContainer = null;
   }
 
-  show() {
-    this.createCard();
+  show(cardIndex: number, listIndex: number) {
+    this.createCard(cardIndex, listIndex);
   }
 
-  createCard() {
+  createCard(cardIndex: number, listIndex: number) {
     this.descriptionTextContainer = create('div', {
       className: globalStyles.hidden,
     });
 
+    const currentCard = this.boardModel.userBoards[
+      this.boardModel.currentBoardIndex
+    ].lists[listIndex!].cards[cardIndex];
+
     const cardDescriptionTextHidden = create('div', {
       className: styles['card__text'],
-      child: this.boardModel.cardName,
+      child: currentCard.name,
     });
 
     this.card = create('div', {
@@ -46,6 +49,7 @@ export default class CardView extends EventEmitter {
       dataAttr: [
         ['draggable', 'true'],
         ['data-card', ''],
+        ['order', currentCard.order],
       ],
     });
     this.card.prepend(this.descriptionTextContainer);
@@ -64,6 +68,7 @@ export default class CardView extends EventEmitter {
   }
 
   addCardDataToPopup(event: Event) {
+    this.boardModel.currentCard = this.card?.dataset.order;
     if (event.target) {
       const popupView = new PopupView(
         this.boardModel,
@@ -75,17 +80,14 @@ export default class CardView extends EventEmitter {
   }
 
   dragStartElementChange() {
-    if (this.boardModel.draggableList) {
-      this.boardModel.draggableList.classList.add(stylesFromList['black-back']);
-    }
+    this.boardModel.dragElementName = 'card';
+    this.boardModel.currentListIndex = this.cardListBody.parentNode.dataset.order;
+    this.boardModel.currentCardIndex = Number(this.card?.dataset.order);
+    this.card?.classList.add(globalStyles['black-back']);
   }
 
   dragEndElementChange() {
-    if (this.boardModel.draggableList) {
-      this.boardModel.draggableList.classList.remove(
-        stylesFromList['black-back']
-      );
-    }
+    this.card?.classList.remove(globalStyles['black-back']);
   }
 
   selectText(event: any) {

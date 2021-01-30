@@ -1,5 +1,5 @@
 import { Card } from './card.types';
-// import { ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { RSMongoClient } from '../db-client/mongo-client';
 
 export const getCardsService = (mongoClient: RSMongoClient) => {
@@ -48,15 +48,15 @@ export const getCardsService = (mongoClient: RSMongoClient) => {
       return { data: ops[0] };
     },
 
-    //   async remove(id: string) {
-    //     const collection = await getCollection();
+    async remove(id: string) {
+      const collection = await getCollection();
 
-    //     const { deletedCount } = await collection.deleteOne({
-    //       _id: new ObjectId(id),
-    //     });
+      const { deletedCount } = await collection.deleteOne({
+        _id: new ObjectId(id),
+      });
 
-    //     return { data: { deletedCount } };
-    //   },
+      return { data: { deletedCount } };
+    },
 
     //   async update(
     //     id: string,
@@ -77,18 +77,18 @@ export const getCardsService = (mongoClient: RSMongoClient) => {
     //     return { data: value };
     //   },
 
-    //   async findAllByUserBoard({
-    //     boardId,
-    //   }: {
-    //     boardId: string;
-    //   }): Promise<{ data: List[] }> {
-    //     const collection = await getCollection();
+    async findAllByListId({
+      listId,
+    }: {
+      listId: string;
+    }): Promise<{ data: Card[] }> {
+      const collection = await getCollection();
 
-    //     const lists = await collection
-    //       .find<List>({ boardId: boardId })
-    //       .toArray();
+      const cards = await collection
+        .find<Card>({ listId: listId })
+        .toArray();
 
-    //     return { data: lists };
-    //   },
+      return { data: cards };
+    },
   };
 };

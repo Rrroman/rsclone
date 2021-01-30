@@ -244,8 +244,16 @@ export default class PopupView extends EventEmitter {
   }
 
   deleteCard() {
-    this.currentCard.remove();
     this.popupClose();
+    this.boardModel
+      .removeCardFromDB()
+      .then(() => {
+        this.currentCard.remove();
+        this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists[
+          this.boardModel.currentListIndex
+        ].cards.slice(this.boardModel.currentCardIndex, 1);
+      })
+      .catch((err: Error) => console.log('can not delete card on server', err));
   }
 
   popupClose() {

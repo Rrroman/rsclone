@@ -10,6 +10,7 @@ import ListMenuController from '../listMenu.component/listMenu.controller';
 import { renderTextArea } from '../user.kit.component/user.kit.components';
 import renderNewCard from '../user.kit.component/user.kit.render.component';
 import { List } from './card.list.types';
+import { Card } from '../card.component/card.types';
 
 export default class CardListView extends EventEmitter {
   cardListBottom: HTMLElement | null;
@@ -28,6 +29,8 @@ export default class CardListView extends EventEmitter {
 
   cardContent: HTMLElement | null;
 
+  dragCard: ChildNode | null;
+
   constructor(
     public boardModel: any,
     public board: any,
@@ -42,11 +45,13 @@ export default class CardListView extends EventEmitter {
     this.cardList = null;
     this.textarea = null;
     this.cardContent = null;
+    this.dragCard = null;
   }
 
   show(insertBeforeElement: null | HTMLElement) {
     this.createCardList();
     this.appendList(insertBeforeElement);
+    this.renderCardsFromDB();
   }
 
   createCardList() {
@@ -96,7 +101,7 @@ export default class CardListView extends EventEmitter {
       insertBeforeElement || this.board.lastChild
     );
     if (this.cardListBody) {
-      this.cardList?.addEventListener('dragover', (event: Event) => {
+      this.cardList!.addEventListener('dragover', (event: Event) => {
         this.emit('cardDragover', event);
       });
     }
@@ -240,6 +245,7 @@ export default class CardListView extends EventEmitter {
   }
 
   dragStartElementChange() {
+    this.boardModel.dragElementName = 'list';
     (this.cardContent as HTMLElement).classList.add(styles['black-back']);
   }
 
@@ -310,10 +316,49 @@ export default class CardListView extends EventEmitter {
     }
   }
 
+  renderCardsFromDB() {
+    // this.boardModel.currentListIndex = Number(this.cardContent?.dataset.order);
+    const currentListIndex = Number(this.cardContent?.dataset.order);
+
+    const currentListId = this.boardModel.userBoards[
+      this.boardModel.currentBoardIndex
+    ].lists[currentListIndex]._id;
+
+    this.boardModel
+      .fetchAllCardsForList(currentListId)
+      .then(() => {
+        this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists[
+          currentListIndex
+        ].cards
+          .sort((a: Card, b: Card) => {
+            return a.order - b.order;
+          })
+          .forEach((card: Card) => {
+            const currentCardIndex = Number(card.order);
+            renderNewCard(
+              this.boardModel,
+              this.cardListBody!,
+              currentCardIndex,
+              currentListIndex
+            );
+          });
+      })
+      .catch((err: Error) => console.log('error in render List from DB', err));
+  }
+
   renderCard() {
     this.boardModel.currentListIndex = Number(this.cardContent?.dataset.order);
+    const cardOrder: number = this.boardModel.userBoards![
+      this.boardModel.currentBoardIndex
+    ].lists[this.boardModel.currentListIndex].cards.length;
+
     this.boardModel.createNewCard().then(() => {
-      renderNewCard(this.boardModel, this.cardListBody!);
+      renderNewCard(
+        this.boardModel,
+        this.cardListBody!,
+        cardOrder,
+        this.boardModel.currentListIndex
+      );
     });
   }
 
@@ -334,11 +379,12 @@ export default class CardListView extends EventEmitter {
   }
 
   appendCardInEmptyList(event: MouseEvent) {
-    if (
-      this.cardListBody &&
-      this.boardModel.getDraggableCard() &&
-      this.cardListBody.childNodes.length === 0
-    ) {
+    // this.draggableCard = this.boardModel.userBoards[
+    //   this.boardModel.currentBoardIndex
+    // ].lists[this.boardModel.currentListIndex].cards[
+    //   this.boardModel.currentCardIndex
+    // ];
+    if (this.cardListBody && this.cardListBody.childNodes.length === 0) {
       this.cardListBody.append(this.boardModel.getDraggableCard());
     } else {
       this.dragOverAppendCard(event);
@@ -346,7 +392,7 @@ export default class CardListView extends EventEmitter {
   }
 
   dragOverAppendCard(event: MouseEvent) {
-    if (this.cardListBody && this.boardModel.getDraggableCard()) {
+    if (this.cardListBody) {
       const closestCard:
         | {
             element: null | ChildNode;
@@ -354,7 +400,7 @@ export default class CardListView extends EventEmitter {
         | undefined = this.getDragAfterElement(event.clientY);
       if (closestCard) {
         this.cardListBody.insertBefore(
-          this.boardModel.getDraggableCard(),
+          this.dragCard as Node,
           closestCard.element
         );
       }
@@ -364,7 +410,6 @@ export default class CardListView extends EventEmitter {
   getDragAfterElement(coordinateY: number) {
     if (!this.cardListBody) return;
     const cardArr = [...this.cardListBody.childNodes];
-
     const closestCard: {
       element: null | ChildNode;
     } = {
@@ -375,6 +420,12 @@ export default class CardListView extends EventEmitter {
         const box = (child as Element).getBoundingClientRect();
         const offset = coordinateY - (box.top + box.height / 2);
 
+        if (
+          (child as HTMLElement).dataset.order ===
+          this.boardModel.currentCardIndex.toString()
+        ) {
+          this.dragCard = child;
+        }
         if (offset < 0 && offset > closest.offset) {
           closestCard.element = child;
           return { offset };

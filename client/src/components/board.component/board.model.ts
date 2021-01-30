@@ -26,6 +26,7 @@ export default class BoardModel extends EventEmitter {
   currentListIndex: number;
   listPositionArray: number[];
   currentCardIndex: number;
+  dragElementName: string;
 
   constructor() {
     super();
@@ -44,6 +45,7 @@ export default class BoardModel extends EventEmitter {
     this.currentListIndex = 0;
     this.listPositionArray = [];
     this.currentCardIndex = 0;
+    this.dragElementName = '';
   }
 
   async fetchNewUser(userData: { name: string; password: string }) {
@@ -264,6 +266,53 @@ export default class BoardModel extends EventEmitter {
         ].cards.push(data.data.data);
       })
       .catch((err) => console.log('do not create new List server error', err));
+  }
+
+  async fetchAllCardsForList(currentListId: string) {
+    // if (typeof this.dataUser?.name !== 'string') {
+    //   return;
+    // }
+    const listIndex: number = this.currentListIndex;
+    await fetch('http://localhost:3000/api/card/all', {
+      method: 'POST',
+      body: JSON.stringify({
+        listId: currentListId,
+      }),
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then((data: { data: { data: Card[] } }) => {
+        this.userBoards![this.currentBoardIndex].lists[listIndex].cards =
+          data.data.data;
+      })
+      .catch(console.error);
+  }
+
+  async removeCardFromDB() {
+    await fetch(
+      `http://localhost:3000/api/card/${
+        this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
+          .cards[this.currentCardIndex]._id
+      }`,
+      {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+      }
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .catch((err) => {
+        console.log('card do not remove', err);
+      });
+  }
+
+  removeCardFromData() {
+    this.userBoards![this.currentBoardIndex].lists[
+      this.currentListIndex
+    ].cards.splice(this.currentCardIndex, 1);
   }
 
   changeNewListName(newName: string) {
