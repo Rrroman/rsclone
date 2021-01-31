@@ -209,3 +209,11 @@
   font-size: 2.5rem;
   margin-left: 10px;
 }
+
+.clone-black-card {
+  width: 256px;
+  height: 30px;
+  margin-bottom: 8px;
+  background-color: #fff;
+  opacity: 0.02;
+}

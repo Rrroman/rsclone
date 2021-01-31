@@ -48,7 +48,7 @@ export const getListsService = (mongoClient: RSMongoClient) => {
 
     async update(
       id: string,
-      { name, order }: { name: string; order: string }
+      data: { [key: string]: string }
     ): Promise<{ data: List }> {
       const collection = await getCollection();
 
@@ -58,7 +58,7 @@ export const getListsService = (mongoClient: RSMongoClient) => {
           $currentDate: {
             updatedAt: true,
           },
-          $set: { name, order },
+          $set: data,
         },
         { returnOriginal: false }
       );
@@ -75,6 +75,16 @@ export const getListsService = (mongoClient: RSMongoClient) => {
       const lists = await collection
         .find<List>({ boardId: boardId })
         .toArray();
+
+      return { data: lists };
+    },
+
+    async deleteAllByListId(listId: string) {
+      const collection = await getCollection();
+
+      const lists = await collection.deleteMany({
+        listId: listId,
+      });
 
       return { data: lists };
     },

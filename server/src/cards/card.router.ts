@@ -34,14 +34,23 @@ export const getCardsRouter = (mongoClient: RSMongoClient) => {
     }
   });
 
-  // router.put(`/:id`, async (req, res, next) => {
-  //   try {
-  //     const data = await listsService.update(req.params.id, req.body);
-  //     res.json({ data });
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // });
+  router.delete(`/deleteAll/:id`, async (req, res, next) => {
+    try {
+      const data = await cardsService.deleteAllByListId(req.params.id);
+      res.json({ data });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  router.put(`/:id`, async (req, res, next) => {
+    try {
+      const data = await cardsService.update(req.params.id, req.body);
+      res.json({ data });
+    } catch (err) {
+      next(err);
+    }
+  });
 
   return router;
 };

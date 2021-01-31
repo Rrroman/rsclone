@@ -58,24 +58,34 @@ export const getCardsService = (mongoClient: RSMongoClient) => {
       return { data: { deletedCount } };
     },
 
-    //   async update(
-    //     id: string,
-    //     { name, order }: { name: string; order: string }
-    //   ): Promise<{ data: List }> {
-    //     const collection = await getCollection();
+    async deleteAllByListId(listId: string) {
+      const collection = await getCollection();
 
-    //     const { value } = await collection.findOneAndUpdate(
-    //       { _id: new ObjectId(id) },
-    //       {
-    //         $currentDate: {
-    //           updatedAt: true,
-    //         },
-    //         $set: { name, order },
-    //       },
-    //       { returnOriginal: false }
-    //     );
-    //     return { data: value };
-    //   },
+      const cards = await collection.deleteMany({
+        listId: listId,
+      });
+
+      return { data: cards };
+    },
+
+    async update(
+      id: string,
+      data: { name?: string; order?: string }
+    ): Promise<{ data: Card }> {
+      const collection = await getCollection();
+
+      const { value } = await collection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        {
+          $currentDate: {
+            updatedAt: true,
+          },
+          $set: data,
+        },
+        { returnOriginal: false }
+      );
+      return { data: value };
+    },
 
     async findAllByListId({
       listId,

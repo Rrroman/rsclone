@@ -9,9 +9,8 @@ function renderNewCard(
 ) {
   const card = new CardView(boardModel, cardListBody);
 
-  card.show(cardIndex, listIndex);
-
   new CardController(boardModel, card);
+  return card.show(cardIndex, listIndex);
 }
 
 export default renderNewCard;

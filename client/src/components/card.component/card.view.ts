@@ -26,6 +26,7 @@ export default class CardView extends EventEmitter {
 
   show(cardIndex: number, listIndex: number) {
     this.createCard(cardIndex, listIndex);
+    return this.card;
   }
 
   createCard(cardIndex: number, listIndex: number) {
@@ -40,6 +41,7 @@ export default class CardView extends EventEmitter {
     const cardDescriptionTextHidden = create('div', {
       className: styles['card__text'],
       child: currentCard.name,
+      dataAttr: [['cards', 'true']],
     });
 
     this.card = create('div', {
@@ -49,6 +51,7 @@ export default class CardView extends EventEmitter {
       dataAttr: [
         ['draggable', 'true'],
         ['data-card', ''],
+        ['cards', 'true'],
         ['order', currentCard.order],
       ],
     });
@@ -69,10 +72,16 @@ export default class CardView extends EventEmitter {
 
   addCardDataToPopup(event: Event) {
     this.boardModel.currentCard = this.card?.dataset.order;
+    const currentListIndex: number = Number(
+      this.cardListBody.parentNode.dataset.order
+    );
+    const currentCardIndex: number = Number(this.card?.dataset.order);
     if (event.target) {
       const popupView = new PopupView(
         this.boardModel,
-        event.target as HTMLElement
+        event.target as HTMLElement,
+        currentListIndex,
+        currentCardIndex
       );
       popupView.show();
       new PopupController(this.boardModel, popupView);
@@ -84,10 +93,21 @@ export default class CardView extends EventEmitter {
     this.boardModel.currentListIndex = this.cardListBody.parentNode.dataset.order;
     this.boardModel.currentCardIndex = Number(this.card?.dataset.order);
     this.card?.classList.add(globalStyles['black-back']);
+
+    this.boardModel.draggableCardData = this.boardModel.userBoards[
+      this.boardModel.currentBoardIndex
+    ].lists[this.boardModel.currentListIndex].cards[
+      this.boardModel.currentCardIndex
+    ];
   }
 
   dragEndElementChange() {
+    if (this.boardModel.dragCardIsCreated) {
+      this.card?.remove();
+      this.boardModel.dragCardIsCreated = false;
+    }
     this.card?.classList.remove(globalStyles['black-back']);
+    this.boardModel.dragElementName = '';
   }
 
   selectText(event: any) {
