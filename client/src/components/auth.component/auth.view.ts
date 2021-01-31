@@ -30,7 +30,7 @@ export default class Auth extends EventEmitter {
 
     const header = create('div', {
       className: styles['login-header'],
-      child: 'Login to Trello',
+      child: 'Login to Trello Clone',
     });
 
     this.inputLogin = create('input', {
