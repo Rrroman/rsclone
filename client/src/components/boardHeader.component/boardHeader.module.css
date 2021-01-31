@@ -1,7 +1,61 @@
 .board-header {
-  background-color: rgba(0, 0, 0, 0.24);
-  height: 50px;
-  padding: 8px 4px 4px 8px;
-  position: relative;
-  transition: padding 0.1s ease-in;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-start;
+  background-color: transparent;
+  min-height: 40px;
+  max-height: 40px;
+  padding: 4px;
+}
+
+.board-name {
+  border-radius: 3px;
+  border: 0;
+  text-decoration: none;
+  align-items: center;
+  background-color: hsla(0, 0%, 100%, 0.3);
+  box-shadow: none;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  font-weight: 700;
+  line-height: 32px;
+  margin: 0 4px 0 0;
+  padding: 5px;
+  white-space: nowrap;
+  height: 32px;
+  width: fit-content;
+}
+
+.board-divider {
+  float: left;
+  border-left: 1px solid hsla(0, 0%, 100%, 0.24);
+  height: 16px;
+  margin: 8px 8px 12px 4px;
+}
+
+.board-members {
+  align-items: center;
+  background-color: #0354ca;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: 0;
+  border-radius: 100%;
+  box-sizing: border-box;
+  color: #ffffff;
+  display: inline-flex;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Noto Sans,
+    Ubuntu, Droid Sans, Helvetica Neue, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 28px;
+  margin: 0 4px 0 0;
+  padding: 0;
+  opacity: 1;
+  height: 28px;
+  width: 28px;
+  overflow: hidden;
+  white-space: nowrap;
 }
