@@ -91,13 +91,13 @@ export default class FooterView extends EventEmitter {
     const rsLink = create('div', {
       className: styles.rs_link,
       child: RSlogo,
-      parent: rsInfo,
+      parent: null,
     });
 
     create('a', {
       className: styles.rs_link,
-      child: null,
-      parent: rsLink,
+      child: rsLink,
+      parent: rsInfo,
       dataAttr: [['href', 'https://rs.school/js/']],
     });
 
