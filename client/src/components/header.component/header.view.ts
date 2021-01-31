@@ -89,7 +89,7 @@ export default class HeaderView extends EventEmitter {
 
     create('button', {
       className: styles.button__profile,
-      child: 'UN',
+      child: (this.boardModel.dataUser!.name as string).slice(0, 1),
       parent: headerRightColumn,
     });
 
@@ -121,6 +121,7 @@ export default class HeaderView extends EventEmitter {
     create('span', {
       // className: styles.button__boards_text,
       child: 'Boards',
+      // child: (this.boardModel.dataUser!.name as string).slice(0, 1),
       parent: buttonBoard,
     });
 
