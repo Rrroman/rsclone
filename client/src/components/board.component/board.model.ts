@@ -32,7 +32,6 @@ export default class BoardModel extends EventEmitter {
 
   draggableCardData: null | Card;
 
-
   constructor() {
     super();
     this.inputNewListName = null;
@@ -94,7 +93,6 @@ export default class BoardModel extends EventEmitter {
       this.dataError = null;
       this.dataUser = data;
     }
-    console.log(data);
   }
 
   async fetchBoard() {

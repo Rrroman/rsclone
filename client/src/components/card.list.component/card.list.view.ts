@@ -39,13 +39,14 @@ export default class CardListView extends EventEmitter {
 
   currentListIndex: null | number;
 
+  cardListHeader: null | HTMLElement;
+
   constructor(
     public boardModel: any,
     public board: any,
     public listHeader?: string
   ) {
     super();
-    this.cardListBottom = null;
     this.addCardBlock = null;
     this.addBtn = null;
     this.bottomSettingsBtn = null;
@@ -59,6 +60,8 @@ export default class CardListView extends EventEmitter {
     this.dragCardCLoneBlack = null;
     this.dropCardIndex = null;
     this.currentListIndex = null;
+    this.cardListHeader = null;
+    this.cardListBottom = null;
   }
 
   show(insertBeforeElement: null | HTMLElement) {
@@ -68,21 +71,20 @@ export default class CardListView extends EventEmitter {
   }
 
   createCardList() {
-    const cardListHeader = this.createListHeader();
+    this.cardListHeader = this.createListHeader();
     this.cardListBody = create('div', {
       className: styles['card-list__body'],
     });
 
-    const cardListBottom = this.createAddBottomBtn();
+    this.cardListBottom = this.createAddBottomBtn();
 
-    const currentListOrder: number =
-      this.boardModel.userBoards![this.boardModel.currentBoardIndex].lists[
-        this.boardModel.currentListIndex
-      ].order;
+    const currentListOrder: number = this.boardModel.userBoards![
+      this.boardModel.currentBoardIndex
+    ].lists[this.boardModel.currentListIndex].order;
 
     this.cardContent = create('div', {
       className: styles['card-content'],
-      child: [cardListHeader, this.cardListBody, cardListBottom],
+      child: [this.cardListHeader, this.cardListBody, this.cardListBottom],
       parent: null,
       dataAttr: [
         ['draggable', 'true'],
@@ -109,14 +111,29 @@ export default class CardListView extends EventEmitter {
     });
 
     this.cardContent.addEventListener('dragleave', (event: DragEvent) => {
-      // if ((event.target as HTMLElement).dataset.cards) {
-      this.emit('leaveCardContent', event);
-      // }
+      if (this.boardModel.dragElementName === 'card') {
+        this.emit('leaveCardContent', event);
+      }
     });
 
     this.cardContent.addEventListener('dragover', (event) => {
       if (this.boardModel.dragElementName === 'card') {
         this.emit('dragCloneCardInList', event);
+        // this.leaveCardBody(event);
+      }
+    });
+
+    this.board.addEventListener('dragover', (event: MouseEvent) => {
+      if (this.boardModel.dragElementName === 'card') {
+        this.emit('leaveCardBody', event);
+        // this.leaveCardBody(event);
+      }
+    });
+
+    this.cardList.addEventListener('dragover', (event: MouseEvent) => {
+      if (this.boardModel.dragElementName === 'card') {
+        this.emit('leaveCardBody', event);
+        // this.leaveCardBody(event);
       }
     });
 
@@ -184,7 +201,6 @@ export default class CardListView extends EventEmitter {
     this.addBtn = create('a', {
       className: styles['card-list__add-btn'],
       child: [addBtnIcon, addBtnTextField],
-      parent: this.cardListBottom,
     });
 
     this.bottomSettingsBtn = this.createSettingsBottomBtn();
@@ -412,15 +428,42 @@ export default class CardListView extends EventEmitter {
     new ListMenuController(this.boardModel, listMenu);
   }
 
-  leaveCardContent(event: DragEvent) {
+  leaveCardBody(event: MouseEvent) {
     console.log(event);
-    if (event.offsetX > 272 || event.offsetX < 0) {
-      this.boardModel.dragCardIsCreated = false;
-      this.dragCardCLoneBlack?.remove();
-      this.dragCardCLoneBlack = null;
-      this.dragCard = null;
+    if (event.target === this.cardList || event.target === this.board) {
+      console.log('over');
+      this.removeDraggableCardCLone();
+      return;
+    }
+
+    for (let item of this.cardListHeader!.childNodes.entries()) {
+      if (item[1] === event.target) {
+        this.removeDraggableCardCLone();
+        return;
+      }
+    }
+
+    for (let item of this.cardListBottom!.childNodes.entries()) {
+      if (item[1] === event.target) {
+        this.removeDraggableCardCLone();
+        return;
+      }
     }
   }
+
+  leaveCardContent(event: DragEvent) {
+    if (event.offsetX > 240 || event.offsetX < 3) {
+      this.removeDraggableCardCLone();
+    }
+  }
+
+  removeDraggableCardCLone() {
+    this.boardModel.dragCardIsCreated = false;
+    this.dragCardCLoneBlack?.remove();
+    this.dragCardCLoneBlack = null;
+    // this.dragCard = null;
+  }
+
   dragCloneCardInList(event: MouseEvent) {
     if (!this.dragCardCLoneBlack) {
       this.dragCardCLoneBlack = create('div', {
