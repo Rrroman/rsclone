@@ -55,7 +55,7 @@ export default class FooterView extends EventEmitter {
     });
 
     create('a', {
-      className: styles.github_link,
+      className: styles.github_link, 
       child: 'Rrroman',
       parent: gitHubLinks,
       dataAttr: [['href', 'https://github.com/Rrroman']],

@@ -34,9 +34,13 @@
 }
 
 .popup__description {
-  margin: 12px 0;
+  margin: 12px 0 0;
   padding: 4px 8px;
   font-size: 16px;
+}
+
+.description__icon {
+  margin-top: 15px;
 }
 
 .popup__textarea-description {
@@ -101,7 +105,7 @@
 }
 
 .popup__sidebar {
-  margin: 0 16px 0 8px;
+  margin: 0 16px 0 5px;
   width: 192px;
   z-index: 10;
   color: #5e6c84;
@@ -145,7 +149,7 @@
 }
 
 .sidebar__title {
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   text-transform: uppercase;
 }
 

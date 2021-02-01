@@ -120,7 +120,10 @@ export default class PopupView extends EventEmitter {
 
     const popupDescriptionHeaderWrapper = create('div', {
       className: styles['popup__description-header-wrapper'],
-      child: ['<i class="fas fa-align-left"</i>', popupDescriptionHeader],
+      child: [
+        `<i class="fas fa-align-left ${styles['description__icon']}"</i>`,
+        popupDescriptionHeader,
+      ],
     });
 
     this.textareaDescription = create('textarea', {
@@ -201,7 +204,7 @@ export default class PopupView extends EventEmitter {
       dataAttr: [['title', 'checklist']],
     });
 
-    const labelButtonWrapper = this.createChecklistButtonWrapper(labelsButton);
+    this.createChecklistButtonWrapper(labelsButton);
 
     const checklistButtonWrapper = this.createChecklistButtonWrapper(
       this.checklistButton
@@ -209,7 +212,7 @@ export default class PopupView extends EventEmitter {
 
     const popupSidebar = create('div', {
       className: styles['popup__sidebar'],
-      child: [sidebarTitle, labelButtonWrapper, checklistButtonWrapper],
+      child: [sidebarTitle, checklistButtonWrapper],
       dataAttr: [['data-sidebar-popup', '']],
     });
 

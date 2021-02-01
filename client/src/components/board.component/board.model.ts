@@ -255,7 +255,7 @@ export default class BoardModel extends EventEmitter {
       labelColorId: '',
       labelTextId: '',
     };
-    await fetch('http://localhost:3000/api/card/new', {
+    await fetch(`${this.serverUrl}/api/card/new`, {
       method: 'POST',
       body: JSON.stringify(cardData),
       headers: { 'content-type': 'application/json' },
@@ -272,11 +272,8 @@ export default class BoardModel extends EventEmitter {
   }
 
   async fetchAllCardsForList(currentListId: string) {
-    // if (typeof this.dataUser?.name !== 'string') {
-    //   return;
-    // }
     const listIndex: number = this.currentListIndex;
-    await fetch('http://localhost:3000/api/card/all', {
+    await fetch(`${this.serverUrl}/api/card/all`, {
       method: 'POST',
       body: JSON.stringify({
         listId: currentListId,
@@ -295,7 +292,7 @@ export default class BoardModel extends EventEmitter {
 
   async removeCardFromDB(listIndex: number, cardIndex: number) {
     await fetch(
-      `http://localhost:3000/api/card/${
+      `${this.serverUrl}/api/card/${
         this.userBoards![this.currentBoardIndex].lists[listIndex].cards[
           cardIndex
         ]._id
@@ -314,7 +311,7 @@ export default class BoardModel extends EventEmitter {
   }
 
   async deleteAllCardById(listID: string) {
-    await fetch(`http://localhost:3000/api/card/deleteAll/${listID}`, {
+    await fetch(`${this.serverUrl}/api/card/deleteAll/${listID}`, {
       method: 'DELETE',
       headers: { 'content-type': 'application/json' },
     })
@@ -331,7 +328,7 @@ export default class BoardModel extends EventEmitter {
       return;
     }
 
-    await fetch(`http://localhost:3000/api/card/${cardId}`, {
+    await fetch(`${this.serverUrl}/api/card/${cardId}`, {
       method: 'PUT',
       body: JSON.stringify(data),
       headers: { 'content-type': 'application/json' },
