@@ -63,8 +63,8 @@ export default class BoardModel extends EventEmitter {
       .then(function (response) {
         return response.json();
       })
-      .then((data: { [key: string]: string | { [key: string]: string } }) => {
-        this.checkUserErrors(data);
+      .then((data: { [data: string]: { [data: string]: {} } }) => {
+        this.dataUser = data.data.data;
       })
       .catch(console.error);
   }
@@ -93,6 +93,7 @@ export default class BoardModel extends EventEmitter {
       this.dataError = null;
       this.dataUser = data;
     }
+    console.log(data);
   }
 
   async fetchBoard() {
@@ -346,10 +347,11 @@ export default class BoardModel extends EventEmitter {
     }
   }
 
-  removeCardFromData() {
-    this.userBoards![this.currentBoardIndex].lists[
-      this.currentListIndex
-    ].cards.splice(this.currentCardIndex, 1);
+  removeCardFromData(listIndex: number, cardIndex: number) {
+    this.userBoards![this.currentBoardIndex].lists[listIndex].cards.splice(
+      cardIndex,
+      1
+    );
   }
 
   changeNewListName(newName: string) {

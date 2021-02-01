@@ -24,9 +24,9 @@ export default class CardView extends EventEmitter {
     this.descriptionTextContainer = null;
   }
 
-  show(cardIndex: number, listIndex: number) {
+  show(cardIndex: number, listIndex: number): HTMLElement {
     this.createCard(cardIndex, listIndex);
-    return this.card;
+    return this.card!;
   }
 
   createCard(cardIndex: number, listIndex: number) {
@@ -47,7 +47,7 @@ export default class CardView extends EventEmitter {
     this.card = create('div', {
       className: styles.card,
       child: cardDescriptionTextHidden,
-      parent: this.cardListBody,
+      // parent: this.cardListBody,
       dataAttr: [
         ['draggable', 'true'],
         ['data-card', ''],
@@ -102,9 +102,25 @@ export default class CardView extends EventEmitter {
   }
 
   dragEndElementChange() {
+    const deletedCardIndex: number = Number(this.card!.dataset.order);
+    const currentListIndex: number = Number(
+      this.cardListBody.parentNode.dataset.order
+    );
+    console.log('dragend');
     if (this.boardModel.dragCardIsCreated) {
+      this.boardModel.removeCardFromDB(currentListIndex, deletedCardIndex);
+      this.boardModel.removeCardFromData(currentListIndex, deletedCardIndex);
+
       this.card?.remove();
       this.boardModel.dragCardIsCreated = false;
+
+      const length = this.cardListBody.childNodes.length;
+
+      for (let i = deletedCardIndex; i < length; i += 1) {
+        this.cardListBody.children[i].dataset.order = i;
+      }
+
+      console.log('dragend in if');
     }
     this.card?.classList.remove(globalStyles['black-back']);
     this.boardModel.dragElementName = '';

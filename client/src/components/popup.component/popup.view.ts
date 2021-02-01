@@ -257,11 +257,10 @@ export default class PopupView extends EventEmitter {
     this.boardModel
       .removeCardFromDB(this.listIndex, this.cardIndex)
       .then(() => {
+        this.boardModel.removeCardFromData(this.listIndex, this.cardIndex);
+      })
+      .then(() => {
         (this.currentCard.parentNode as HTMLElement).remove();
-
-        this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists[
-          this.listIndex
-        ].cards.splice(this.cardIndex, 1);
       })
       .then(() => {
         const length = this.boardModel.userBoards[

@@ -117,9 +117,7 @@ export default class Auth extends EventEmitter {
       if (this.checkAuthError()) {
         console.log('error auth');
       }
-
       this.authPage?.remove();
-
       const app = new App(this.boardModel, document.body);
       app.show();
     });

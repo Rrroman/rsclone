@@ -6,7 +6,7 @@ function renderNewCard(
   cardListBody: Element,
   cardIndex: number,
   listIndex: number
-) {
+): HTMLElement {
   const card = new CardView(boardModel, cardListBody);
 
   new CardController(boardModel, card);

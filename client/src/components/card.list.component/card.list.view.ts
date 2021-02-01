@@ -33,7 +33,6 @@ export default class CardListView extends EventEmitter {
 
   draggableCardData: null | Card;
 
-  dragCardIsCreated: boolean;
   dragCardCLoneBlack: HTMLElement | null;
 
   dropCardIndex: null | number;
@@ -56,7 +55,7 @@ export default class CardListView extends EventEmitter {
     this.cardContent = null;
     this.dragCard = null;
     this.draggableCardData = null;
-    this.dragCardIsCreated = false;
+
     this.dragCardCLoneBlack = null;
     this.dropCardIndex = null;
     this.currentListIndex = null;
@@ -76,9 +75,10 @@ export default class CardListView extends EventEmitter {
 
     const cardListBottom = this.createAddBottomBtn();
 
-    const currentListOrder: number = this.boardModel.userBoards![
-      this.boardModel.currentBoardIndex
-    ].lists[this.boardModel.currentListIndex].order;
+    const currentListOrder: number =
+      this.boardModel.userBoards![this.boardModel.currentBoardIndex].lists[
+        this.boardModel.currentListIndex
+      ].order;
 
     this.cardContent = create('div', {
       className: styles['card-content'],
@@ -190,7 +190,11 @@ export default class CardListView extends EventEmitter {
     this.bottomSettingsBtn = this.createSettingsBottomBtn();
     this.addCardBlock = this.addNewCardBlock();
 
-    this.addBtn.addEventListener('click', () => this.emit('addOneMoreCard'));
+    this.addBtn.addEventListener('click', (event) => {
+      if (!event.detail || event.detail == 1) {
+        this.emit('addOneMoreCard');
+      }
+    });
 
     const cardListBottom = create('div', {
       className: styles['card-list__bottom'],
@@ -221,7 +225,11 @@ export default class CardListView extends EventEmitter {
       ],
     });
 
-    addCardBtn.addEventListener('click', () => this.emit('addCard'));
+    addCardBtn.addEventListener('click', (event) => {
+      if (!event.detail || event.detail == 1) {
+        this.emit('addCard');
+      }
+    });
     addCardBtn.addEventListener('click', () => this.emit('clearTextarea'));
 
     const closeAddCardBlock = create('a', {
@@ -358,12 +366,13 @@ export default class CardListView extends EventEmitter {
           })
           .forEach((card: Card) => {
             const currentCardIndex = Number(card.order);
-            renderNewCard(
+            const newCard: HTMLElement = renderNewCard(
               this.boardModel,
               this.cardListBody!,
               currentCardIndex,
               this.currentListIndex!
             );
+            this.cardListBody!.append(newCard);
           });
       })
       .catch((err: Error) => console.log('error in render List from DB', err));
@@ -376,12 +385,14 @@ export default class CardListView extends EventEmitter {
     ].lists[this.currentListIndex].cards.length;
 
     this.boardModel.createNewCard(this.currentListIndex, cardOrder).then(() => {
-      renderNewCard(
+      const newCard: HTMLElement = renderNewCard(
         this.boardModel,
         this.cardListBody!,
         cardOrder,
         this.currentListIndex!
       );
+
+      this.cardListBody!.append(newCard);
     });
   }
 
@@ -403,7 +414,8 @@ export default class CardListView extends EventEmitter {
   }
 
   leaveCardContent(event: DragEvent) {
-    if (event.offsetX > 259 || event.offsetX < 3) {
+    console.log(event);
+    if (event.offsetX > 272 || event.offsetX < 0) {
       this.boardModel.dragCardIsCreated = false;
       this.dragCardCLoneBlack?.remove();
       this.dragCardCLoneBlack = null;
@@ -424,6 +436,7 @@ export default class CardListView extends EventEmitter {
 
     if (this.cardListBody && this.cardListBody.childNodes.length === 0) {
       this.cardListBody.append(this.dragCardCLoneBlack);
+      this.dropCardIndex = 0;
     } else {
       this.dragOverAppendCard(event);
     }
@@ -476,11 +489,11 @@ export default class CardListView extends EventEmitter {
   dropCard() {
     const cardOrder: number = this.boardModel.userBoards![
       this.boardModel.currentBoardIndex
-    ].lists[this.currentListIndex!].cards.length;
+    ].lists[this.currentListIndex!].cards.length; // 0
 
     this.boardModel.setCardName(this.boardModel.draggableCardData!.name);
     this.boardModel
-      .createNewCard(this.currentListIndex, cardOrder)
+      .createNewCard(this.currentListIndex, cardOrder) // data + 1, DB + 1,
       .then(() => {
         this.dragCard = renderNewCard(
           this.boardModel,
@@ -491,19 +504,20 @@ export default class CardListView extends EventEmitter {
       })
       .then(() => {
         this.cardListBody!.insertBefore(
+          // list + 1
           this.dragCard as Node,
           this.dragCardCLoneBlack
         );
         this.dragCardCLoneBlack!.remove();
         this.dragCardCLoneBlack = null;
+        console.log('inser befor', this.cardListBody);
       })
       .then(() => {
         const boardIndex = this.boardModel.currentBoardIndex;
+        console.log('for loop', this.cardListBody);
         const cardElementList = this.cardListBody!.childNodes;
-
-        const length: number = this.boardModel.userBoards![boardIndex].lists[
-          this.currentListIndex!
-        ].cards.length;
+        this.currentListIndex = Number(this.cardContent?.dataset.order);
+        const length: number = this.cardListBody!.childNodes.length;
 
         console.log(
           this.cardListBody!.childNodes,
