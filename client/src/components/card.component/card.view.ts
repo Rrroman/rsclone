@@ -91,6 +91,9 @@ export default class CardView extends EventEmitter {
   dragStartElementChange() {
     this.boardModel.dragElementName = 'card';
     this.boardModel.currentListIndex = this.cardListBody.parentNode.dataset.order;
+    this.boardModel.startDropListIndex = Number(
+      this.cardListBody.parentNode.dataset.order
+    );
     this.boardModel.currentCardIndex = Number(this.card?.dataset.order);
     this.card?.classList.add(globalStyles['black-back']);
 
@@ -112,7 +115,6 @@ export default class CardView extends EventEmitter {
       this.boardModel.removeCardFromData(currentListIndex, deletedCardIndex);
 
       this.card?.remove();
-      this.boardModel.dragCardIsCreated = false;
 
       const length = this.cardListBody.childNodes.length;
 

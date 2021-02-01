@@ -24,6 +24,8 @@ export default class BoardModel extends EventEmitter {
   userBoards: Board[] | null;
   currentBoardIndex: number;
   currentListIndex: number;
+
+  startDropListIndex: number;
   listPositionArray: number[];
   currentCardIndex: number;
   dragElementName: string;
@@ -47,6 +49,7 @@ export default class BoardModel extends EventEmitter {
     this.userBoards = [];
     this.currentBoardIndex = 0;
     this.currentListIndex = 0;
+    this.startDropListIndex = 0;
     this.listPositionArray = [];
     this.currentCardIndex = 0;
     this.dragElementName = '';
