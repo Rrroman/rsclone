@@ -28,6 +28,8 @@ export default class BoardModel extends EventEmitter {
 
   listPositionArray: number[];
 
+  serverUrl: string;
+
   constructor() {
     super();
     this.inputNewListName = null;
@@ -43,10 +45,11 @@ export default class BoardModel extends EventEmitter {
     this.currentBoardIndex = 0;
     this.currentListIndex = 0;
     this.listPositionArray = [];
+    this.serverUrl = 'https://rs-trello-clone.herokuapp.com';
   }
 
   async fetchNewUser(userData: { name: string; password: string }) {
-    await fetch('http://rs-trello-clone.herokuapp.com/api/user/register', {
+    await fetch(`${this.serverUrl}/api/user/register`, {
       method: 'POST',
       body: JSON.stringify(userData),
       headers: { 'content-type': 'application/json' },
@@ -61,7 +64,7 @@ export default class BoardModel extends EventEmitter {
   }
 
   async fetchCurrentUser(userData: { name: string; password: string }) {
-    await fetch('http://rs-trello-clone.herokuapp.com/api/user/login', {
+    await fetch(`${this.serverUrl}/api/user/login`, {
       method: 'POST',
       body: JSON.stringify(userData),
       headers: { 'content-type': 'application/json' },
@@ -87,13 +90,10 @@ export default class BoardModel extends EventEmitter {
   }
 
   async fetchBoard() {
-    await fetch(
-      `http://rs-trello-clone.herokuapp.com/api/board/${this.dataUser!.name}`,
-      {
-        method: 'GET',
-        headers: { 'content-type': 'application/json' },
-      }
-    )
+    await fetch(`${this.serverUrl}/api/board/${this.dataUser!.name}`, {
+      method: 'GET',
+      headers: { 'content-type': 'application/json' },
+    })
       .then(function (response) {
         return response.json();
       })
@@ -110,7 +110,7 @@ export default class BoardModel extends EventEmitter {
     userName: string | { [key: string]: string };
     favorite: boolean;
   }) {
-    await fetch('http://rs-trello-clone.herokuapp.com/api/board/newBoard', {
+    await fetch(`${this.serverUrl}/api/board/newBoard`, {
       method: 'POST',
       body: JSON.stringify(boardData),
       headers: { 'content-type': 'application/json' },
@@ -138,7 +138,7 @@ export default class BoardModel extends EventEmitter {
       boardId: this.userBoards![this.currentBoardIndex]._id,
       cards: [],
     };
-    await fetch('http://rs-trello-clone.herokuapp.com/api/list/new', {
+    await fetch(`${this.serverUrl}/api/list/new`, {
       method: 'POST',
       body: JSON.stringify(listData),
       headers: { 'content-type': 'application/json' },
@@ -154,7 +154,7 @@ export default class BoardModel extends EventEmitter {
 
   async removeListFromDB() {
     await fetch(
-      `http://rs-trello-clone.herokuapp.com/api/list/${
+      `${this.serverUrl}/api/list/${
         this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
           ._id
       }`,
@@ -185,25 +185,20 @@ export default class BoardModel extends EventEmitter {
     const currentListId = this.userBoards![this.currentBoardIndex].lists[
       this.currentListIndex
     ]._id;
-    await fetch(
-      `http://rs-trello-clone.herokuapp.com/api/list/${currentListId}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify({
-          name:
-            data.name ||
-            this.userBoards![this.currentBoardIndex].lists[
-              this.currentListIndex
-            ].name,
-          order:
-            data.order ||
-            this.userBoards![this.currentBoardIndex].lists[
-              this.currentListIndex
-            ].order,
-        }),
-        headers: { 'content-type': 'application/json' },
-      }
-    )
+    await fetch(`${this.serverUrl}/api/list/${currentListId}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        name:
+          data.name ||
+          this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
+            .name,
+        order:
+          data.order ||
+          this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
+            .order,
+      }),
+      headers: { 'content-type': 'application/json' },
+    })
       .then(function (response) {
         return response.json();
       })
@@ -223,7 +218,7 @@ export default class BoardModel extends EventEmitter {
       userName: this.dataUser!.name,
     };
 
-    await fetch('http://rs-trello-clone.herokuapp.com/api/list/all', {
+    await fetch(`${this.serverUrl}/api/list/all`, {
       method: 'POST',
       body: JSON.stringify(listData),
       headers: { 'content-type': 'application/json' },
