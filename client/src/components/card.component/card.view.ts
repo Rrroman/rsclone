@@ -1,6 +1,5 @@
 import styles from './card.module.css';
 import globalStyles from '../../globals.module.css';
-import stylesFromList from '../card.list.component/card.list.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
@@ -25,27 +24,35 @@ export default class CardView extends EventEmitter {
     this.descriptionTextContainer = null;
   }
 
-  show() {
-    this.createCard();
+  show(cardIndex: number, listIndex: number): HTMLElement {
+    this.createCard(cardIndex, listIndex);
+    return this.card!;
   }
 
-  createCard() {
+  createCard(cardIndex: number, listIndex: number) {
     this.descriptionTextContainer = create('div', {
       className: globalStyles.hidden,
     });
 
+    const currentCard = this.boardModel.userBoards[
+      this.boardModel.currentBoardIndex
+    ].lists[listIndex!].cards[cardIndex];
+
     const cardDescriptionTextHidden = create('div', {
       className: styles['card__text'],
-      child: this.boardModel.cardName,
+      child: currentCard.name,
+      dataAttr: [['cards', 'true']],
     });
 
     this.card = create('div', {
       className: styles.card,
       child: cardDescriptionTextHidden,
-      parent: this.cardListBody,
+      // parent: this.cardListBody,
       dataAttr: [
         ['draggable', 'true'],
         ['data-card', ''],
+        ['cards', 'true'],
+        ['order', currentCard.order],
       ],
     });
     this.card.prepend(this.descriptionTextContainer);
@@ -64,10 +71,17 @@ export default class CardView extends EventEmitter {
   }
 
   addCardDataToPopup(event: Event) {
+    this.boardModel.currentCard = this.card?.dataset.order;
+    const currentListIndex: number = Number(
+      this.cardListBody.parentNode.dataset.order
+    );
+    const currentCardIndex: number = Number(this.card?.dataset.order);
     if (event.target) {
       const popupView = new PopupView(
         this.boardModel,
-        event.target as HTMLElement
+        event.target as HTMLElement,
+        currentListIndex,
+        currentCardIndex
       );
       popupView.show();
       new PopupController(this.boardModel, popupView);
@@ -75,17 +89,41 @@ export default class CardView extends EventEmitter {
   }
 
   dragStartElementChange() {
-    if (this.boardModel.draggableList) {
-      this.boardModel.draggableList.classList.add(stylesFromList['black-back']);
-    }
+    this.boardModel.dragElementName = 'card';
+    this.boardModel.currentListIndex = this.cardListBody.parentNode.dataset.order;
+    this.boardModel.currentCardIndex = Number(this.card?.dataset.order);
+    this.card?.classList.add(globalStyles['black-back']);
+
+    this.boardModel.draggableCardData = this.boardModel.userBoards[
+      this.boardModel.currentBoardIndex
+    ].lists[this.boardModel.currentListIndex].cards[
+      this.boardModel.currentCardIndex
+    ];
   }
 
   dragEndElementChange() {
-    if (this.boardModel.draggableList) {
-      this.boardModel.draggableList.classList.remove(
-        stylesFromList['black-back']
-      );
+    const deletedCardIndex: number = Number(this.card!.dataset.order);
+    const currentListIndex: number = Number(
+      this.cardListBody.parentNode.dataset.order
+    );
+    console.log('dragend');
+    if (this.boardModel.dragCardIsCreated) {
+      this.boardModel.removeCardFromDB(currentListIndex, deletedCardIndex);
+      this.boardModel.removeCardFromData(currentListIndex, deletedCardIndex);
+
+      this.card?.remove();
+      this.boardModel.dragCardIsCreated = false;
+
+      const length = this.cardListBody.childNodes.length;
+
+      for (let i = deletedCardIndex; i < length; i += 1) {
+        this.cardListBody.children[i].dataset.order = i;
+      }
+
+      console.log('dragend in if');
     }
+    this.card?.classList.remove(globalStyles['black-back']);
+    this.boardModel.dragElementName = '';
   }
 
   selectText(event: any) {

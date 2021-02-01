@@ -1,25 +1,33 @@
-import { List } from './list.types';
+import { Card } from './card.types';
 import { ObjectId } from 'mongodb';
 import { RSMongoClient } from '../db-client/mongo-client';
 
-export const getListsService = (mongoClient: RSMongoClient) => {
+export const getCardsService = (mongoClient: RSMongoClient) => {
   const getCollection = async () => {
     const db = await mongoClient.connect();
-    return db.collection('lists');
+    return db.collection('cards');
   };
 
   return {
     async create({
       name,
       order,
-      boardId,
-      cards,
+      description,
+      listId,
+      listName,
+      checklists,
+      labelColorId,
+      labelTextId,
     }: {
       name: string;
       order: string;
-      boardId: string;
-      cards: [];
-    }): Promise<{ data: List }> {
+      description: string;
+      listId: string;
+      listName: string;
+      checklists: [];
+      labelColorId: string;
+      labelTextId: string;
+    }): Promise<{ data: Card }> {
       const collection = await getCollection();
 
       const createdAt = new Date();
@@ -29,8 +37,12 @@ export const getListsService = (mongoClient: RSMongoClient) => {
         updatedAt: createdAt,
         name,
         order,
-        boardId,
-        cards,
+        description,
+        listId,
+        listName,
+        checklists,
+        labelColorId,
+        labelTextId,
       });
 
       return { data: ops[0] };
@@ -46,10 +58,20 @@ export const getListsService = (mongoClient: RSMongoClient) => {
       return { data: { deletedCount } };
     },
 
+    async deleteAllByListId(listId: string) {
+      const collection = await getCollection();
+
+      const cards = await collection.deleteMany({
+        listId: listId,
+      });
+
+      return { data: cards };
+    },
+
     async update(
       id: string,
-      data: { [key: string]: string }
-    ): Promise<{ data: List }> {
+      data: { name?: string; order?: string }
+    ): Promise<{ data: Card }> {
       const collection = await getCollection();
 
       const { value } = await collection.findOneAndUpdate(
@@ -65,28 +87,18 @@ export const getListsService = (mongoClient: RSMongoClient) => {
       return { data: value };
     },
 
-    async findAllByUserBoard({
-      boardId,
+    async findAllByListId({
+      listId,
     }: {
-      boardId: string;
-    }): Promise<{ data: List[] }> {
+      listId: string;
+    }): Promise<{ data: Card[] }> {
       const collection = await getCollection();
 
-      const lists = await collection
-        .find<List>({ boardId: boardId })
+      const cards = await collection
+        .find<Card>({ listId: listId })
         .toArray();
 
-      return { data: lists };
-    },
-
-    async deleteAllByListId(listId: string) {
-      const collection = await getCollection();
-
-      const lists = await collection.deleteMany({
-        listId: listId,
-      });
-
-      return { data: lists };
+      return { data: cards };
     },
   };
 };

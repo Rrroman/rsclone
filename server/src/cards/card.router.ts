@@ -1,16 +1,15 @@
 import express from 'express';
 
-import { getListsService } from './list.service';
+import { getCardsService } from './card.service';
 import { RSMongoClient } from '../db-client/mongo-client';
-// import { List } from './list.types';
 
-export const getListsRouter = (mongoClient: RSMongoClient) => {
+export const getCardsRouter = (mongoClient: RSMongoClient) => {
   const router = express.Router();
-  const listsService = getListsService(mongoClient);
+  const cardsService = getCardsService(mongoClient);
 
   router.post(`/new`, async (req, res, next) => {
     try {
-      const data = await listsService.create(req.body);
+      const data = await cardsService.create(req.body);
       res.json({ data });
     } catch (err) {
       next(err);
@@ -19,7 +18,7 @@ export const getListsRouter = (mongoClient: RSMongoClient) => {
 
   router.post(`/all`, async (req, res, next) => {
     try {
-      const data = await listsService.findAllByUserBoard(req.body);
+      const data = await cardsService.findAllByListId(req.body);
       res.json({ data });
     } catch (err) {
       next(err);
@@ -28,7 +27,7 @@ export const getListsRouter = (mongoClient: RSMongoClient) => {
 
   router.delete(`/:id`, async (req, res, next) => {
     try {
-      const data = await listsService.remove(req.params.id);
+      const data = await cardsService.remove(req.params.id);
       res.json({ data });
     } catch (err) {
       next(err);
@@ -37,7 +36,7 @@ export const getListsRouter = (mongoClient: RSMongoClient) => {
 
   router.delete(`/deleteAll/:id`, async (req, res, next) => {
     try {
-      const data = await listsService.deleteAllByListId(req.params.id);
+      const data = await cardsService.deleteAllByListId(req.params.id);
       res.json({ data });
     } catch (err) {
       next(err);
@@ -46,7 +45,7 @@ export const getListsRouter = (mongoClient: RSMongoClient) => {
 
   router.put(`/:id`, async (req, res, next) => {
     try {
-      const data = await listsService.update(req.params.id, req.body);
+      const data = await cardsService.update(req.params.id, req.body);
       res.json({ data });
     } catch (err) {
       next(err);

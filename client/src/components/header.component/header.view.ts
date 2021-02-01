@@ -3,13 +3,7 @@ import styles from './header.module.css';
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import createIcon from '../../utils/createIcon';
-import {
-  homeIcon,
-  trelloIcon,
-  searchIcon,
-  plusIcon,
-  notificationIcon,
-} from '../../utils/icons';
+import { trelloIcon } from '../../utils/icons';
 
 import BoardModel from '../board.component/board.model';
 
@@ -68,23 +62,6 @@ export default class HeaderView extends EventEmitter {
       parent: headerWrapper,
     });
 
-    const iconCreate = createIcon(styles.create__icon, plusIcon);
-    create('button', {
-      className: styles.button__create,
-      child: iconCreate,
-      parent: headerRightColumn,
-    });
-
-    const iconNotification = createIcon(
-      styles.notification__icon,
-      notificationIcon
-    );
-    create('button', {
-      className: styles.button__notifications,
-      child: iconNotification,
-      parent: headerRightColumn,
-    });
-
     create('button', {
       className: styles.button__profile,
       child: (this.boardModel.dataUser!.name as string).slice(0, 1),
@@ -92,21 +69,9 @@ export default class HeaderView extends EventEmitter {
     });
 
     create('span', {
-      className: styles.header__loading_logo,
-      child: null,
-      parent: headerLogo,
-    });
-    create('span', {
       className: styles.header__img,
       child: null,
       parent: headerLogo,
-    });
-
-    const iconHome = createIcon(styles.home__icon, homeIcon);
-    create('button', {
-      className: styles.button__home,
-      child: iconHome,
-      parent: headerLeftColumn,
     });
 
     const iconTrello = createIcon(styles.trello__icon, trelloIcon);
@@ -119,13 +84,6 @@ export default class HeaderView extends EventEmitter {
     create('span', {
       child: 'Boards',
       parent: buttonBoard,
-    });
-
-    const iconSearch = createIcon(styles.search__icon, searchIcon);
-    create('button', {
-      className: styles.button__search,
-      child: iconSearch,
-      parent: headerLeftColumn,
     });
 
     this.body.prepend(header);
