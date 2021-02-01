@@ -42,7 +42,6 @@ export default class HeaderView extends EventEmitter {
 
   createHeader() {
     const header = create('header', {
-      // className: styles.header,
       child: null,
     });
 
@@ -59,7 +58,6 @@ export default class HeaderView extends EventEmitter {
     });
 
     const headerLogo = create('div', {
-      // className: styles.header__logo,
       child: null,
       parent: headerWrapper,
     });
@@ -89,7 +87,7 @@ export default class HeaderView extends EventEmitter {
 
     create('button', {
       className: styles.button__profile,
-      child: 'UN',
+      child: (this.boardModel.dataUser!.name as string).slice(0, 1),
       parent: headerRightColumn,
     });
 
@@ -119,7 +117,6 @@ export default class HeaderView extends EventEmitter {
     });
 
     create('span', {
-      // className: styles.button__boards_text,
       child: 'Boards',
       parent: buttonBoard,
     });

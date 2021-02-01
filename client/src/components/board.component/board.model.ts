@@ -32,6 +32,7 @@ export default class BoardModel extends EventEmitter {
 
   draggableCardData: null | Card;
 
+
   constructor() {
     super();
     this.inputNewListName = null;

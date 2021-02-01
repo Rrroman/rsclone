@@ -270,7 +270,6 @@ export default class CardListView extends EventEmitter {
   createSettingsBottomBtn() {
     const settingsBtn = create('div', {
       parent: this.cardListBottom,
-      child: '...',
     });
     return settingsBtn;
   }

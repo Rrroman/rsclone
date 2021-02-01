@@ -8,6 +8,7 @@ interface CssExports {
   'popup__card-name': string;
   'popup__close-button': string;
   'popup__description': string;
+  'popup__description-header-wrapper': string;
   'popup__description-inner': string;
   'popup__description-wrapper': string;
   'popup__list-name': string;
@@ -16,6 +17,7 @@ interface CssExports {
   'popup__sidebar-button': string;
   'popup__textarea-description': string;
   'popup__title': string;
+  'popup__title-wrapper': string;
   'sidebar__popup': string;
   'sidebar__title': string;
   'sidebar__wrapper': string;

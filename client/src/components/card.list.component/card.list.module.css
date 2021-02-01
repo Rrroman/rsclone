@@ -85,9 +85,10 @@
 
 .card-list__menu-btn {
   color: #6b778c;
-  font-size: 16px;
+  font-size: 20px;
   line-height: 20px;
   width: 20px;
+  font-weight: 600;
   cursor: pointer;
 }
 

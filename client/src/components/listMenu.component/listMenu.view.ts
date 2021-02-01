@@ -154,9 +154,15 @@ export default class ListMenu extends EventEmitter {
   addCardHandler() {
     const addCardBtn = this.currentList.lastChild?.childNodes[0];
     const inputCard = this.currentList.lastChild?.childNodes[1];
+    const textarea = this.currentList!.querySelector(
+      '[data-element-textarea]'
+    )! as HTMLTextAreaElement;
+
     (inputCard as HTMLElement).classList.add(globalStyles.hidden);
     (addCardBtn as HTMLElement).classList.remove(globalStyles.hidden);
     this.closeMenu();
+
+    textarea.focus();
   }
 
   renderCopyBlock() {
