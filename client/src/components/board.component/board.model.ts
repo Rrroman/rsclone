@@ -1,6 +1,7 @@
 import { Board } from './../board.component/board.type';
 import EventEmitter from '../../utils/eventEmitter';
 import { List } from '../card.list.component/card.list.types';
+import { Card } from '../card.component/card.types';
 
 export default class BoardModel extends EventEmitter {
   inputNewListName: any | null;
@@ -10,6 +11,7 @@ export default class BoardModel extends EventEmitter {
   draggableCard: HTMLElement | null;
 
   cardName: string | null;
+  description: string;
 
   overlayElement: HTMLElement | null;
 
@@ -23,6 +25,12 @@ export default class BoardModel extends EventEmitter {
   currentBoardIndex: number;
   currentListIndex: number;
   listPositionArray: number[];
+  currentCardIndex: number;
+  dragElementName: string;
+
+  dragCardIsCreated: boolean;
+
+  draggableCardData: null | Card;
 
 
   constructor() {
@@ -31,6 +39,7 @@ export default class BoardModel extends EventEmitter {
     this.draggableList = null;
     this.draggableCard = null;
     this.cardName = null;
+    this.description = '';
     this.overlayElement = null;
     this.popupCardName = null;
     this.headerBoardsMenuIsOpen = false;
@@ -40,6 +49,10 @@ export default class BoardModel extends EventEmitter {
     this.currentBoardIndex = 0;
     this.currentListIndex = 0;
     this.listPositionArray = [];
+    this.currentCardIndex = 0;
+    this.dragElementName = '';
+    this.dragCardIsCreated = false;
+    this.draggableCardData = null;
   }
 
   async fetchNewUser(userData: { name: string; password: string }) {
@@ -51,8 +64,8 @@ export default class BoardModel extends EventEmitter {
       .then(function (response) {
         return response.json();
       })
-      .then((data: { [key: string]: string | { [key: string]: string } }) => {
-        this.checkUserErrors(data);
+      .then((data: { [data: string]: { [data: string]: {} } }) => {
+        this.dataUser = data.data.data;
       })
       .catch(console.error);
   }
@@ -81,6 +94,7 @@ export default class BoardModel extends EventEmitter {
       this.dataError = null;
       this.dataUser = data;
     }
+    console.log(data);
   }
 
   async fetchBoard() {
@@ -128,7 +142,6 @@ export default class BoardModel extends EventEmitter {
     const listData: List = {
       name: this.getNewListName(),
       order: this.currentListIndex,
-      userName: this.dataUser!.name,
       boardId: this.userBoards![this.currentBoardIndex]._id,
       cards: [],
     };
@@ -170,6 +183,11 @@ export default class BoardModel extends EventEmitter {
       this.currentListIndex,
       1
     );
+
+    const length = this.userBoards![this.currentBoardIndex].lists.length;
+    for (let i = this.currentListIndex; i < length; i += 1) {
+      this.userBoards![this.currentBoardIndex].lists[i].order = i;
+    }
   }
 
   async updateListsDB(data: List) {
@@ -181,16 +199,7 @@ export default class BoardModel extends EventEmitter {
     ]._id;
     await fetch(`http://localhost:3000/api/list/${currentListId}`, {
       method: 'PUT',
-      body: JSON.stringify({
-        name:
-          data.name ||
-          this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
-            .name,
-        order:
-          data.order ||
-          this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
-            .order,
-      }),
+      body: JSON.stringify(data),
       headers: { 'content-type': 'application/json' },
     })
       .then(function (response) {
@@ -206,10 +215,8 @@ export default class BoardModel extends EventEmitter {
 
     const listData: {
       boardId: string;
-      userName: string;
     } = {
       boardId: this.userBoards![this.currentBoardIndex]._id,
-      userName: this.dataUser!.name,
     };
 
     await fetch('http://localhost:3000/api/list/all', {
@@ -224,6 +231,128 @@ export default class BoardModel extends EventEmitter {
         this.userBoards![this.currentBoardIndex].lists = data.data.data;
       })
       .catch(console.error);
+  }
+
+  async createNewCard(currentListIndex: number, cardOrder: number) {
+    if (typeof this.dataUser?.name !== 'string') {
+      return;
+    }
+    const cardData: Card = {
+      name: this.getCardName(),
+      order: cardOrder,
+      description: this.description,
+      listId: this.userBoards![this.currentBoardIndex].lists[currentListIndex]
+        ._id!,
+      listName: this.userBoards![this.currentBoardIndex].lists[currentListIndex]
+        .name,
+      checklists: [],
+      labelColorId: '',
+      labelTextId: '',
+    };
+    await fetch('http://localhost:3000/api/card/new', {
+      method: 'POST',
+      body: JSON.stringify(cardData),
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then((data: { data: { data: Card } }) => {
+        this.userBoards![this.currentBoardIndex].lists[
+          currentListIndex
+        ].cards.push(data.data.data);
+      })
+      .catch((err) => console.log('do not create new List server error', err));
+  }
+
+  async fetchAllCardsForList(currentListId: string) {
+    // if (typeof this.dataUser?.name !== 'string') {
+    //   return;
+    // }
+    const listIndex: number = this.currentListIndex;
+    await fetch('http://localhost:3000/api/card/all', {
+      method: 'POST',
+      body: JSON.stringify({
+        listId: currentListId,
+      }),
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then((data: { data: { data: Card[] } }) => {
+        this.userBoards![this.currentBoardIndex].lists[listIndex].cards =
+          data.data.data;
+      })
+      .catch(console.error);
+  }
+
+  async removeCardFromDB(listIndex: number, cardIndex: number) {
+    await fetch(
+      `http://localhost:3000/api/card/${
+        this.userBoards![this.currentBoardIndex].lists[listIndex].cards[
+          cardIndex
+        ]._id
+      }`,
+      {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+      }
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .catch((err) => {
+        console.log('card do not remove', err);
+      });
+  }
+
+  async deleteAllCardById(listID: string) {
+    await fetch(`http://localhost:3000/api/card/deleteAll/${listID}`, {
+      method: 'DELETE',
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .catch((err) => {
+        console.log('card do not remove', err);
+      });
+  }
+
+  async updateCardDB(cardId: string, data: { [key: string]: string }) {
+    if (typeof this.dataUser?.name !== 'string') {
+      return;
+    }
+
+    await fetch(`http://localhost:3000/api/card/${cardId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      headers: { 'content-type': 'application/json' },
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .catch(alert);
+  }
+
+  updateCardModelData(
+    currentListIndex: number,
+    cardIndex: number,
+    newOrder: number
+  ) {
+    if (this.userBoards) {
+      this.userBoards[this.currentBoardIndex].lists[currentListIndex].cards[
+        cardIndex
+      ].order = newOrder;
+    }
+  }
+
+  removeCardFromData(listIndex: number, cardIndex: number) {
+    this.userBoards![this.currentBoardIndex].lists[listIndex].cards.splice(
+      cardIndex,
+      1
+    );
   }
 
   changeNewListName(newName: string) {
@@ -250,8 +379,15 @@ export default class BoardModel extends EventEmitter {
     return this.draggableCard;
   }
 
-  getCardName(cardNameText: string) {
+  setCardName(cardNameText: string) {
     this.cardName = cardNameText;
+  }
+
+  getCardName() {
+    if (this.cardName) {
+      return this.cardName;
+    }
+    return '';
   }
 
   setPopupCardName(name: string) {

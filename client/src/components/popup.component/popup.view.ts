@@ -27,7 +27,14 @@ export default class PopupView extends EventEmitter {
   sidebarPopup: HTMLElement | null;
   checklistWrapper: HTMLElement | null;
 
-  constructor(public boardModel: any, public currentCard: HTMLElement) {
+  cardContainer: ParentNode | null;
+
+  constructor(
+    public boardModel: any,
+    public currentCard: HTMLElement,
+    public listIndex: number,
+    public cardIndex: number
+  ) {
     super();
     this.popupTitle = null;
     this.popupCardName = null;
@@ -42,10 +49,12 @@ export default class PopupView extends EventEmitter {
     this.checklistButton = null;
     this.sidebarPopup = null;
     this.checklistWrapper = null;
+    this.cardContainer = null;
   }
 
   show() {
     this.addCardDataToPopup();
+    this.cardContainer = this.currentCard.parentNode!.parentNode;
   }
 
   addCardDataToPopup() {
@@ -255,8 +264,43 @@ export default class PopupView extends EventEmitter {
   }
 
   deleteCard() {
-    this.currentCard.remove();
     this.popupClose();
+    this.boardModel
+      .removeCardFromDB(this.listIndex, this.cardIndex)
+      .then(() => {
+        this.boardModel.removeCardFromData(this.listIndex, this.cardIndex);
+      })
+      .then(() => {
+        (this.currentCard.parentNode as HTMLElement).remove();
+      })
+      .then(() => {
+        const length = this.boardModel.userBoards[
+          this.boardModel.currentBoardIndex
+        ].lists[this.listIndex].cards.length;
+
+        for (let i = this.cardIndex; i < length; i += 1) {
+          this.boardModel.updateCardDB(
+            this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists[
+              this.listIndex
+            ].cards[i]._id,
+            { order: i }
+          );
+
+          this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists[
+            this.listIndex
+          ].cards[i].order = i;
+
+          console.log(this.cardContainer, this.currentCard, i);
+          (this.cardContainer!.children[
+            i
+          ] as HTMLElement).dataset.order = i.toString();
+        }
+      })
+      // .then(() => {
+      //   const length = this.currentCard.parentNode?.childNodes.length
+      //   for
+      // })
+      .catch((err: Error) => console.log('can not delete card on server', err));
   }
 
   popupClose() {

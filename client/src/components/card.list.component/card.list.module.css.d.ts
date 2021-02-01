@@ -18,6 +18,7 @@ interface CssExports {
   'card-list__menu-btn': string;
   'card-list__settings-btn': string;
   'card-name': string;
+  'clone-black-card': string;
   'close-input': string;
   'rotate': string;
   'rotating': string;

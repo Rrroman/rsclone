@@ -112,12 +112,14 @@ export default class Board extends EventEmitter {
   }
 
   appendDraggableList(event: MouseEvent) {
-    const closestList:
-      | HTMLElement
-      | null
-      | undefined = this.getDragAfterElement(event.clientX);
-    if (closestList) {
-      this.board!.insertBefore(this.dragList as Node, closestList);
+    if (this.board && this.boardModel.dragElementName === 'list') {
+      const closestList:
+        | HTMLElement
+        | null
+        | undefined = this.getDragAfterElement(event.clientX);
+      if (closestList) {
+        this.board!.insertBefore(this.dragList as Node, closestList);
+      }
     }
   }
 
