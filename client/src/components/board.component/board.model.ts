@@ -72,7 +72,6 @@ export default class BoardModel extends EventEmitter {
           token: { token: string };
           data: { [key: string]: string };
         }) => {
-          console.log(data);
           if (data.data.errors) {
             this.checkUserErrors(data);
           }
@@ -97,7 +96,6 @@ export default class BoardModel extends EventEmitter {
           token: { token: string };
           data: { [key: string]: string };
         }) => {
-          console.log('data model', data);
           this.checkUserErrors(data);
         }
       )
@@ -131,7 +129,6 @@ export default class BoardModel extends EventEmitter {
         return response.json();
       })
       .then((data: { [data: string]: { [data: string]: Board[] } }) => {
-        console.log('featc board', data);
         this.userBoards = data.data.data;
       })
       .catch((err) => {
@@ -156,7 +153,6 @@ export default class BoardModel extends EventEmitter {
         return response.json();
       })
       .then((data: { data: { data: Board } }) => {
-        console.log('create board', data);
         this.userBoards!.push(data.data.data);
       })
       .catch(alert);

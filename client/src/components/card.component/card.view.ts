@@ -108,7 +108,7 @@ export default class CardView extends EventEmitter {
     const currentListIndex: number = Number(
       this.cardListBody.parentNode.dataset.order
     );
-    
+
     if (this.boardModel.dragCardIsCreated) {
       this.boardModel.removeCardFromDB(currentListIndex, deletedCardIndex);
       this.boardModel.removeCardFromData(currentListIndex, deletedCardIndex);

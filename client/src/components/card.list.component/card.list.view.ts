@@ -332,7 +332,9 @@ export default class CardListView extends EventEmitter {
         (list.firstChild as HTMLElement).dataset.order = index.toString();
       }
     });
-
+    this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists.sort(
+      (a: List, b: List) => a.order - b.order
+    );
     this.boardModel.listPositionArray = [];
   }
 
@@ -523,7 +525,7 @@ export default class CardListView extends EventEmitter {
     ) {
       cardOrder -= 1;
     }
-
+    
     this.boardModel.setCardName(this.boardModel.draggableCardData!.name);
 
     this.boardModel
