@@ -56,6 +56,10 @@ export default class CardListController {
       .on({
         event: 'dropCard',
         listener: () => this.dropCard(),
+      })
+      .on({
+        event: 'leaveCardBody',
+        listener: (event: MouseEvent) => this.leaveCardBody(event),
       });
   }
 
@@ -87,6 +91,10 @@ export default class CardListController {
 
   leaveCardContent(event: DragEvent) {
     this.cardList.leaveCardContent(event);
+  }
+
+  leaveCardBody(event: MouseEvent) {
+    this.cardList.leaveCardBody(event);
   }
 
   dropCard() {

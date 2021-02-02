@@ -24,6 +24,8 @@ export default class BoardModel extends EventEmitter {
   userBoards: Board[] | null;
   currentBoardIndex: number;
   currentListIndex: number;
+
+  startDropListIndex: number;
   listPositionArray: number[];
   currentCardIndex: number;
   dragElementName: string;
@@ -31,7 +33,6 @@ export default class BoardModel extends EventEmitter {
   dragCardIsCreated: boolean;
 
   draggableCardData: null | Card;
-
 
   constructor() {
     super();
@@ -48,6 +49,7 @@ export default class BoardModel extends EventEmitter {
     this.userBoards = [];
     this.currentBoardIndex = 0;
     this.currentListIndex = 0;
+    this.startDropListIndex = 0;
     this.listPositionArray = [];
     this.currentCardIndex = 0;
     this.dragElementName = '';
@@ -64,10 +66,13 @@ export default class BoardModel extends EventEmitter {
       .then(function (response) {
         return response.json();
       })
-      .then((data: { [data: string]: { [data: string]: {} } }) => {
-        this.dataUser = data.data.data;
+      .then((data: { [key: string]: {} }) => {
+        if (data.errors) {
+          this.checkUserErrors(data);
+        }
+        this.checkUserErrors(data.data);
       })
-      .catch(console.error);
+      .catch((err: Error) => console.log(err));
   }
 
   async fetchCurrentUser(userData: { name: string; password: string }) {
@@ -82,7 +87,7 @@ export default class BoardModel extends EventEmitter {
       .then((data: { [key: string]: string | { [key: string]: string } }) => {
         this.checkUserErrors(data);
       })
-      .catch(console.error);
+      .catch((err: Error) => console.log(err));
   }
 
   checkUserErrors(data: {
@@ -94,7 +99,6 @@ export default class BoardModel extends EventEmitter {
       this.dataError = null;
       this.dataUser = data;
     }
-    console.log(data);
   }
 
   async fetchBoard() {
@@ -266,9 +270,6 @@ export default class BoardModel extends EventEmitter {
   }
 
   async fetchAllCardsForList(currentListId: string) {
-    // if (typeof this.dataUser?.name !== 'string') {
-    //   return;
-    // }
     const listIndex: number = this.currentListIndex;
     await fetch('http://localhost:3000/api/card/all', {
       method: 'POST',

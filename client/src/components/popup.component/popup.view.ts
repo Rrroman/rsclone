@@ -296,10 +296,6 @@ export default class PopupView extends EventEmitter {
           ] as HTMLElement).dataset.order = i.toString();
         }
       })
-      // .then(() => {
-      //   const length = this.currentCard.parentNode?.childNodes.length
-      //   for
-      // })
       .catch((err: Error) => console.log('can not delete card on server', err));
   }
 
