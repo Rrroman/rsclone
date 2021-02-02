@@ -2,7 +2,6 @@ import express from 'express';
 
 import { getListsService } from './list.service';
 import { RSMongoClient } from '../db-client/mongo-client';
-// import { List } from './list.types';
 
 export const getListsRouter = (mongoClient: RSMongoClient) => {
   const router = express.Router();

@@ -47,7 +47,6 @@ export default class CardView extends EventEmitter {
     this.card = create('div', {
       className: styles.card,
       child: cardDescriptionTextHidden,
-      // parent: this.cardListBody,
       dataAttr: [
         ['draggable', 'true'],
         ['data-card', ''],
@@ -109,7 +108,7 @@ export default class CardView extends EventEmitter {
     const currentListIndex: number = Number(
       this.cardListBody.parentNode.dataset.order
     );
-    console.log('dragend');
+    
     if (this.boardModel.dragCardIsCreated) {
       this.boardModel.removeCardFromDB(currentListIndex, deletedCardIndex);
       this.boardModel.removeCardFromData(currentListIndex, deletedCardIndex);
@@ -121,8 +120,6 @@ export default class CardView extends EventEmitter {
       for (let i = deletedCardIndex; i < length; i += 1) {
         this.cardListBody.children[i].dataset.order = i;
       }
-
-      console.log('dragend in if');
     }
     this.card?.classList.remove(globalStyles['black-back']);
     this.boardModel.dragElementName = '';

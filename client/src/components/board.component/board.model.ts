@@ -66,10 +66,13 @@ export default class BoardModel extends EventEmitter {
       .then(function (response) {
         return response.json();
       })
-      .then((data: { [data: string]: { [data: string]: {} } }) => {
-        this.dataUser = data.data.data;
+      .then((data: { [key: string]: {} }) => {
+        if (data.errors) {
+          this.checkUserErrors(data);
+        }
+        this.checkUserErrors(data.data);
       })
-      .catch(console.error);
+      .catch((err: Error) => console.log(err));
   }
 
   async fetchCurrentUser(userData: { name: string; password: string }) {
@@ -84,7 +87,7 @@ export default class BoardModel extends EventEmitter {
       .then((data: { [key: string]: string | { [key: string]: string } }) => {
         this.checkUserErrors(data);
       })
-      .catch(console.error);
+      .catch((err: Error) => console.log(err));
   }
 
   checkUserErrors(data: {
@@ -267,9 +270,6 @@ export default class BoardModel extends EventEmitter {
   }
 
   async fetchAllCardsForList(currentListId: string) {
-    // if (typeof this.dataUser?.name !== 'string') {
-    //   return;
-    // }
     const listIndex: number = this.currentListIndex;
     await fetch('http://localhost:3000/api/card/all', {
       method: 'POST',

@@ -115,8 +115,9 @@ export default class Auth extends EventEmitter {
     const userData: { name: string; password: string } = this.formContent();
     this.boardModel.fetchNewUser(userData).then(() => {
       if (this.checkAuthError()) {
-        console.log('error auth');
+        return;
       }
+
       this.authPage?.remove();
       const app = new App(this.boardModel, document.body);
       app.show();
@@ -133,6 +134,7 @@ export default class Auth extends EventEmitter {
         }
         this.authPage?.remove();
 
+        document.body.innerHTML = '';
         const app = new App(this.boardModel, document.body);
         app.show();
       })

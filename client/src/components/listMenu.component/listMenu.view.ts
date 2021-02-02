@@ -259,8 +259,6 @@ export default class ListMenu extends EventEmitter {
         this.boardModel.cardName = this.currentList.children[1].children[
           i
         ].innerHTML;
-
-        // renderNewCard(this.boardModel, listCopy.newList.children[1]);
       }
     }
 
