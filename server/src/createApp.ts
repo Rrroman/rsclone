@@ -7,9 +7,16 @@ import { RSMongoClient } from './db-client/mongo-client';
 import { getUsersRouter } from './users/users.router';
 import { getListsRouter } from './lists/list.router';
 import { getCardsRouter } from './cards/card.router';
+import path from 'path';
 
 export const createApp = (mongoClient: RSMongoClient) => {
   const app = express();
+
+  app.use(express.static(__dirname + '../../client/dist'));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
+  });
 
   app.use(morgan('dev'));
   app.use(cors());
