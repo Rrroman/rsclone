@@ -66,12 +66,12 @@ export default class BoardModel extends EventEmitter {
       .then(function (response) {
         return response.json();
       })
-      .then((data: { [key: string]: {} }) => {
-        if (data.errors) {
-          this.checkUserErrors(data);
-        }
-        this.checkUserErrors(data.data);
-      })
+      // .then((data: { [key: string]: {} }) => {
+      //   if (data.errors) {
+      //     this.checkUserErrors(data);
+      //   }
+      //   this.checkUserErrors(data.data);
+      // })
       .catch((err: Error) => console.log(err));
   }
 
@@ -84,27 +84,41 @@ export default class BoardModel extends EventEmitter {
       .then(function (response) {
         return response.json();
       })
-      .then((data: { [key: string]: string | { [key: string]: string } }) => {
-        this.checkUserErrors(data);
-      })
+      .then(
+        (data: {
+          error: string | null;
+          token: { token: string };
+          data: { [key: string]: string };
+        }) => {
+          console.log('data model', data);
+          this.checkUserErrors(data);
+        }
+      )
       .catch((err: Error) => console.log(err));
   }
 
   checkUserErrors(data: {
-    [key: string]: string | { [key: string]: string };
+    error: string | null;
+    token: { token: string };
+    data: { [key: string]: string };
   }): void {
-    if (data.errors) {
-      this.dataError = data;
+    if (data.data.errors) {
+      this.dataError = data.data;
     } else {
       this.dataError = null;
-      this.dataUser = data;
+      this.dataUser = data.data;
+      localStorage.setItem('token', data.token.token);
+      localStorage.setItem('user', data.data.name);
     }
   }
 
   async fetchBoard() {
     await fetch(`http://localhost:3000/api/board/${this.dataUser!.name}`, {
       method: 'GET',
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'content-type': 'application/json',
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
     })
       .then(function (response) {
         return response.json();

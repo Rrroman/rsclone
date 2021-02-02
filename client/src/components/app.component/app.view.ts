@@ -3,6 +3,8 @@ import HeaderView from '../header.component/header.view';
 import MainView from '../main.component/main.view';
 import FooterView from '../footer.component/footer.view';
 import OverlayView from '../overlay.component/overlay.view';
+import Auth from '../auth.component/auth.view';
+import AuthController from '../auth.component/auth.controller';
 import AppModel from './app.model';
 import AppController from './app.controller';
 import OverlayController from '../overlay.component/overlay.controller';
@@ -11,8 +13,30 @@ import create from '../../utils/create';
 import styles from './app.module.css';
 
 export default class AppView extends EventEmitter {
+  userName: null | string;
+
+  token: null | string;
+
   constructor(public boardModel: any, public body: any) {
     super();
+    this.userName = null;
+    this.token = null;
+  }
+
+  start() {
+    this.userName = localStorage.getItem('user');
+    this.token = localStorage.getItem('token');
+
+    if (this.userName && this.token) {
+      this.boardModel.dataUser = { name: this.userName };
+      this.show();
+      return;
+    }
+
+    const authPage = new Auth(this.boardModel, this.body);
+    authPage.show();
+
+    new AuthController(this.boardModel, authPage);
   }
 
   show() {
