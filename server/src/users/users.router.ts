@@ -73,7 +73,7 @@ export const getUsersRouter = (mongoClient: RSMongoClient) => {
           name: req.body.name,
           password,
         });
-        res.json({ data });
+        res.json(data);
       } catch (err) {
         res.send('error');
         next(err);
