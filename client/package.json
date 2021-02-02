@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "webpack --mode production",
-    "heroku-postbuild": "webpack --mode production",
+    "heroku-postbuild": "webpack -p",
     "watch": "webpack --mode development --watch",
     "serve": "webpack serve --open",
     "dev": "npm-run-all -p watch serve"
@@ -37,12 +37,12 @@
     "html-webpack-plugin": "4.5.0",
     "style-loader": "2.0.0",
     "ts-loader": "6.2.1",
-    "typescript": "3.7.2"
-  },
-  "dependencies": {
-    "normalize.css": "8.0.1",
+    "typescript": "3.7.2",
     "webpack": "5.11.0",
     "webpack-cli": "4.2.0",
     "webpack-dev-server": "3.11.1"
+  },
+  "dependencies": {
+    "normalize.css": "8.0.1"
   }
 }
