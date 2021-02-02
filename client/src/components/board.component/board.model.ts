@@ -66,12 +66,19 @@ export default class BoardModel extends EventEmitter {
       .then(function (response) {
         return response.json();
       })
-      // .then((data: { [key: string]: {} }) => {
-      //   if (data.errors) {
-      //     this.checkUserErrors(data);
-      //   }
-      //   this.checkUserErrors(data.data);
-      // })
+      .then(
+        (data: {
+          error: string | null;
+          token: { token: string };
+          data: { [key: string]: string };
+        }) => {
+          console.log(data);
+          if (data.data.errors) {
+            this.checkUserErrors(data);
+          }
+          this.checkUserErrors(data);
+        }
+      )
       .catch((err: Error) => console.log(err));
   }
 
@@ -124,6 +131,7 @@ export default class BoardModel extends EventEmitter {
         return response.json();
       })
       .then((data: { [data: string]: { [data: string]: Board[] } }) => {
+        console.log('featc board', data);
         this.userBoards = data.data.data;
       })
       .catch((err) => {
@@ -139,12 +147,16 @@ export default class BoardModel extends EventEmitter {
     await fetch('http://localhost:3000/api/board/newBoard', {
       method: 'POST',
       body: JSON.stringify(boardData),
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'content-type': 'application/json',
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
     })
       .then(function (response) {
         return response.json();
       })
       .then((data: { data: { data: Board } }) => {
+        console.log('create board', data);
         this.userBoards!.push(data.data.data);
       })
       .catch(alert);

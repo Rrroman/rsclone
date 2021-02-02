@@ -38,14 +38,11 @@ export const getUsersRouter = (mongoClient: RSMongoClient) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const token = jwt.sign(payLoad, process.env.TOKEN_SECRET!);
 
-      // res.cookie('jwt', token, { secure: true, httpOnly: true });
       res.header('auth-token', token).json({
         error: null,
         token: { token },
         data: isNameExist.data,
       });
-
-      // res.json(isNameExist.data);
     } catch (err) {
       return res.status(400).json({
         errors: err.message,
@@ -86,7 +83,17 @@ export const getUsersRouter = (mongoClient: RSMongoClient) => {
           name: req.body.name,
           password,
         });
-        res.json(data);
+
+        const payLoad = { name: data.data.name };
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const token = jwt.sign(payLoad, process.env.TOKEN_SECRET!);
+
+        res.header('auth-token', token).json({
+          error: null,
+          token: { token },
+          data: data.data,
+        });
       } catch (err) {
         res.send('error');
         next(err);
