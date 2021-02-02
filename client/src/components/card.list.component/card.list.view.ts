@@ -137,7 +137,11 @@ export default class CardListView extends EventEmitter {
       }
     });
 
-    this.cardContent.addEventListener('drop', () => this.emit('dropCard'));
+    this.cardContent.addEventListener('drop', () => {
+      if (this.boardModel.dragElementName === 'card') {
+        this.emit('dropCard');
+      }
+    });
   }
 
   appendList(insertBeforeElement: null | HTMLElement) {
