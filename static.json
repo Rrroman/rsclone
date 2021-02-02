@@ -1,4 +1,4 @@
 {
-  "root": "dist",
+  "root": "./client/dist/",
   "clean_urls": false
 }

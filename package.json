@@ -7,7 +7,7 @@
     "install:client": "cd ./client && npm install",
     "install:server": "cd ./server && npm install",
     "postinstall": "run-p install:*",
-    "start:client:build": "cd ./client && npm run heroku-postbuild",
+    "start:client:build": "cd ./client && npm run build",
     "start:server:build": "cd ./server && npm run start && cd ../ && start:client:build",
     "start:server:dev": "cd ./server && npm run start:dev",
     "start:client:dev": "cd ./client && npm run dev",
