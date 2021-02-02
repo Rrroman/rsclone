@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "webpack --mode production",
+    "heroku-postbuild": "webpack -p",
     "watch": "webpack --mode development --watch",
     "serve": "webpack serve --open",
     "dev": "npm-run-all -p watch serve"
