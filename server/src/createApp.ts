@@ -13,11 +13,7 @@ import { verifyToken } from './jwtMiddleware/jwtMiddleware';
 export const createApp = (mongoClient: RSMongoClient) => {
   const app = express();
 
-  app.use(express.static(__dirname + '../../client/dist'));
-
-  app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
-  });
+  app.use(express.static(path.resolve(__dirname, '../../client/dist')));
 
   app.use(morgan('dev'));
   app.use(cors());
@@ -27,6 +23,10 @@ export const createApp = (mongoClient: RSMongoClient) => {
   app.use('/api/user', getUsersRouter(mongoClient));
   app.use('/api/list', getListsRouter(mongoClient));
   app.use('/api/card', getCardsRouter(mongoClient));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
+  });
 
   return app;
 };
