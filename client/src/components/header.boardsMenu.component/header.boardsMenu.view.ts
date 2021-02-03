@@ -1,6 +1,7 @@
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import styles from './header.boardsMenu.module.css';
+import headerStyles from '../header.component/header.module.css';
 import globalStyles from '../../globals.module.css';
 import BoardModel from '../board.component/board.model';
 import {
@@ -19,7 +20,8 @@ export default class HeaderBoardsMenuView extends EventEmitter {
   constructor(
     public boardModel: BoardModel,
     public body: HTMLElement,
-    public mainElement: HTMLElement
+    public mainElement: HTMLElement,
+    public buttonBoard: HTMLElement
   ) {
     super();
     this.menuWrapper = null;
@@ -48,10 +50,26 @@ export default class HeaderBoardsMenuView extends EventEmitter {
     });
 
     document.body.append(this.menuWrapper);
+    document.body.addEventListener('click', (event: Event) => {
+      if (
+        !(event.target as HTMLElement).closest(
+          `.${styles['board-menu-wrapper']}`
+        ) &&
+        !(event.target as HTMLElement).closest(
+          `.${headerStyles['button__boards']}`
+        ) &&
+        this.menuWrapper
+      ) {
+        this.closeMenu();
+      }
+    });
   }
 
   menuHeader() {
-    const search = create('div', { child: '' });
+    const search = create('div', {
+      className: styles['menu-header-text'],
+      child: 'My boards',
+    });
     const close = closeBtn();
     const header = create('div', {
       className: styles['menu-header'],

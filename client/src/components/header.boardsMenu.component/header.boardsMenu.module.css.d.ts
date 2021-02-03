@@ -9,6 +9,7 @@ interface CssExports {
   'input-form': string;
   'menu-body-wrapper': string;
   'menu-header': string;
+  'menu-header-text': string;
 }
 export const cssExports: CssExports;
 export default cssExports;
