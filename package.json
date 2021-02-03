@@ -2,6 +2,9 @@
   "name": "rsclone",
   "version": "1.0.0",
   "description": "RSSchool team task",
+  "engines": {
+    "node": "12.8.2"
+  },
   "private": true,
   "scripts": {
     "install:client": "cd ./client && npm install",
