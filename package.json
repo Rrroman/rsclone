@@ -24,14 +24,15 @@
   },
   "homepage": "https://github.com/Rrroman/rsclone#readme",
   "devDependencies": {
-    "@types/jsonwebtoken": "8.5.0",
     "eslint": "7.15.0",
     "husky": "4.3.5",
     "lint-staged": "10.5.3",
     "prettier": "2.2.1"
   },
   "dependencies": {
-    "npm-run-all": "4.1.5"
+    "npm-run-all": "4.1.5",
+    "jsonwebtoken": "^8.5.1",
+    "@types/jsonwebtoken": "8.5.0"
   },
   "husky": {
     "hooks": {
