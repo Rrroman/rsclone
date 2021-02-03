@@ -8,6 +8,7 @@ interface CssExports {
   'header__right_column': string;
   'header__title': string;
   'header__wrapper': string;
+  'logout-button': string;
   'trello__icon': string;
 }
 export const cssExports: CssExports;

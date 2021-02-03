@@ -27,9 +27,32 @@ export default class HeaderBoardsMenuController {
       .on({
         event: 'renderBoard',
         listener: (event: Event) => this.renderBoard(event),
+      })
+      .on({
+        event: 'deleteChosenBoard',
+        listener: (event: Event) => this.deleteChosenBoard(event),
+      })
+      .on({
+        event: 'hideDeleteButton',
+        listener: (event: Event) => this.hideDeleteButton(event),
+      })
+      .on({
+        event: 'showDeleteButton',
+        listener: (event: Event) => this.showDeleteButton(event),
       });
   }
 
+  hideDeleteButton(event: Event) {
+    this.menuViewer.hideDeleteButton(event.target);
+  }
+
+  showDeleteButton(event: Event) {
+    this.menuViewer.showDeleteButton(event.target);
+  }
+
+  deleteChosenBoard(event: Event) {
+    this.menuViewer.deleteChosenBoard(event.target);
+  }
   openBoardMenu() {
     this.menuViewer.openBoardMenu();
   }
