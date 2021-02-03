@@ -18,7 +18,12 @@ export default class BoardModel extends EventEmitter {
   popupCardName: string | null;
   headerBoardsMenuIsOpen: boolean;
 
-  dataError: null | { [key: string]: string | { [key: string]: string } };
+  dataError:
+    | null
+    | { [key: string]: string | { [key: string]: string } }
+    | string;
+
+  tokenError: null | { error: string };
 
   dataUser: null | { [key: string]: string | { [key: string]: string } };
   userBoards: Board[] | null;
@@ -45,6 +50,7 @@ export default class BoardModel extends EventEmitter {
     this.popupCardName = null;
     this.headerBoardsMenuIsOpen = false;
     this.dataError = null;
+    this.tokenError = null;
     this.dataUser = null;
     this.userBoards = [];
     this.currentBoardIndex = 0;
@@ -68,13 +74,11 @@ export default class BoardModel extends EventEmitter {
       })
       .then(
         (data: {
+          errors?: { errors: { [key: string]: string } };
           error: string | null;
           token: { token: string };
           data: { [key: string]: string };
         }) => {
-          if (data.data.errors) {
-            this.checkUserErrors(data);
-          }
           this.checkUserErrors(data);
         }
       )
@@ -92,6 +96,7 @@ export default class BoardModel extends EventEmitter {
       })
       .then(
         (data: {
+          errors?: string;
           error: string | null;
           token: { token: string };
           data: { [key: string]: string };
@@ -103,12 +108,13 @@ export default class BoardModel extends EventEmitter {
   }
 
   checkUserErrors(data: {
+    errors?: string | { errors: { [key: string]: string } };
     error: string | null;
     token: { token: string };
     data: { [key: string]: string };
   }): void {
-    if (data.data.errors) {
-      this.dataError = data.data;
+    if (data.errors) {
+      this.dataError = data.errors;
     } else {
       this.dataError = null;
       this.dataUser = data.data;
@@ -129,10 +135,16 @@ export default class BoardModel extends EventEmitter {
         return response.json();
       })
       .then((data: { [data: string]: { [data: string]: Board[] } }) => {
-        this.userBoards = data.data.data;
+        if (data.error) {
+          this.tokenError = { error: 'invalid token' };
+          throw new Error('invalid token');
+        } else {
+          this.userBoards = data.data.data;
+          this.tokenError = null;
+        }
       })
       .catch((err) => {
-        console.log('board not found', err);
+        throw err;
       });
   }
 

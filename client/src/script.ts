@@ -15,8 +15,18 @@ if (userName && token) {
   boardModel.dataUser = { name: userName };
 
   const app = new App(boardModel, document.body);
-  app.show();
+  app
+    .show()
+    .then()
+    .catch(() => {
+      alert('session is over. Please authorization again');
+      authPageOpen();
+    });
 } else {
+  authPageOpen();
+}
+
+function authPageOpen() {
   const authPage = new Auth(boardModel, document.body);
   authPage.show();
 

@@ -369,17 +369,17 @@ export default class CardListView extends EventEmitter {
   }
 
   renderCardsFromDB() {
-    this.currentListIndex = Number(this.cardContent?.dataset.order);
-
+    const currentListIndex = Number(this.cardContent?.dataset.order);
+    
     const currentListId = this.boardModel.userBoards[
       this.boardModel.currentBoardIndex
-    ].lists[this.currentListIndex]._id;
+    ].lists[currentListIndex]._id;
 
     this.boardModel
       .fetchAllCardsForList(currentListId)
       .then(() => {
         this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists[
-          this.currentListIndex!
+          currentListIndex!
         ].cards
           .sort((a: Card, b: Card) => {
             return a.order - b.order;
@@ -390,7 +390,7 @@ export default class CardListView extends EventEmitter {
               this.boardModel,
               this.cardListBody!,
               currentCardIndex,
-              this.currentListIndex!
+              currentListIndex!
             );
             this.cardListBody!.append(newCard);
           });
@@ -525,7 +525,7 @@ export default class CardListView extends EventEmitter {
     ) {
       cardOrder -= 1;
     }
-    
+
     this.boardModel.setCardName(this.boardModel.draggableCardData!.name);
 
     this.boardModel

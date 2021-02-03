@@ -1,12 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-export const verifyToken = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  // const token = req.cookies.jwt;
+export const verifyToken = (req: any, res: Response, next: NextFunction) => {
   let token = '';
   if (
     req.headers.authorization &&
@@ -14,6 +9,7 @@ export const verifyToken = (
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
+
   if (!token) {
     return res.status(401).send();
   }

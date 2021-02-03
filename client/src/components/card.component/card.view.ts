@@ -104,6 +104,7 @@ export default class CardView extends EventEmitter {
   }
 
   dragEndElementChange() {
+    const boardIndex: number = this.boardModel.currentBoardIndex;
     const deletedCardIndex: number = Number(this.card!.dataset.order);
     const currentListIndex: number = Number(
       this.cardListBody.parentNode.dataset.order
@@ -119,6 +120,15 @@ export default class CardView extends EventEmitter {
 
       for (let i = deletedCardIndex; i < length; i += 1) {
         this.cardListBody.children[i].dataset.order = i;
+
+        this.boardModel.updateCardDB(
+          this.boardModel.userBoards[boardIndex].lists[currentListIndex!].cards[
+            i
+          ]._id,
+          { order: i }
+        );
+
+        this.boardModel.updateCardModelData(currentListIndex, i, i);
       }
     }
     this.card?.classList.remove(globalStyles['black-back']);
