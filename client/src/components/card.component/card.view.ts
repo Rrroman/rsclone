@@ -5,6 +5,7 @@ import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import PopupView from '../popup.component/popup.view';
 import PopupController from '../popup.component/popup.controller';
+import { Card } from './card.types';
 
 export default class CardView extends EventEmitter {
   card: HTMLElement | null;
@@ -115,22 +116,28 @@ export default class CardView extends EventEmitter {
       this.boardModel.removeCardFromData(currentListIndex, deletedCardIndex);
 
       this.card?.remove();
-
       const length = this.cardListBody.childNodes.length;
 
       for (let i = deletedCardIndex; i < length; i += 1) {
-        this.cardListBody.children[i].dataset.order = i;
+        if (
+          this.boardModel.currentListIndex !==
+          this.boardModel.startDropListIndex
+        ) {
+          this.cardListBody.children[i].dataset.order = i;
+          this.boardModel.updateCardDB(
+            this.boardModel.userBoards[boardIndex].lists[currentListIndex!]
+              .cards[i]._id,
+            { order: i }
+          );
 
-        this.boardModel.updateCardDB(
-          this.boardModel.userBoards[boardIndex].lists[currentListIndex!].cards[
-            i
-          ]._id,
-          { order: i }
-        );
-
-        this.boardModel.updateCardModelData(currentListIndex, i, i);
+          this.boardModel.updateCardModelData(currentListIndex, i, i);
+        }
       }
+      this.boardModel.userBoards[boardIndex].lists[currentListIndex].cards.sort(
+        (a: Card, b: Card) => a.order - b.order
+      );
     }
+
     this.card?.classList.remove(globalStyles['black-back']);
     this.boardModel.dragElementName = '';
   }

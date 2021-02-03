@@ -370,7 +370,7 @@ export default class CardListView extends EventEmitter {
 
   renderCardsFromDB() {
     const currentListIndex = Number(this.cardContent?.dataset.order);
-    
+
     const currentListId = this.boardModel.userBoards[
       this.boardModel.currentBoardIndex
     ].lists[currentListIndex]._id;
