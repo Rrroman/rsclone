@@ -33,6 +33,7 @@
 }
 
 .board-name {
+  flex-grow: 1;
   margin: 5px;
   color: #5e6c84;
   cursor: pointer;
@@ -72,10 +73,16 @@
   transition-duration: 85ms;
   transition-timing-function: ease;
   cursor: pointer;
-
-  margin-left: auto;
 }
 
 .board__delete:hover {
+  background-color: rgba(9, 30, 66, 0.08);
+  box-shadow: none;
+  border: none;
   cursor: pointer;
+}
+
+.board-name__wrapper {
+  display: flex;
+  flex-wrap: wrap;
 }
