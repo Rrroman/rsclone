@@ -15,6 +15,7 @@ export default class HeaderBoardsMenuView extends EventEmitter {
   addBoardText: HTMLElement | null;
   inputForm: HTMLElement | null;
   input: HTMLInputElement | null;
+  deleteBoard: HTMLElement | null;
 
   constructor(
     public boardModel: BoardModel,
@@ -26,6 +27,7 @@ export default class HeaderBoardsMenuView extends EventEmitter {
     this.addBoardText = null;
     this.inputForm = null;
     this.input = null;
+    this.deleteBoard = null;
   }
 
   show() {
@@ -72,9 +74,38 @@ export default class HeaderBoardsMenuView extends EventEmitter {
       const boardDiv = create('div', {
         className: styles['board-name'],
         child: board.name,
-        parent: bodyWrapper,
         dataAttr: [['index', index.toString()]],
       });
+
+      this.deleteBoard = create('button', {
+        className: `${styles['board__delete']} ${globalStyles.hidden}`,
+        child: 'Delete board',
+        dataAttr: [
+          ['deleteItem', 'delete-item'],
+          ['closeButton', 'close-button'],
+        ],
+      });
+
+      this.deleteBoard.addEventListener('click', (event: Event) =>
+        this.emit('deleteChosenBoard', event)
+      );
+
+      const boardNameWrapper = create('div', {
+        className: styles['board-name__wrapper'],
+        child: [boardDiv, this.deleteBoard],
+        parent: bodyWrapper,
+        dataAttr: [['boardNameWrapper', 'board-name__wrapper']],
+      });
+
+      boardNameWrapper.addEventListener('mouseenter', (event: Event) => {
+        this.emit('showDeleteButton', event);
+      });
+
+      boardNameWrapper.addEventListener('mouseleave', (event: Event) =>
+        this.emit('hideDeleteButton', event)
+      );
+
+      // bodyWrapper.appendChild(boardNameWrapper);
 
       boardDiv.addEventListener('click', (event: Event) =>
         this.emit('renderBoard', event)
@@ -82,6 +113,26 @@ export default class HeaderBoardsMenuView extends EventEmitter {
     });
 
     return bodyWrapper;
+  }
+
+  showDeleteButton(element: HTMLElement) {
+    const deleteButtonWrapper = element.querySelector('[data-delete-item]');
+
+    if (deleteButtonWrapper) {
+      deleteButtonWrapper.classList.remove(globalStyles.hidden);
+    }
+  }
+
+  hideDeleteButton(element: HTMLElement) {
+    element!
+      .parentElement!.querySelectorAll('[data-delete-item]')
+      .forEach((element) => {
+        element.classList.add(globalStyles.hidden);
+      });
+  }
+
+  deleteChosenBoard(element: HTMLElement) {
+    element.parentElement!.remove();
   }
 
   menuAddBoard() {

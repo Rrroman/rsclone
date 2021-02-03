@@ -5,6 +5,8 @@ interface CssExports {
   'board-menu': string;
   'board-menu-wrapper': string;
   'board-name': string;
+  'board-name__wrapper': string;
+  'board__delete': string;
   'button-wrapper': string;
   'input-form': string;
   'menu-body-wrapper': string;
