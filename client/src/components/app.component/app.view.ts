@@ -28,6 +28,7 @@ export default class AppView extends EventEmitter {
               name: 'my board',
               userName: this.boardModel.dataUser!.name,
               favorite: true,
+              order: 0
             })
             .then(this.renderBoard.bind(this))
             .catch((err: Error) =>

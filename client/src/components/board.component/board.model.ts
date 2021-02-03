@@ -47,7 +47,6 @@ export default class BoardModel extends EventEmitter {
   constructor() {
     super();
     this.serverUrl = 'https://rs-trello-clone.herokuapp.com/';
-    // this.serverUrl = 'http://localhost:3000/';
     this.inputNewListName = null;
     this.draggableList = null;
     this.draggableCard = null;
@@ -159,6 +158,7 @@ export default class BoardModel extends EventEmitter {
     name: string;
     userName: string | { [key: string]: string };
     favorite: boolean;
+    order: number;
   }) {
     await fetch(`${this.serverUrl}api/board/newBoard`, {
       method: 'POST',
@@ -174,7 +174,35 @@ export default class BoardModel extends EventEmitter {
       .then((data: { data: { data: Board } }) => {
         this.userBoards!.push(data.data.data);
       })
-      .catch(alert);
+      .catch((err) => console.log(err));
+  }
+
+  async removeBoardFromDB(boardIndex: number) {
+    await fetch(
+      `${this.serverUrl}api/board/${this.userBoards![boardIndex]._id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'content-type': 'application/json',
+          authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      }
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .catch((err) => {
+        console.log('board do not remove', err);
+      });
+  }
+
+  removeBoardFromDataAndUpdate(boardIndex: number) {
+    this.userBoards!.splice(boardIndex, 1);
+
+    const length = this.userBoards!.length;
+    for (let i = boardIndex; i < length; i += 1) {
+      this.userBoards![i].order = i;
+    }
   }
 
   async createAndLoadNewList() {
@@ -201,14 +229,13 @@ export default class BoardModel extends EventEmitter {
       .then((data: { data: { data: List } }) => {
         this.userBoards![this.currentBoardIndex].lists!.push(data.data.data);
       })
-      .catch(alert);
+      .catch((err) => console.log(err));
   }
 
-  async removeListFromDB() {
+  async removeListFromDB(boardIndex: number, listIndex: number) {
     await fetch(
       `${this.serverUrl}api/list/${
-        this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
-          ._id
+        this.userBoards![boardIndex].lists[listIndex]._id
       }`,
       {
         method: 'DELETE',
@@ -250,7 +277,7 @@ export default class BoardModel extends EventEmitter {
       .then(function (response) {
         return response.json();
       })
-      .catch(alert);
+      .catch((err) => console.log(err));
   }
 
   async fetchAllLists() {
@@ -375,18 +402,28 @@ export default class BoardModel extends EventEmitter {
       .then(function (response) {
         return response.json();
       })
-      .catch(alert);
+      .catch((err) => console.log(err));
   }
 
   updateCardModelData(
     currentListIndex: number,
     cardIndex: number,
-    newOrder: number
+    data: { name?: string; order?: number; description: string }
   ) {
-    if (this.userBoards) {
+    if (this.userBoards && data.order) {
       this.userBoards[this.currentBoardIndex].lists[currentListIndex].cards[
         cardIndex
-      ].order = newOrder;
+      ].order = data.order;
+    }
+    if (this.userBoards && data.name) {
+      this.userBoards[this.currentBoardIndex].lists[currentListIndex].cards[
+        cardIndex
+      ].name = data.name;
+    }
+    if (this.userBoards && data.description) {
+      this.userBoards[this.currentBoardIndex].lists[currentListIndex].cards[
+        cardIndex
+      ].description = data.description;
     }
   }
 

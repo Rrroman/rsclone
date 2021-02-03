@@ -84,6 +84,7 @@ export default class CardView extends EventEmitter {
         currentCardIndex
       );
       popupView.show();
+
       new PopupController(this.boardModel, popupView);
     }
   }
@@ -130,7 +131,9 @@ export default class CardView extends EventEmitter {
             { order: i }
           );
 
-          this.boardModel.updateCardModelData(currentListIndex, i, i);
+          this.boardModel.updateCardModelData(currentListIndex, i, {
+            order: i,
+          });
         }
       }
       this.boardModel.userBoards[boardIndex].lists[currentListIndex].cards.sort(

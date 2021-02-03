@@ -1,6 +1,7 @@
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import styles from './header.boardsMenu.module.css';
+import headerStyles from '../header.component/header.module.css';
 import globalStyles from '../../globals.module.css';
 import BoardModel from '../board.component/board.model';
 import {
@@ -16,11 +17,15 @@ export default class HeaderBoardsMenuView extends EventEmitter {
   inputForm: HTMLElement | null;
   input: HTMLInputElement | null;
   deleteBoard: HTMLElement | null;
+  boardNameWrapper: HTMLElement | null;
+
+  menuBody: HTMLElement | null;
 
   constructor(
     public boardModel: BoardModel,
     public body: HTMLElement,
-    public mainElement: HTMLElement
+    public mainElement: HTMLElement,
+    public buttonBoard: HTMLElement
   ) {
     super();
     this.menuWrapper = null;
@@ -28,6 +33,8 @@ export default class HeaderBoardsMenuView extends EventEmitter {
     this.inputForm = null;
     this.input = null;
     this.deleteBoard = null;
+    this.boardNameWrapper = null;
+    this.menuBody = null;
   }
 
   show() {
@@ -40,20 +47,36 @@ export default class HeaderBoardsMenuView extends EventEmitter {
     });
 
     const menuHeader = this.menuHeader();
-    const menuBody = this.menuBody();
+    this.menuBody = this.menuBodyCreate();
     const menuAddBoard = this.menuAddBoard();
 
     create('div', {
       className: styles['board-menu'],
       parent: this.menuWrapper,
-      child: [menuHeader, menuBody, menuAddBoard],
+      child: [menuHeader, this.menuBody, menuAddBoard],
     });
 
     document.body.append(this.menuWrapper);
+    document.body.addEventListener('click', (event: Event) => {
+      if (
+        !(event.target as HTMLElement).closest(
+          `.${styles['board-menu-wrapper']}`
+        ) &&
+        !(event.target as HTMLElement).closest(
+          `.${headerStyles['button__boards']}`
+        ) &&
+        this.menuWrapper
+      ) {
+        this.closeMenu();
+      }
+    });
   }
 
   menuHeader() {
-    const search = create('div', { child: '' });
+    const search = create('div', {
+      className: styles['menu-header-text'],
+      child: 'My boards',
+    });
     const close = closeBtn();
     const header = create('div', {
       className: styles['menu-header'],
@@ -65,7 +88,7 @@ export default class HeaderBoardsMenuView extends EventEmitter {
     return header;
   }
 
-  menuBody() {
+  menuBodyCreate() {
     const bodyWrapper = create('div', {
       className: styles['menu-body-wrapper'],
     });
@@ -83,6 +106,7 @@ export default class HeaderBoardsMenuView extends EventEmitter {
         dataAttr: [
           ['deleteItem', 'delete-item'],
           ['closeButton', 'close-button'],
+          ['index', index.toString()],
         ],
       });
 
@@ -90,22 +114,23 @@ export default class HeaderBoardsMenuView extends EventEmitter {
         this.emit('deleteChosenBoard', event)
       );
 
-      const boardNameWrapper = create('div', {
+      this.boardNameWrapper = create('div', {
         className: styles['board-name__wrapper'],
         child: [boardDiv, this.deleteBoard],
         parent: bodyWrapper,
-        dataAttr: [['boardNameWrapper', 'board-name__wrapper']],
+        dataAttr: [
+          ['boardNameWrapper', 'board-name__wrapper'],
+          ['order', index.toString()],
+        ],
       });
 
-      boardNameWrapper.addEventListener('mouseenter', (event: Event) => {
+      this.boardNameWrapper.addEventListener('mouseenter', (event: Event) => {
         this.emit('showDeleteButton', event);
       });
 
-      boardNameWrapper.addEventListener('mouseleave', (event: Event) =>
+      this.boardNameWrapper.addEventListener('mouseleave', (event: Event) =>
         this.emit('hideDeleteButton', event)
       );
-
-      // bodyWrapper.appendChild(boardNameWrapper);
 
       boardDiv.addEventListener('click', (event: Event) =>
         this.emit('renderBoard', event)
@@ -116,23 +141,52 @@ export default class HeaderBoardsMenuView extends EventEmitter {
   }
 
   showDeleteButton(element: HTMLElement) {
-    const deleteButtonWrapper = element.querySelector('[data-delete-item]');
-
-    if (deleteButtonWrapper) {
-      deleteButtonWrapper.classList.remove(globalStyles.hidden);
-    }
+    element.children[1].classList.remove(globalStyles.hidden);
   }
 
   hideDeleteButton(element: HTMLElement) {
-    element!
-      .parentElement!.querySelectorAll('[data-delete-item]')
-      .forEach((element) => {
-        element.classList.add(globalStyles.hidden);
-      });
+    element.children[1].classList.add(globalStyles.hidden);
   }
 
   deleteChosenBoard(element: HTMLElement) {
-    element.parentElement!.remove();
+    const removeBoardIndex = Number(element.parentElement!.dataset.order);
+    this.boardModel
+      .removeBoardFromDB(removeBoardIndex)
+      .then(() => {
+        this.boardModel.userBoards![removeBoardIndex].lists.forEach(
+          (list, index) => {
+            this.boardModel
+              .removeListFromDB(removeBoardIndex, index)
+              .then(() => this.boardModel.deleteAllCardById(list._id!));
+          }
+        );
+      })
+      .then(() => {
+        this.boardModel.removeBoardFromDataAndUpdate(removeBoardIndex);
+
+        if (this.boardModel.currentBoardIndex > removeBoardIndex) {
+          this.boardModel.currentBoardIndex -= 1;
+        }
+      })
+      .then(() => {
+        element.parentElement!.remove();
+
+        const length = this.boardModel.userBoards!.length;
+        for (let i = removeBoardIndex; i < length; i += 1) {
+          (this.menuBody!.children[
+            i
+          ] as HTMLElement).dataset.order = i.toString();
+        }
+
+        if (this.boardModel.currentBoardIndex === removeBoardIndex) {
+          this.boardModel.currentBoardIndex = 0;
+          if (this.boardModel.userBoards?.length !== 0) {
+            this.renderBoard();
+          } else {
+            this.mainElement.innerHTML = '';
+          }
+        }
+      });
   }
 
   menuAddBoard() {
@@ -198,10 +252,12 @@ export default class HeaderBoardsMenuView extends EventEmitter {
       name: string;
       userName: string;
       favorite: boolean;
+      order: number;
     } = {
       name: this.input!.value,
       userName: this.boardModel.dataUser!.name,
       favorite: false,
+      order: this.boardModel.userBoards!.length,
     };
 
     this.boardModel.createNewBoard(obj).then(() => {

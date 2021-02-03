@@ -19,6 +19,8 @@ export default class HeaderView extends EventEmitter {
   input: HTMLElement | null;
   logoutButton: HTMLElement | null;
 
+  buttonBoard: HTMLElement | null;
+
   constructor(
     public boardModel: BoardModel,
     public body: any,
@@ -30,6 +32,7 @@ export default class HeaderView extends EventEmitter {
     this.addBoardText = null;
     this.inputForm = null;
     this.input = null;
+    this.buttonBoard = null;
     this.logoutButton = null;
   }
 
@@ -85,7 +88,7 @@ export default class HeaderView extends EventEmitter {
     });
 
     const iconTrello = createIcon(styles.trello__icon, trelloIcon);
-    const buttonBoard = create('button', {
+    this.buttonBoard = create('button', {
       className: styles.button__boards,
       child: iconTrello,
       parent: headerLeftColumn,
@@ -93,12 +96,14 @@ export default class HeaderView extends EventEmitter {
 
     create('span', {
       child: 'Boards',
-      parent: buttonBoard,
+      parent: this.buttonBoard,
     });
 
     this.body.prepend(header);
 
-    buttonBoard.addEventListener('click', () => this.emit('openBoardMenu'));
+    this.buttonBoard.addEventListener('click', () =>
+      this.emit('openBoardMenu')
+    );
   }
 
   openBoardMenu() {
@@ -108,7 +113,8 @@ export default class HeaderView extends EventEmitter {
     const headerBoardsMenu = new HeaderBoardsMenuView(
       this.boardModel,
       this.body,
-      this.mainElement
+      this.mainElement,
+      this.buttonBoard!
     );
     headerBoardsMenu.show();
     this.boardModel.headerBoardsMenuIsOpen = true;
@@ -120,8 +126,8 @@ export default class HeaderView extends EventEmitter {
     this.logoutButton?.classList.toggle(globalStyles.hidden);
   }
 
-  logout(event: Event) {
-    console.log(event);
-    console.log('Logging out...');
+  logout() {
+    localStorage.clear();
+    location.reload();
   }
 }

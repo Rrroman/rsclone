@@ -568,7 +568,7 @@ export default class CardListView extends EventEmitter {
           this.boardModel.updateCardModelData(
             this.currentListIndex,
             cardCurrentOrder,
-            i
+            {order: i}
           );
 
           (this.cardListBody!.children[

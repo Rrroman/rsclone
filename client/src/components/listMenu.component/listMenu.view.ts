@@ -100,13 +100,13 @@ export default class ListMenu extends EventEmitter {
     });
     const copyListBtn = create('li', {
       child: create('a', {
-        className: styles['list-link'],
+        className: globalStyles.hidden,
         child: 'Copy List...',
       }),
     });
     const moveListBtn = create('li', {
       child: create('a', {
-        className: styles['list-link'],
+        className: globalStyles.hidden,
         child: 'Move List...',
       }),
     });
@@ -292,7 +292,10 @@ export default class ListMenu extends EventEmitter {
     const length: number = this.board.childNodes.length - 1;
 
     this.boardModel
-      .removeListFromDB()
+      .removeListFromDB(
+        this.boardModel.currentBoardIndex,
+        this.boardModel.currentListIndex
+      )
       .then(() => {
         this.boardModel.deleteAllCardById(
           this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists[

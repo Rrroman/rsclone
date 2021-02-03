@@ -44,5 +44,15 @@ export const getBoardsRouter = (mongoClient: RSMongoClient) => {
     }
   });
 
+  router.delete(`/:id`, async (req, res, next) => {
+    console.log(req.params.id);
+    try {
+      const data = await boardsService.remove(req.params.id);
+      res.json({ data });
+    } catch (err) {
+      next(err);
+    }
+  });
+
   return router;
 };

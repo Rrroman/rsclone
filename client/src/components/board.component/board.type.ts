@@ -7,5 +7,6 @@ export type Board = {
   favorite: boolean;
   updatedAt: string;
   createAt: string;
+  order: number;
   lists: List[];
 };
