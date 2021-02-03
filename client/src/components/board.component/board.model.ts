@@ -28,8 +28,11 @@ export default class BoardModel extends EventEmitter {
   tokenError: null | { error: string };
 
   dataUser: null | { [key: string]: string | { [key: string]: string } };
+
   userBoards: Board[] | null;
+
   currentBoardIndex: number;
+
   currentListIndex: number;
 
   startDropListIndex: number;
@@ -43,8 +46,8 @@ export default class BoardModel extends EventEmitter {
 
   constructor() {
     super();
-    // this.serverUrl = 'https://rs-trello-clone.herokuapp.com/';
-    this.serverUrl = 'http://localhost:3000/';
+    this.serverUrl = 'https://rs-trello-clone.herokuapp.com/';
+    // this.serverUrl = 'http://localhost:3000/';
     this.inputNewListName = null;
     this.draggableList = null;
     this.draggableCard = null;

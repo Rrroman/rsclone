@@ -3,6 +3,7 @@
 interface CssExports {
   'card__delete': string;
   'checklist-wrapper': string;
+  'description__icon': string;
   'popup__body': string;
   'popup__buttons': string;
   'popup__card-name': string;
