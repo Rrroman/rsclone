@@ -13,10 +13,6 @@ export default class CardListController {
         listener: () => this.dragEndFunc(),
       })
       .on({
-        event: 'cardDragover',
-        listener: (event: Event) => this.dragOverInEmptyList(event),
-      })
-      .on({
         event: 'addOneMoreCard',
         listener: () => this.addCardHandler(),
       })
@@ -48,6 +44,22 @@ export default class CardListController {
       .on({
         event: 'headerTextChange',
         listener: (event: Event) => this.headerTextChange(event),
+      })
+      .on({
+        event: 'leaveCardContent',
+        listener: (event: DragEvent) => this.leaveCardContent(event),
+      })
+      .on({
+        event: 'dragCloneCardInList',
+        listener: (event: DragEvent) => this.dragCloneCardInList(event),
+      })
+      .on({
+        event: 'dropCard',
+        listener: () => this.dropCard(),
+      })
+      .on({
+        event: 'leaveCardBody',
+        listener: (event: MouseEvent) => this.leaveCardBody(event),
       });
   }
 
@@ -72,9 +84,21 @@ export default class CardListController {
     this.cardList.dragEndElementChange();
   }
 
-  dragOverInEmptyList(event: Event) {
+  dragCloneCardInList(event: DragEvent) {
     event.preventDefault();
-    this.cardList.appendCardInEmptyList(event);
+    this.cardList.dragCloneCardInList(event);
+  }
+
+  leaveCardContent(event: DragEvent) {
+    this.cardList.leaveCardContent(event);
+  }
+
+  leaveCardBody(event: MouseEvent) {
+    this.cardList.leaveCardBody(event);
+  }
+
+  dropCard() {
+    this.cardList.dropCard();
   }
 
   addCardHandler() {
@@ -87,7 +111,7 @@ export default class CardListController {
 
   addCardNameHandler(event: { [key: string]: any }) {
     if (this.boardModel) {
-      this.boardModel.getCardName(event.target.value);
+      this.boardModel.setCardName(event.target.value);
     }
   }
 

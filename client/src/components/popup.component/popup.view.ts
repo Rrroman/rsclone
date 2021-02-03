@@ -27,7 +27,14 @@ export default class PopupView extends EventEmitter {
   sidebarPopup: HTMLElement | null;
   checklistWrapper: HTMLElement | null;
 
-  constructor(public boardModel: any, public currentCard: HTMLElement) {
+  cardContainer: ParentNode | null;
+
+  constructor(
+    public boardModel: any,
+    public currentCard: HTMLElement,
+    public listIndex: number,
+    public cardIndex: number
+  ) {
     super();
     this.popupTitle = null;
     this.popupCardName = null;
@@ -42,10 +49,12 @@ export default class PopupView extends EventEmitter {
     this.checklistButton = null;
     this.sidebarPopup = null;
     this.checklistWrapper = null;
+    this.cardContainer = null;
   }
 
   show() {
     this.addCardDataToPopup();
+    this.cardContainer = this.currentCard.parentNode!.parentNode;
   }
 
   addCardDataToPopup() {
@@ -71,13 +80,18 @@ export default class PopupView extends EventEmitter {
 
     this.popupTitle = create('textarea', {
       className: `${stylesFromCardList['card-name']} ${styles['popup__card-name']}`,
-      child: this.popupCardName,
+      child: this.popupCardName!,
       parent: null,
       dataAttr: [
         ['maxlength', '512'],
         ['spellcheck', 'false'],
         ['draggable', 'false'],
       ],
+    });
+
+    const popupTitleWrapper = create('div', {
+      className: styles['popup__title-wrapper'],
+      child: ['<i class="far fa-credit-card"></i>', this.popupTitle],
     });
 
     this.popupTitle.addEventListener('input', (inputEvent: Event) =>
@@ -102,6 +116,11 @@ export default class PopupView extends EventEmitter {
     const popupDescriptionHeader = create('h3', {
       className: styles.popup__description,
       child: 'Description',
+    });
+
+    const popupDescriptionHeaderWrapper = create('div', {
+      className: styles['popup__description-header-wrapper'],
+      child: ['<i class="fas fa-align-left"</i>', popupDescriptionHeader],
     });
 
     this.textareaDescription = create('textarea', {
@@ -158,7 +177,7 @@ export default class PopupView extends EventEmitter {
     const popupDescriptionInner = create('div', {
       className: styles['popup__description-inner'],
       child: [
-        popupDescriptionHeader,
+        popupDescriptionHeaderWrapper,
         this.textareaDescription,
         popupDescriptionButtons,
         this.savedDescriptionTextElement,
@@ -219,14 +238,64 @@ export default class PopupView extends EventEmitter {
 
     this.checklistWrapper = create('div', {
       className: styles['checklist-wrapper'],
+      dataAttr: [['checklistWrapper', 'checklist-wrapper']],
     });
 
-    this.popupBody!.append(this.popupTitle);
+    const deleteCard = create('button', {
+      className: styles['card__delete'],
+      child: 'Delete card',
+      dataAttr: [
+        ['data-close-button', ''],
+        ['closeButton', 'close-button'],
+        ['cardDelete', 'card-delete'],
+      ],
+    });
+
+    deleteCard.addEventListener('click', () => this.emit('deleteCard'));
+
+    this.popupBody!.append(popupTitleWrapper);
     this.popupBody!.append(popupListName);
     this.popupBody!.append(popupDescriptionWrapper);
     this.popupBody!.append(this.popupCloseButton);
     this.popupBody!.append(this.checklistWrapper);
+    this.popupBody!.append(this.checklistWrapper);
+    this.popupBody!.append(deleteCard);
     popupWrapper.append(this.popupBody);
+  }
+
+  deleteCard() {
+    this.popupClose();
+    this.boardModel
+      .removeCardFromDB(this.listIndex, this.cardIndex)
+      .then(() => {
+        this.boardModel.removeCardFromData(this.listIndex, this.cardIndex);
+      })
+      .then(() => {
+        (this.currentCard.parentNode as HTMLElement).remove();
+      })
+      .then(() => {
+        const length = this.boardModel.userBoards[
+          this.boardModel.currentBoardIndex
+        ].lists[this.listIndex].cards.length;
+
+        for (let i = this.cardIndex; i < length; i += 1) {
+          this.boardModel.updateCardDB(
+            this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists[
+              this.listIndex
+            ].cards[i]._id,
+            { order: i }
+          );
+
+          this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists[
+            this.listIndex
+          ].cards[i].order = i;
+
+          (this.cardContainer!.children[
+            i
+          ] as HTMLElement).dataset.order = i.toString();
+        }
+      })
+      .catch((err: Error) => console.log('can not delete card on server', err));
   }
 
   popupClose() {
@@ -269,22 +338,64 @@ export default class PopupView extends EventEmitter {
   hideDescriptionButtons(event: any) {
     if (
       event.target === this.popupCloseButton ||
+      event.target.dataset.closeButton ||
       event.target.dataset.checklistButton
     ) {
       return;
     }
 
-    const popupDescriptionButtons = event.target
-      .closest('[data-popup]')
-      .querySelector('[data-popup-description-buttons]');
-
     const descriptionTextarea = event.target
       .closest('[data-popup]')
       .querySelector('[data-popup-textarea]');
 
-    if (event.target !== descriptionTextarea) {
+    const popupDescriptionButtons = event.target
+      .closest('[data-popup]')
+      .querySelector('[data-popup-description-buttons]');
+
+    const popupChecklistTitle = event.target
+      .closest('[data-popup]')
+      .querySelectorAll('[data-checklist-title]');
+
+    const checklistAddItem = event.target
+      .closest('[data-popup]')
+      .querySelectorAll('[data-add-item]');
+
+    const popupChecklistTitleButtons = event.target
+      .closest('[data-popup]')
+      .querySelectorAll('[data-title-buttons]');
+
+    const checkButtons = event.target
+      .closest('[data-popup]')
+      .querySelectorAll('[data-check-buttons]');
+
+    if (
+      event.target !== descriptionTextarea &&
+      event.target !== popupChecklistTitle &&
+      event.target !== checklistAddItem
+    ) {
       popupDescriptionButtons.classList.add(globalStyles.hidden);
+
+      this.hideHelper(
+        popupChecklistTitleButtons,
+        event.target,
+        popupChecklistTitle
+      );
+
+      this.hideHelper(checkButtons, event.target, checklistAddItem);
     }
+  }
+
+  hideHelper(
+    textarea: HTMLElement[],
+    eventTarget: HTMLElement,
+    buttons: HTMLElement[]
+  ) {
+    textarea.forEach((checkButton: HTMLElement) => {
+      const arrAddItems: HTMLElement[] = Array.from(buttons);
+      if (!arrAddItems.includes(eventTarget)) {
+        checkButton.classList.add(globalStyles.hidden);
+      }
+    });
   }
 
   showDescriptionButtons(event: any) {
@@ -319,7 +430,7 @@ export default class PopupView extends EventEmitter {
       );
 
       checklistView.show();
-      new ChecklistController(this.boardModel, checklistView);
+      new ChecklistController(this.boardModel, checklistView, this);
     }
   }
 }

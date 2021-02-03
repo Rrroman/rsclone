@@ -20,12 +20,23 @@ export default class BoardHeaderView extends EventEmitter {
       return;
     }
     const boardName = create('div', {
+      className: styles['board-name'],
       child: this.boardModel.userBoards[this.boardModel.currentBoardIndex].name,
+    });
+
+    const boardDivider = create('div', {
+      className: styles['board-divider'],
+      child: null,
+    });
+
+    const boardMembers = create('div', {
+      className: styles['board-members'],
+      child: (this.boardModel.dataUser!.name as string).slice(0, 1),
     });
 
     create('div', {
       className: styles['board-header'],
-      child: boardName,
+      child: [boardName, boardDivider, boardMembers],
       parent: this.boardContainer,
     });
   }

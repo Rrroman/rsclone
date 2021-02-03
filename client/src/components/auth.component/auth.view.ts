@@ -30,7 +30,7 @@ export default class Auth extends EventEmitter {
 
     const header = create('div', {
       className: styles['login-header'],
-      child: 'Login to Trello',
+      child: 'Login to Trello Clone',
     });
 
     this.inputLogin = create('input', {
@@ -115,11 +115,10 @@ export default class Auth extends EventEmitter {
     const userData: { name: string; password: string } = this.formContent();
     this.boardModel.fetchNewUser(userData).then(() => {
       if (this.checkAuthError()) {
-        console.log('error auth');
+        return;
       }
 
       this.authPage?.remove();
-
       const app = new App(this.boardModel, document.body);
       app.show();
     });
@@ -135,6 +134,7 @@ export default class Auth extends EventEmitter {
         }
         this.authPage?.remove();
 
+        document.body.innerHTML = '';
         const app = new App(this.boardModel, document.body);
         app.show();
       })
@@ -145,9 +145,9 @@ export default class Auth extends EventEmitter {
     if (this.boardModel.dataError) {
       this.errorMessage?.classList.remove(globalStyles.hidden);
       this.errorMessage!.innerHTML =
-        typeof this.boardModel.dataError.errors === 'string'
-          ? this.boardModel.dataError.errors
-          : this.boardModel.dataError.errors.msg;
+        typeof this.boardModel.dataError === 'string'
+          ? this.boardModel.dataError
+          : this.boardModel.dataError.msg;
       return true;
     }
     return false;

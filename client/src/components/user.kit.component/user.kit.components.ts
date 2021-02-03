@@ -9,6 +9,7 @@ function renderTextArea(textAreaText: string) {
     dataAttr: [
       ['dir', 'auto'],
       ['placeholder', textAreaText],
+      ['elementTextarea', 'element-textarea'],
     ],
   });
   return textarea;

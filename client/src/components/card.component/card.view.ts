@@ -1,11 +1,11 @@
 import styles from './card.module.css';
 import globalStyles from '../../globals.module.css';
-import stylesFromList from '../card.list.component/card.list.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
 import PopupView from '../popup.component/popup.view';
 import PopupController from '../popup.component/popup.controller';
+import { Card } from './card.types';
 
 export default class CardView extends EventEmitter {
   card: HTMLElement | null;
@@ -25,27 +25,34 @@ export default class CardView extends EventEmitter {
     this.descriptionTextContainer = null;
   }
 
-  show() {
-    this.createCard();
+  show(cardIndex: number, listIndex: number): HTMLElement {
+    this.createCard(cardIndex, listIndex);
+    return this.card!;
   }
 
-  createCard() {
+  createCard(cardIndex: number, listIndex: number) {
     this.descriptionTextContainer = create('div', {
       className: globalStyles.hidden,
     });
 
+    const currentCard = this.boardModel.userBoards[
+      this.boardModel.currentBoardIndex
+    ].lists[listIndex!].cards[cardIndex];
+
     const cardDescriptionTextHidden = create('div', {
       className: styles['card__text'],
-      child: this.boardModel.cardName,
+      child: currentCard.name,
+      dataAttr: [['cards', 'true']],
     });
 
     this.card = create('div', {
       className: styles.card,
       child: cardDescriptionTextHidden,
-      parent: this.cardListBody,
       dataAttr: [
         ['draggable', 'true'],
         ['data-card', ''],
+        ['cards', 'true'],
+        ['order', currentCard.order],
       ],
     });
     this.card.prepend(this.descriptionTextContainer);
@@ -64,10 +71,17 @@ export default class CardView extends EventEmitter {
   }
 
   addCardDataToPopup(event: Event) {
+    this.boardModel.currentCard = this.card?.dataset.order;
+    const currentListIndex: number = Number(
+      this.cardListBody.parentNode.dataset.order
+    );
+    const currentCardIndex: number = Number(this.card?.dataset.order);
     if (event.target) {
       const popupView = new PopupView(
         this.boardModel,
-        event.target as HTMLElement
+        event.target as HTMLElement,
+        currentListIndex,
+        currentCardIndex
       );
       popupView.show();
       new PopupController(this.boardModel, popupView);
@@ -75,17 +89,57 @@ export default class CardView extends EventEmitter {
   }
 
   dragStartElementChange() {
-    if (this.boardModel.draggableList) {
-      this.boardModel.draggableList.classList.add(stylesFromList['black-back']);
-    }
+    this.boardModel.dragElementName = 'card';
+    this.boardModel.currentListIndex = this.cardListBody.parentNode.dataset.order;
+    this.boardModel.startDropListIndex = Number(
+      this.cardListBody.parentNode.dataset.order
+    );
+    this.boardModel.currentCardIndex = Number(this.card?.dataset.order);
+    this.card?.classList.add(globalStyles['black-back']);
+
+    this.boardModel.draggableCardData = this.boardModel.userBoards[
+      this.boardModel.currentBoardIndex
+    ].lists[this.boardModel.currentListIndex].cards[
+      this.boardModel.currentCardIndex
+    ];
   }
 
   dragEndElementChange() {
-    if (this.boardModel.draggableList) {
-      this.boardModel.draggableList.classList.remove(
-        stylesFromList['black-back']
+    const boardIndex: number = this.boardModel.currentBoardIndex;
+    const deletedCardIndex: number = Number(this.card!.dataset.order);
+    const currentListIndex: number = Number(
+      this.cardListBody.parentNode.dataset.order
+    );
+
+    if (this.boardModel.dragCardIsCreated) {
+      this.boardModel.removeCardFromDB(currentListIndex, deletedCardIndex);
+      this.boardModel.removeCardFromData(currentListIndex, deletedCardIndex);
+
+      this.card?.remove();
+      const length = this.cardListBody.childNodes.length;
+
+      for (let i = deletedCardIndex; i < length; i += 1) {
+        if (
+          this.boardModel.currentListIndex !==
+          this.boardModel.startDropListIndex
+        ) {
+          this.cardListBody.children[i].dataset.order = i;
+          this.boardModel.updateCardDB(
+            this.boardModel.userBoards[boardIndex].lists[currentListIndex!]
+              .cards[i]._id,
+            { order: i }
+          );
+
+          this.boardModel.updateCardModelData(currentListIndex, i, i);
+        }
+      }
+      this.boardModel.userBoards[boardIndex].lists[currentListIndex].cards.sort(
+        (a: Card, b: Card) => a.order - b.order
       );
     }
+
+    this.card?.classList.remove(globalStyles['black-back']);
+    this.boardModel.dragElementName = '';
   }
 
   selectText(event: any) {

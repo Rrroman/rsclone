@@ -7,7 +7,6 @@ import {
   closeBtn,
   inputElement,
 } from '../user.kit.component/user.kit.components';
-import renderNewCard from '../user.kit.component/user.kit.render.component';
 /* eslint import/no-cycle: [2, { maxDepth: 1 }] */
 import AddListCardBtnView from '../addListCardBtn.component/addListCardBtn.view';
 
@@ -155,9 +154,15 @@ export default class ListMenu extends EventEmitter {
   addCardHandler() {
     const addCardBtn = this.currentList.lastChild?.childNodes[0];
     const inputCard = this.currentList.lastChild?.childNodes[1];
+    const textarea = this.currentList!.querySelector(
+      '[data-element-textarea]'
+    )! as HTMLTextAreaElement;
+
     (inputCard as HTMLElement).classList.add(globalStyles.hidden);
     (addCardBtn as HTMLElement).classList.remove(globalStyles.hidden);
     this.closeMenu();
+
+    textarea.focus();
   }
 
   renderCopyBlock() {
@@ -254,8 +259,6 @@ export default class ListMenu extends EventEmitter {
         this.boardModel.cardName = this.currentList.children[1].children[
           i
         ].innerHTML;
-
-        renderNewCard(this.boardModel, listCopy.newList.children[1]);
       }
     }
 
@@ -286,11 +289,31 @@ export default class ListMenu extends EventEmitter {
 
   deleteCurrentList() {
     this.board.children[this.boardModel.currentListIndex].remove();
+    const length: number = this.board.childNodes.length - 1;
 
     this.boardModel
       .removeListFromDB()
       .then(() => {
+        this.boardModel.deleteAllCardById(
+          this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists[
+            this.boardModel.currentListIndex
+          ]._id
+        );
+      })
+      .then(() => {
         this.boardModel.removeListFromData();
+      })
+      .then(() => {
+        for (let i = this.boardModel.currentListIndex; i < length; i += 1) {
+          this.boardModel.updateListsDB({ order: i });
+
+          this.boardModel.userBoards[this.boardModel.currentBoardIndex].lists[
+            i
+          ].order = i;
+
+          (this.board.children[i]
+            .firstChild as HTMLElement).dataset.order = i.toString();
+        }
       })
       .catch((err: Error) => console.log(err));
 

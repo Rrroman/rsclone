@@ -14,7 +14,14 @@ export default function create(
     dataAttr,
   }: {
     className?: string;
-    child?: HTMLElement | HTMLSpanElement | string | null | HTMLElement[];
+    child?:
+      | HTMLElement
+      | HTMLSpanElement
+      | string
+      | null
+      | HTMLElement[]
+      | (string | HTMLElement)[]
+      | string[];
     parent?: HTMLElement | null;
     dataAttr?: string[][];
   }
@@ -33,7 +40,7 @@ export default function create(
       if (childElement && typeof childElement === 'string' && element) {
         element.innerHTML = childElement;
       } else if (childElement && element) {
-        element.appendChild(childElement);
+        element.appendChild(childElement as HTMLElement);
       }
     });
   } else if (child && typeof child === 'object' && child !== null) {
