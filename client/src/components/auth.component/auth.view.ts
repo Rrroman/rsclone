@@ -145,9 +145,9 @@ export default class Auth extends EventEmitter {
     if (this.boardModel.dataError) {
       this.errorMessage?.classList.remove(globalStyles.hidden);
       this.errorMessage!.innerHTML =
-        typeof this.boardModel.dataError.errors === 'string'
-          ? this.boardModel.dataError.errors
-          : this.boardModel.dataError.errors.msg;
+        typeof this.boardModel.dataError === 'string'
+          ? this.boardModel.dataError
+          : this.boardModel.dataError.msg;
       return true;
     }
     return false;

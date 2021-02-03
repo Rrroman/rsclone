@@ -15,10 +15,13 @@ export default class AppView extends EventEmitter {
     super();
   }
 
-  show() {
-    this.boardModel
+  async show() {
+    await this.boardModel
       .fetchBoard()
       .then(() => {
+        if (this.boardModel.tokenError) {
+          throw new Error();
+        }
         if (this.boardModel.userBoards[0] === undefined) {
           this.boardModel
             .createNewBoard({
@@ -34,7 +37,9 @@ export default class AppView extends EventEmitter {
           this.renderBoard();
         }
       })
-      .catch((err: Error) => console.log('err in board fetch', err));
+      .catch((err: Error) => {
+        throw new Error(err.message);
+      });
   }
 
   renderBoard() {
