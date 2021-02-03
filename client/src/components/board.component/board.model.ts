@@ -46,8 +46,7 @@ export default class BoardModel extends EventEmitter {
 
   constructor() {
     super();
-    // this.serverUrl = 'https://rs-trello-clone.herokuapp.com/';
-    this.serverUrl = 'http://localhost:3000/';
+    this.serverUrl = 'https://rs-trello-clone.herokuapp.com/';
     this.inputNewListName = null;
     this.draggableList = null;
     this.draggableCard = null;
@@ -175,7 +174,7 @@ export default class BoardModel extends EventEmitter {
       .then((data: { data: { data: Board } }) => {
         this.userBoards!.push(data.data.data);
       })
-      .catch(alert);
+      .catch((err) => console.log(err));
   }
 
   async removeBoardFromDB(boardIndex: number) {
@@ -230,7 +229,7 @@ export default class BoardModel extends EventEmitter {
       .then((data: { data: { data: List } }) => {
         this.userBoards![this.currentBoardIndex].lists!.push(data.data.data);
       })
-      .catch(alert);
+      .catch((err) => console.log(err));
   }
 
   async removeListFromDB(boardIndex: number, listIndex: number) {
@@ -278,7 +277,7 @@ export default class BoardModel extends EventEmitter {
       .then(function (response) {
         return response.json();
       })
-      .catch(alert);
+      .catch((err) => console.log(err));
   }
 
   async fetchAllLists() {
@@ -403,7 +402,7 @@ export default class BoardModel extends EventEmitter {
       .then(function (response) {
         return response.json();
       })
-      .catch(alert);
+      .catch((err) => console.log(err));
   }
 
   updateCardModelData(

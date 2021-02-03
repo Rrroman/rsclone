@@ -132,8 +132,6 @@ export default class HeaderBoardsMenuView extends EventEmitter {
         this.emit('hideDeleteButton', event)
       );
 
-      // bodyWrapper.appendChild(boardNameWrapper);
-
       boardDiv.addEventListener('click', (event: Event) =>
         this.emit('renderBoard', event)
       );

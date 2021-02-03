@@ -66,14 +66,14 @@ export default class PopupView extends EventEmitter {
 
   addCardDataToPopup() {
     this.boardModel.overlayElement.classList.remove(globalStyles.hidden);
-    // -----------------
+
     if (
       this.currentCard &&
       this.currentCard.previousSibling!.textContent !== ''
     ) {
       this.savedText = this.currentCard.previousSibling!.textContent;
     }
-    // ----------------
+
     this.cardData = this.boardModel.userBoards[
       this.boardModel.currentBoardIndex
     ].lists[this.listIndex].cards[this.cardIndex];
@@ -87,10 +87,6 @@ export default class PopupView extends EventEmitter {
     this.popupBody = create('div', {
       className: styles['popup__body'],
     });
-
-    // this.listName = (this.currentCard.closest(
-    //   '[data-list-name]'
-    // ) as HTMLElement).dataset.listName;
 
     this.listName = this.boardModel.userBoards[
       this.boardModel.currentBoardIndex
