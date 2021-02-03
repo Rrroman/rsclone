@@ -57,3 +57,25 @@
   color: #5e6c84;
   margin-top: 4px;
 }
+
+.board__delete {
+  width: 90px;
+  font-size: 13px;
+  color: #172b4d;
+  box-sizing: border-box;
+  border-radius: 3px;
+  background-color: rgba(9, 30, 66, 0.04);
+  box-shadow: none;
+  border: none;
+  border-radius: 3px;
+  transition-property: background-color, border-color, box-shadow;
+  transition-duration: 85ms;
+  transition-timing-function: ease;
+  cursor: pointer;
+
+  margin-left: auto;
+}
+
+.board__delete:hover {
+  cursor: pointer;
+}

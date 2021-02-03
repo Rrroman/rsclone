@@ -72,8 +72,12 @@ export default class HeaderBoardsMenuView extends EventEmitter {
       const boardDiv = create('div', {
         className: styles['board-name'],
         child: board.name,
-        parent: bodyWrapper,
         dataAttr: [['index', index.toString()]],
+      });
+
+      create('div', {
+        child: [boardDiv],
+        parent: bodyWrapper,
       });
 
       boardDiv.addEventListener('click', (event: Event) =>

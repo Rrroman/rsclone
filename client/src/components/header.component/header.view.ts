@@ -1,4 +1,5 @@
 import styles from './header.module.css';
+import globalStyles from '../../globals.module.css';
 
 import EventEmitter from '../../utils/eventEmitter';
 import create from '../../utils/create';
@@ -16,6 +17,7 @@ export default class HeaderView extends EventEmitter {
   addBoardText: HTMLElement | null;
   inputForm: HTMLElement | null;
   input: HTMLElement | null;
+  logoutButton: HTMLElement | null;
 
   constructor(
     public boardModel: BoardModel,
@@ -28,6 +30,7 @@ export default class HeaderView extends EventEmitter {
     this.addBoardText = null;
     this.inputForm = null;
     this.input = null;
+    this.logoutButton = null;
   }
 
   show() {
@@ -35,42 +38,49 @@ export default class HeaderView extends EventEmitter {
   }
 
   createHeader() {
-    const header = create('header', {
-      child: null,
-    });
+    const header = create('header', {});
 
     const headerWrapper = create('div', {
       className: styles.header__wrapper,
-      child: null,
       parent: header,
     });
 
     const headerLeftColumn = create('div', {
       className: styles.header__left_column,
-      child: null,
       parent: headerWrapper,
     });
 
     const headerLogo = create('div', {
-      child: null,
       parent: headerWrapper,
     });
+
+    this.logoutButton = create('button', {
+      className: `${styles['logout-button']} ${globalStyles.hidden}`,
+      child: 'Logout',
+    });
+
+    this.logoutButton.addEventListener('click', (event: Event) =>
+      this.emit('logout', event)
+    );
 
     const headerRightColumn = create('div', {
       className: styles.header__right_column,
-      child: null,
+      child: this.logoutButton,
       parent: headerWrapper,
     });
 
-    create('button', {
-      className: styles.button__profile,
+    const profileButton = create('button', {
+      className: styles['button__profile'],
       child: (this.boardModel.dataUser!.name as string).slice(0, 1),
       parent: headerRightColumn,
     });
 
+    profileButton.addEventListener('click', (event: Event) =>
+      this.emit('toggleLogout', event)
+    );
+
     create('span', {
       className: styles.header__img,
-      child: null,
       parent: headerLogo,
     });
 
@@ -104,5 +114,14 @@ export default class HeaderView extends EventEmitter {
     this.boardModel.headerBoardsMenuIsOpen = true;
 
     new HeaderBoardsMenuController(this.boardModel, headerBoardsMenu);
+  }
+
+  toggleLogout() {
+    this.logoutButton?.classList.toggle(globalStyles.hidden);
+  }
+
+  logout(event: Event) {
+    console.log(event);
+    console.log('Logging out...');
   }
 }

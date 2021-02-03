@@ -98,3 +98,24 @@
   overflow: hidden;
   white-space: nowrap;
 }
+
+.logout-button {
+  border-radius: 3px;
+  border: 0;
+  background-color: hsla(0, 0%, 100%, 0.3);
+  box-shadow: none;
+  color: #fff;
+  font-weight: 700;
+  line-height: 32px;
+  margin: 0 6px 0 0;
+  padding: 0;
+  white-space: nowrap;
+  height: 32px;
+  width: 80px;
+  text-align: center;
+}
+
+.logout-button:hover {
+  background-color: hsla(0, 0%, 100%, 0.2);
+  cursor: pointer;
+}
