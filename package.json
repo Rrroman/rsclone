@@ -2,11 +2,16 @@
   "name": "rsclone",
   "version": "1.0.0",
   "description": "RSSchool team task",
+  "engines": {
+    "node": "12.18.2"
+  },
   "private": true,
   "scripts": {
     "install:client": "cd ./client && npm install",
     "install:server": "cd ./server && npm install",
     "postinstall": "run-p install:*",
+    "heroku-postbuild": "cd ./client && npm run build",
+    "start:server:build": "cd ./server && npm run start",
     "start:server:dev": "cd ./server && npm run start:dev",
     "start:client:dev": "cd ./client && npm run dev",
     "start:dev": "run-p start:*:dev"
@@ -22,15 +27,15 @@
   },
   "homepage": "https://github.com/Rrroman/rsclone#readme",
   "devDependencies": {
-    "@types/jsonwebtoken": "^8.5.0",
     "eslint": "7.15.0",
     "husky": "4.3.5",
     "lint-staged": "10.5.3",
-    "npm-run-all": "4.1.5",
     "prettier": "2.2.1"
   },
   "dependencies": {
-    "jsonwebtoken": "^8.5.1"
+    "npm-run-all": "4.1.5",
+    "jsonwebtoken": "^8.5.1",
+    "@types/jsonwebtoken": "8.5.0"
   },
   "husky": {
     "hooks": {

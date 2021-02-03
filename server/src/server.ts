@@ -7,7 +7,7 @@ const mongoClient = createMongoClient();
 
 const app = createApp(mongoClient);
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT);
 console.info(`Server is started on port ${PORT}`);

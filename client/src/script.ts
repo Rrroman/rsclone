@@ -19,7 +19,7 @@ if (userName && token) {
     .show()
     .then()
     .catch(() => {
-      alert('session is over. Please authorization again');
+      console.log('session is over. Please authorization again');
       authPageOpen();
     });
 } else {
