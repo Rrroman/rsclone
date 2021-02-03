@@ -293,7 +293,6 @@ export default class PopupView extends EventEmitter {
             this.listIndex
           ].cards[i].order = i;
 
-          console.log(this.cardContainer, this.currentCard, i);
           (this.cardContainer!.children[
             i
           ] as HTMLElement).dataset.order = i.toString();

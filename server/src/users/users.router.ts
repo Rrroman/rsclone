@@ -1,6 +1,7 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 import { getUsersService } from './users.service';
 import { RSMongoClient } from '../db-client/mongo-client';
@@ -32,7 +33,16 @@ export const getUsersRouter = (mongoClient: RSMongoClient) => {
         throw new Error('Password is wrong');
       }
 
-      res.json(isNameExist.data);
+      const payLoad = { name: isNameExist.data.name };
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const token = jwt.sign(payLoad, process.env.TOKEN_SECRET!);
+
+      res.header('auth-token', token).json({
+        error: null,
+        token: { token },
+        data: isNameExist.data,
+      });
     } catch (err) {
       return res.status(400).json({
         errors: err.message,
@@ -73,7 +83,17 @@ export const getUsersRouter = (mongoClient: RSMongoClient) => {
           name: req.body.name,
           password,
         });
-        res.json(data);
+
+        const payLoad = { name: data.data.name };
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const token = jwt.sign(payLoad, process.env.TOKEN_SECRET!);
+
+        res.header('auth-token', token).json({
+          error: null,
+          token: { token },
+          data: data.data,
+        });
       } catch (err) {
         res.send('error');
         next(err);

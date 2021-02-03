@@ -4,6 +4,8 @@ import { List } from '../card.list.component/card.list.types';
 import { Card } from '../card.component/card.types';
 
 export default class BoardModel extends EventEmitter {
+  serverUrl: string;
+
   inputNewListName: any | null;
 
   draggableList: HTMLElement | null;
@@ -18,7 +20,12 @@ export default class BoardModel extends EventEmitter {
   popupCardName: string | null;
   headerBoardsMenuIsOpen: boolean;
 
-  dataError: null | { [key: string]: string | { [key: string]: string } };
+  dataError:
+    | null
+    | { [key: string]: string | { [key: string]: string } }
+    | string;
+
+  tokenError: null | { error: string };
 
   dataUser: null | { [key: string]: string | { [key: string]: string } };
 
@@ -37,10 +44,9 @@ export default class BoardModel extends EventEmitter {
 
   draggableCardData: null | Card;
 
-  serverUrl: string;
-
   constructor() {
     super();
+    this.serverUrl = 'https://rs-trello-clone.herokuapp.com/';
     this.inputNewListName = null;
     this.draggableList = null;
     this.draggableCard = null;
@@ -50,13 +56,13 @@ export default class BoardModel extends EventEmitter {
     this.popupCardName = null;
     this.headerBoardsMenuIsOpen = false;
     this.dataError = null;
+    this.tokenError = null;
     this.dataUser = null;
     this.userBoards = [];
     this.currentBoardIndex = 0;
     this.currentListIndex = 0;
     this.startDropListIndex = 0;
     this.listPositionArray = [];
-    this.serverUrl = 'https://rs-trello-clone.herokuapp.com';
     this.currentCardIndex = 0;
     this.dragElementName = '';
     this.dragCardIsCreated = false;
@@ -64,7 +70,7 @@ export default class BoardModel extends EventEmitter {
   }
 
   async fetchNewUser(userData: { name: string; password: string }) {
-    await fetch(`${this.serverUrl}/api/user/register`, {
+    await fetch(`${this.serverUrl}api/user/register`, {
       method: 'POST',
       body: JSON.stringify(userData),
       headers: { 'content-type': 'application/json' },
@@ -72,17 +78,21 @@ export default class BoardModel extends EventEmitter {
       .then(function (response) {
         return response.json();
       })
-      .then((data: { [key: string]: {} }) => {
-        if (data.errors) {
+      .then(
+        (data: {
+          errors?: { errors: { [key: string]: string } };
+          error: string | null;
+          token: { token: string };
+          data: { [key: string]: string };
+        }) => {
           this.checkUserErrors(data);
         }
-        this.checkUserErrors(data.data);
-      })
+      )
       .catch((err: Error) => console.log(err));
   }
 
   async fetchCurrentUser(userData: { name: string; password: string }) {
-    await fetch(`${this.serverUrl}/api/user/login`, {
+    await fetch(`${this.serverUrl}api/user/login`, {
       method: 'POST',
       body: JSON.stringify(userData),
       headers: { 'content-type': 'application/json' },
@@ -90,36 +100,57 @@ export default class BoardModel extends EventEmitter {
       .then(function (response) {
         return response.json();
       })
-      .then((data: { [key: string]: string | { [key: string]: string } }) => {
-        this.checkUserErrors(data);
-      })
+      .then(
+        (data: {
+          errors?: string;
+          error: string | null;
+          token: { token: string };
+          data: { [key: string]: string };
+        }) => {
+          this.checkUserErrors(data);
+        }
+      )
       .catch((err: Error) => console.log(err));
   }
 
   checkUserErrors(data: {
-    [key: string]: string | { [key: string]: string };
+    errors?: string | { errors: { [key: string]: string } };
+    error: string | null;
+    token: { token: string };
+    data: { [key: string]: string };
   }): void {
     if (data.errors) {
-      this.dataError = data;
+      this.dataError = data.errors;
     } else {
       this.dataError = null;
-      this.dataUser = data;
+      this.dataUser = data.data;
+      localStorage.setItem('token', data.token.token);
+      localStorage.setItem('user', data.data.name);
     }
   }
 
   async fetchBoard() {
-    await fetch(`${this.serverUrl}/api/board/${this.dataUser!.name}`, {
+    await fetch(`${this.serverUrl}api/board/${this.dataUser!.name}`, {
       method: 'GET',
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'content-type': 'application/json',
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
     })
       .then(function (response) {
         return response.json();
       })
       .then((data: { [data: string]: { [data: string]: Board[] } }) => {
-        this.userBoards = data.data.data;
+        if (data.error) {
+          this.tokenError = { error: 'invalid token' };
+          throw new Error('invalid token');
+        } else {
+          this.userBoards = data.data.data;
+          this.tokenError = null;
+        }
       })
       .catch((err) => {
-        console.log('board not found', err);
+        throw err;
       });
   }
 
@@ -128,10 +159,13 @@ export default class BoardModel extends EventEmitter {
     userName: string | { [key: string]: string };
     favorite: boolean;
   }) {
-    await fetch(`${this.serverUrl}/api/board/newBoard`, {
+    await fetch(`${this.serverUrl}api/board/newBoard`, {
       method: 'POST',
       body: JSON.stringify(boardData),
-      headers: { 'content-type': 'application/json' },
+      headers: {
+        'content-type': 'application/json',
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
     })
       .then(function (response) {
         return response.json();
@@ -155,7 +189,7 @@ export default class BoardModel extends EventEmitter {
       boardId: this.userBoards![this.currentBoardIndex]._id,
       cards: [],
     };
-    await fetch(`${this.serverUrl}/api/list/new`, {
+    await fetch(`${this.serverUrl}api/list/new`, {
       method: 'POST',
       body: JSON.stringify(listData),
       headers: { 'content-type': 'application/json' },
@@ -171,7 +205,7 @@ export default class BoardModel extends EventEmitter {
 
   async removeListFromDB() {
     await fetch(
-      `${this.serverUrl}/api/list/${
+      `${this.serverUrl}api/list/${
         this.userBoards![this.currentBoardIndex].lists[this.currentListIndex]
           ._id
       }`,
@@ -207,7 +241,7 @@ export default class BoardModel extends EventEmitter {
     const currentListId = this.userBoards![this.currentBoardIndex].lists[
       this.currentListIndex
     ]._id;
-    await fetch(`${this.serverUrl}/api/list/${currentListId}`, {
+    await fetch(`${this.serverUrl}api/list/${currentListId}`, {
       method: 'PUT',
       body: JSON.stringify(data),
       headers: { 'content-type': 'application/json' },
@@ -229,7 +263,7 @@ export default class BoardModel extends EventEmitter {
       boardId: this.userBoards![this.currentBoardIndex]._id,
     };
 
-    await fetch(`${this.serverUrl}/api/list/all`, {
+    await fetch(`${this.serverUrl}api/list/all`, {
       method: 'POST',
       body: JSON.stringify(listData),
       headers: { 'content-type': 'application/json' },
@@ -259,7 +293,7 @@ export default class BoardModel extends EventEmitter {
       labelColorId: '',
       labelTextId: '',
     };
-    await fetch(`${this.serverUrl}/api/card/new`, {
+    await fetch(`${this.serverUrl}api/card/new`, {
       method: 'POST',
       body: JSON.stringify(cardData),
       headers: { 'content-type': 'application/json' },
@@ -277,7 +311,7 @@ export default class BoardModel extends EventEmitter {
 
   async fetchAllCardsForList(currentListId: string) {
     const listIndex: number = this.currentListIndex;
-    await fetch(`${this.serverUrl}/api/card/all`, {
+    await fetch(`${this.serverUrl}api/card/all`, {
       method: 'POST',
       body: JSON.stringify({
         listId: currentListId,
@@ -296,7 +330,7 @@ export default class BoardModel extends EventEmitter {
 
   async removeCardFromDB(listIndex: number, cardIndex: number) {
     await fetch(
-      `${this.serverUrl}/api/card/${
+      `${this.serverUrl}api/card/${
         this.userBoards![this.currentBoardIndex].lists[listIndex].cards[
           cardIndex
         ]._id
@@ -315,7 +349,7 @@ export default class BoardModel extends EventEmitter {
   }
 
   async deleteAllCardById(listID: string) {
-    await fetch(`${this.serverUrl}/api/card/deleteAll/${listID}`, {
+    await fetch(`${this.serverUrl}api/card/deleteAll/${listID}`, {
       method: 'DELETE',
       headers: { 'content-type': 'application/json' },
     })
@@ -332,7 +366,7 @@ export default class BoardModel extends EventEmitter {
       return;
     }
 
-    await fetch(`${this.serverUrl}/api/card/${cardId}`, {
+    await fetch(`${this.serverUrl}api/card/${cardId}`, {
       method: 'PUT',
       body: JSON.stringify(data),
       headers: { 'content-type': 'application/json' },
