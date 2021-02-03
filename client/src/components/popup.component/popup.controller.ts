@@ -99,6 +99,6 @@ export default class PopupController {
 
   addPopupNameToCard(event: { [key: string]: HTMLTextAreaElement }) {
     this.boardModel.setPopupCardName(event.target.value);
-    this.popupView.addPopupNameToCard();
+    this.popupView.addPopupNameToCard(event.target);
   }
 }

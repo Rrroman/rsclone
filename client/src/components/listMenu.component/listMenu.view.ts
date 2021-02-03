@@ -100,13 +100,13 @@ export default class ListMenu extends EventEmitter {
     });
     const copyListBtn = create('li', {
       child: create('a', {
-        className: styles['list-link'],
+        className: globalStyles.hidden,
         child: 'Copy List...',
       }),
     });
     const moveListBtn = create('li', {
       child: create('a', {
-        className: styles['list-link'],
+        className: globalStyles.hidden,
         child: 'Move List...',
       }),
     });

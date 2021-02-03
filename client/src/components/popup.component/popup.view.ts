@@ -11,6 +11,7 @@ import {
 } from '../user.kit.component/user.kit.components';
 import ChecklistView from '../checklist.component/checklist.view';
 import ChecklistController from '../checklist.component/checklist.controller';
+import { Card } from '../card.component/card.types';
 
 export default class PopupView extends EventEmitter {
   savedText: string | null;
@@ -28,6 +29,10 @@ export default class PopupView extends EventEmitter {
   checklistWrapper: HTMLElement | null;
 
   cardContainer: ParentNode | null;
+
+  cardData: Card | null;
+
+  previousText: null | string;
 
   constructor(
     public boardModel: any,
@@ -50,6 +55,8 @@ export default class PopupView extends EventEmitter {
     this.sidebarPopup = null;
     this.checklistWrapper = null;
     this.cardContainer = null;
+    this.cardData = null;
+    this.previousText = null;
   }
 
   show() {
@@ -59,14 +66,21 @@ export default class PopupView extends EventEmitter {
 
   addCardDataToPopup() {
     this.boardModel.overlayElement.classList.remove(globalStyles.hidden);
+    // -----------------
     if (
       this.currentCard &&
       this.currentCard.previousSibling!.textContent !== ''
     ) {
       this.savedText = this.currentCard.previousSibling!.textContent;
     }
+    // ----------------
+    this.cardData = this.boardModel.userBoards[
+      this.boardModel.currentBoardIndex
+    ].lists[this.listIndex].cards[this.cardIndex];
 
     this.popupCardName = this.currentCard.textContent;
+
+    this.previousText = this.cardData!.description;
 
     const popupWrapper = this.boardModel.overlayElement.firstChild;
 
@@ -74,13 +88,17 @@ export default class PopupView extends EventEmitter {
       className: styles['popup__body'],
     });
 
-    this.listName = (this.currentCard.closest(
-      '[data-list-name]'
-    ) as HTMLElement).dataset.listName;
+    // this.listName = (this.currentCard.closest(
+    //   '[data-list-name]'
+    // ) as HTMLElement).dataset.listName;
+
+    this.listName = this.boardModel.userBoards[
+      this.boardModel.currentBoardIndex
+    ].lists[this.listIndex].name;
 
     this.popupTitle = create('textarea', {
       className: `${stylesFromCardList['card-name']} ${styles['popup__card-name']}`,
-      child: this.popupCardName!,
+      child: this.cardData!.name,
       parent: null,
       dataAttr: [
         ['maxlength', '512'],
@@ -125,6 +143,7 @@ export default class PopupView extends EventEmitter {
 
     this.textareaDescription = create('textarea', {
       className: styles['popup__textarea-description'],
+      child: this.cardData!.description,
       dataAttr: [
         ['maxlength', '512'],
         ['spellcheck', 'false'],
@@ -302,28 +321,38 @@ export default class PopupView extends EventEmitter {
     this.popupBody!.parentElement!.parentElement!.classList.add(
       globalStyles.hidden
     );
-    this.popupBody!.innerHTML = '';
+    this.popupBody!.remove();
   }
 
-  addPopupNameToCard() {
+  addPopupNameToCard(input: HTMLInputElement) {
+    this.boardModel.updateCardDB(this.cardData!._id, { name: input.value });
+    this.boardModel.updateCardModelData(this.listIndex, this.cardIndex, {
+      name: input.value,
+    });
+
     if (this.currentCard) {
       this.currentCard.textContent = this.boardModel.getPopupCardName();
     }
   }
 
-  addPreviousText(event: Event) {
-    const previousText = (event.target as HTMLTextAreaElement).closest(
-      '[data-popup-description-buttons]'
-    )!.nextSibling!.textContent;
-
-    if (previousText) {
-      (this.textareaDescription as HTMLTextAreaElement).value = previousText;
-      this.currentCard.previousSibling!.textContent = previousText;
-    }
+  addPreviousText() {
+    (this
+      .textareaDescription as HTMLTextAreaElement).value = this.previousText!;
   }
 
-  saveText(text: string) {
-    this.currentCard.previousSibling!.textContent = text;
+  saveText() {
+    this.boardModel
+      .updateCardDB(this.cardData!._id, {
+        description: (this.textareaDescription as HTMLTextAreaElement).value,
+      })
+      .then(
+        () =>
+          (this.previousText = (this
+            .textareaDescription as HTMLTextAreaElement).value)
+      );
+    this.boardModel.updateCardModelData(this.listIndex, this.cardIndex, {
+      description: (this.textareaDescription as HTMLTextAreaElement).value,
+    });
   }
 
   selectText(event: any) {

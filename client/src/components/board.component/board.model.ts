@@ -378,12 +378,22 @@ export default class BoardModel extends EventEmitter {
   updateCardModelData(
     currentListIndex: number,
     cardIndex: number,
-    newOrder: number
+    data: { name?: string; order?: number; description: string }
   ) {
-    if (this.userBoards) {
+    if (this.userBoards && data.order) {
       this.userBoards[this.currentBoardIndex].lists[currentListIndex].cards[
         cardIndex
-      ].order = newOrder;
+      ].order = data.order;
+    }
+    if (this.userBoards && data.name) {
+      this.userBoards[this.currentBoardIndex].lists[currentListIndex].cards[
+        cardIndex
+      ].name = data.name;
+    }
+    if (this.userBoards && data.description) {
+      this.userBoards[this.currentBoardIndex].lists[currentListIndex].cards[
+        cardIndex
+      ].description = data.description;
     }
   }
 
