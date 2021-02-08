@@ -1,0 +1,15 @@
+.hidden {
+  display: none;
+}
+
+div.hidden {
+  display: none;
+}
+
+.show {
+  display: block;
+}
+
+.black-back {
+  opacity: 0.5;
+}

@@ -1,0 +1,18 @@
+.greet {
+  color: burlywood;
+  background-image: url(../../assets/img/rs_school_js.svg);
+  background-repeat: no-repeat;
+  background-position: left center;
+  font-size: 72px;
+  text-align: center;
+}
+
+.main {
+  position: relative;
+  overflow-y: auto;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: calc(100vh - 70px);
+}
