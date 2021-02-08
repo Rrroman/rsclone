@@ -1,15 +1,24 @@
-# Rs clone
+## Description
 
-## RSschool team task
+[RSSchool task](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/rsclone/rsclone.md)
 
-### Instructions:
+This project is a clone of [Trello](https://trello.com/)
 
-- npm i
+The root project is just a wrapper around two completely independent apps (client and server). You can do your work form the root or jump straight to the project you are interested in
 
-#### For dev:
+## Installation
 
-- npm run dev
+```bash
+npm install
+```
 
-#### For build:
+Will install dependencies for all projects including nested ones
 
-- npm run build
+## Running the app
+
+```bash
+# watch mode
+npm run start:dev
+```
+
+Run watch scripts for client and server
